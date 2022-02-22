@@ -2,8 +2,7 @@
 /*
  * USB HOST XHCI Controller
  *
- * Based on xHCI host controller driver in U-Boot which is
- * based on xHCI host controller driver in linux-kernel
+ * Based on xHCI host controller driver in linux-kernel
  * by Sarah Sharp.
  *
  * Copyright (C) 2008 Intel Corp.
@@ -17,12 +16,12 @@
 #ifndef HOST_XHCI_H_
 #define HOST_XHCI_H_
 
-// #include <phys2bus.h>
-// #include <asm/types.h>
-// #include <asm/cache.h>
-// #include <asm/io.h>
-// #include <linux/list.h>
-// #include <linux/compat.h>
+#include <phys2bus.h>
+#include <asm/types.h>
+#include <asm/cache.h>
+#include <asm/io.h>
+#include <linux/list.h>
+#include <linux/compat.h>
 
 #define MAX_EP_CTX_NUM		31
 #define XHCI_ALIGNMENT		64

@@ -20,6 +20,7 @@ if(LibUSB)
             src/drivers/*.c
             src/drivers/arch/${KernelArch}/*.c
             src/ehci/*.c
+            src/xhci/*.c
             src/plat/${KernelPlatform}/*.c
     )
 

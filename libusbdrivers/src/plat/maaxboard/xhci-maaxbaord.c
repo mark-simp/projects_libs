@@ -53,7 +53,7 @@
 
 // static sysreg_t _sysreg;
 
-/* EHCI registers */
+/* XHCI registers */
 static void *_usb_regs = NULL;
 static const int _usb_irqs[] = {
     [USB_HOST0] = USB2_HOST0_IRQ,
@@ -192,10 +192,10 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
     if (_usb_regs == NULL) {
         switch (id) {
             case USB_HOST0:
-                _usb_regs = GET_RESOURCE(io_ops, USB2_HOST0_EHCI);
+                _usb_regs = GET_RESOURCE(io_ops, USB2_HOST0_XHCI);
                 break;
             case USB_HOST1:
-                _usb_regs = GET_RESOURCE(io_ops, USB2_HOST1_EHCI);
+                _usb_regs = GET_RESOURCE(io_ops, USB2_HOST1_XHCI);
                 break;
             default:
                 ZF_LOGF("Invalid host\n");
@@ -218,7 +218,7 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
     //     return -1;
     // }
 
-    err = ehci_host_init(hdev, (uintptr_t)_usb_regs, NULL);
+    err = xhci_host_init(hdev, (uintptr_t)_usb_regs, NULL);
 
     return err;
 }
