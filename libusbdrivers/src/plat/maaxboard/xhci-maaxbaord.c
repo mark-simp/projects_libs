@@ -7,7 +7,9 @@
 // #include <platsupport/mach/pmic.h>
 // #include <platsupport/plat/sysreg.h>
 #include <usb/usb_host.h>
+#include "../../xhci/uboot/types.h"
 #include "../../xhci/xhci.h"
+
 #include "../../services.h"
 #include "../usb_otg.h"
 #include <stdio.h>
@@ -218,9 +220,11 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
     //     return -1;
     // }
 
-    err = xhci_host_init(hdev, (uintptr_t)_usb_regs, NULL);
+    // err = xhci_host_init(hdev, (uintptr_t)_usb_regs, NULL);
 
-    return err;
+    // return err;
+
+    return 0;
 }
 
 const int *usb_host_irqs(usb_host_t *host, int *nirqs)
