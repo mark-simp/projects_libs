@@ -8,6 +8,8 @@ cmake_minimum_required(VERSION 3.7.2)
 
 project(libusbdrivers C)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=ZF_LOG_VERBOSE")
+
 config_option(LibUSB LIB_USB "Build USB interface library" DEFAULT ON)
 
 add_config_library(usbdrivers "${configure_string}")
