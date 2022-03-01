@@ -24,4 +24,9 @@ enum usb_otg_id {
     USB_OTG_DEFAULT = -1
 };
 
+#define DWC3_DIS_ENBLSLPM_QUIRK             false
+#define DWC3_DIS_U2_FREECLK_EXISTS_QUIRK    false
+#define DWC3_DIS_U2_SUPPLY_QUIRK            false
+#define DWC3_UTMI_WIDE                      false // TODO: Need to figure out if this correct!
+
 #endif /* _PLAT_USB_H_ */
