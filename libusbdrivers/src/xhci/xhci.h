@@ -16,12 +16,11 @@
 #ifndef HOST_XHCI_H_
 #define HOST_XHCI_H_
 
-// #include <phys2bus.h>
-// #include <asm/types.h>
-// #include <asm/cache.h>
-// #include <asm/io.h>
-// #include <linux/list.h>
-// #include <linux/compat.h>
+#include <usb/usb_host.h>
+#include <uboot_io.h>
+
+#include "types.h"
+
 
 #define MAX_EP_CTX_NUM		31
 #define XHCI_ALIGNMENT		64
@@ -1220,6 +1219,19 @@ struct xhci_ctrl {
 	u32 quirks;
 #define XHCI_MTK_HOST		BIT(0)
 };
+
+/**
+ * Initialise an XHCI host controller
+ * @param[in/out] hdev        A host controller structure to
+ *                            populate. Must be pre-filled with a
+ *                            DMA allocator. This function will
+ *                            fill the private data and function
+ *                            pointers of this structure.
+ * @param[in]     hccr        The mapped XCHI capability registers.
+ * @return                    0 on success
+ */
+int xhci_host_init(usb_host_t *hdev, struct xhci_hccr *hccr);
+
 
 // #if CONFIG_IS_ENABLED(DM_USB)
 // #define xhci_to_dev(_ctrl)	_ctrl->dev

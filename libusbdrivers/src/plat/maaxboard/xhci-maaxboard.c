@@ -96,8 +96,6 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
 
     /* Create references to mapped data structures */
 	struct xhci_hccr *hccr = (struct xhci_hccr *)((uintptr_t)_usb_regs[id]);
-	struct xhci_hcor *hcor = (struct xhci_hcor *)((uintptr_t)hccr +
-		                      HC_LENGTH(xhci_readl(&(hccr)->cr_capbase)));
     struct dwc3 *dwc3_reg = (struct dwc3 *)((char *)(hccr) + DWC3_REG_OFFSET);
 
     err = imx8_xhci_core_init(dwc3_reg);
@@ -105,6 +103,8 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
         ZF_LOGD("failed to initialise core\n");
         return err;
     }
+
+    err = xhci_host_init(hdev, hccr);
 
     return 0;
 }
