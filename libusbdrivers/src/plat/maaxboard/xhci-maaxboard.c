@@ -27,12 +27,6 @@ static const int _usb_irqs[] = {
 
 static int imx8_xhci_core_init(struct dwc3 *dwc3_reg)
 {
-    /* TODO: Need to initialise the PHYs here */
-
-    // 	ret = dwc3_setup_phy(dev, &plat->phys);
-    // 	if (ret && (ret != -ENOTSUPP))
-    // 		return ret;
-
     /* Initialise the DWC3 core */
     int err = dwc3_core_init(dwc3_reg);
     if (err) {
@@ -133,5 +127,3 @@ int usb_plat_otg_init(usb_otg_t odev, ps_io_ops_t *io_ops)
 {
     return -1;
 }
-
-
