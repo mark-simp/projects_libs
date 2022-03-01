@@ -6,13 +6,13 @@
 
 #include "io.h"
 
+#include "../usb_otg.h"
+#include "../../services.h"
+
 #include "../../xhci/uboot/types.h"
 #include "../../xhci/xhci.h"
-#include "../../services.h"
-#include "../usb_otg.h"
-
-#include "dwc3.h"
-#include "xhci-dwc3.h"
+#include "../../xhci/dwc3.h"
+#include "../../xhci/xhci-dwc3.h"
 
 /* XHCI registers */
 static void *_usb_regs = NULL;
