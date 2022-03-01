@@ -3,8 +3,8 @@
  */
 
 #include <stdint.h>
-
 #include <uboot_io.h>
+#include <usb/plat/usb.h>
 
 #include "../usb_otg.h"
 #include "../../services.h"
@@ -15,11 +15,55 @@
 #include "../../xhci/xhci-dwc3.h"
 
 /* XHCI registers */
-static void *_usb_regs = NULL;
+static void *_usb_regs[]= {
+    [USB_HOST0] = NULL,
+    [USB_HOST1] = NULL
+};
+
 static const int _usb_irqs[] = {
     [USB_HOST0] = USB2_HOST0_IRQ,
     [USB_HOST1] = USB2_HOST1_IRQ
 };
+
+static int imx8_xhci_core_init(struct dwc3 *dwc3_reg)
+{
+    /* TODO: Need to initialise the PHYs here */
+
+    // 	ret = dwc3_setup_phy(dev, &plat->phys);
+    // 	if (ret && (ret != -ENOTSUPP))
+    // 		return ret;
+
+    /* Initialise the DWC3 core */
+    int err = dwc3_core_init(dwc3_reg);
+    if (err) {
+        return err;
+    }
+
+    /* Set dwc3 usb2 phy config */
+    u32 reg = readl(&dwc3_reg->g_usb2phycfg[0]);
+
+    if (DWC3_UTMI_WIDE) {
+        reg |= DWC3_GUSB2PHYCFG_PHYIF;
+        reg &= ~DWC3_GUSB2PHYCFG_USBTRDTIM_MASK;
+        reg |= DWC3_GUSB2PHYCFG_USBTRDTIM_16BIT;
+    }
+
+    if (DWC3_DIS_ENBLSLPM_QUIRK)
+        reg &= ~DWC3_GUSB2PHYCFG_ENBLSLPM;
+
+    if (DWC3_DIS_U2_FREECLK_EXISTS_QUIRK)
+        reg &= ~DWC3_GUSB2PHYCFG_U2_FREECLK_EXISTS;
+
+    if (DWC3_DIS_U2_SUPPLY_QUIRK)
+        reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
+
+    writel(reg, &dwc3_reg->g_usb2phycfg[0]);
+
+    /* Hard-code DWC3 core to Host Mode */
+	dwc3_set_mode(dwc3_reg, DWC3_GCTL_PRTCAP_HOST);
+
+    return 0;
+}
 
 int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync,
                   usb_host_t *hdev)
@@ -38,13 +82,13 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
     hdev->sync = sync;
 
     /* Check device mappings */
-    if (_usb_regs == NULL) {
+    if (_usb_regs[id] == NULL) {
         switch (id) {
             case USB_HOST0:
-                _usb_regs = GET_RESOURCE(io_ops, USB2_HOST0_XHCI);
+                _usb_regs[id] = GET_RESOURCE(io_ops, USB2_HOST0_XHCI);
                 break;
             case USB_HOST1:
-                _usb_regs = GET_RESOURCE(io_ops, USB2_HOST1_XHCI);
+                _usb_regs[id] = GET_RESOURCE(io_ops, USB2_HOST1_XHCI);
                 break;
             default:
                 ZF_LOGF("Invalid host\n");
@@ -52,40 +96,21 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
                 break;
         }
     }
-    if (_usb_regs == NULL) {
+    if (_usb_regs[id] == NULL) {
         return -1;
     }
 
-    // err = xhci_dwc3_probe((uintptr_t)_usb_regs);
+    /* Create references to mapped data structures */
+	struct xhci_hccr *hccr = (struct xhci_hccr *)((uintptr_t)_usb_regs[id]);
+	struct xhci_hcor *hcor = (struct xhci_hcor *)((uintptr_t)hccr +
+		                      HC_LENGTH(xhci_readl(&(hccr)->cr_capbase)));
+    struct dwc3 *dwc3_reg = (struct dwc3 *)((char *)(hccr) + DWC3_REG_OFFSET);
 
-    struct xhci_hcor *hcor;
-	struct xhci_hccr *hccr;
-    struct dwc3 *dwc3_reg;
-
-	hccr = (struct xhci_hccr *)((uintptr_t)_usb_regs);
-	hcor = (struct xhci_hcor *)((uintptr_t)hccr +
-			HC_LENGTH(xhci_readl(&(hccr)->cr_capbase)));
-
-    dwc3_reg = (struct dwc3 *)((char *)(hccr) + DWC3_REG_OFFSET);
-
-    dwc3_core_init(dwc3_reg);
-
-    // revision = readl(&dwc3_reg->g_snpsid);
-    // ZF_LOGD("Revision: 0x%x\n", revision);
-	// /* This should read as U3 followed by revision number */
-	// if ((revision & DWC3_GSNPSID_MASK) != 0x55330000 &&
-	//     (revision & DWC3_GSNPSID_MASK) != 0x33310000) {
-    //     ZF_LOGF("this is not a DesignWare USB3 DRD Core\n");
-	// 	return -1;
-	// }
-
-
-
-
-
-    // err = xhci_host_init(hdev, (uintptr_t)_usb_regs, NULL);
-
-    // return err;
+    err = imx8_xhci_core_init(dwc3_reg);
+    if (err) {
+        ZF_LOGD("failed to initialise core\n");
+        return err;
+    }
 
     return 0;
 }
