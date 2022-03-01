@@ -1083,17 +1083,17 @@ struct xhci_virt_device {
 };
 
 
-// /* TODO: copied from ehci.h - can be refactored? */
-// /* xHCI spec says all registers are little endian */
-// static inline unsigned int xhci_readl(uint32_t volatile *regs)
-// {
-// 	return readl(regs);
-// }
+/* TODO: copied from ehci.h - can be refactored? */
+/* xHCI spec says all registers are little endian */
+static inline unsigned int xhci_readl(uint32_t volatile *regs)
+{
+	return readl(regs);
+}
 
-// static inline void xhci_writel(uint32_t volatile *regs, const unsigned int val)
-// {
-// 	writel(val, regs);
-// }
+static inline void xhci_writel(uint32_t volatile *regs, const unsigned int val)
+{
+	writel(val, regs);
+}
 
 // /*
 //  * Registers should always be accessed with double word or quad word accesses.
