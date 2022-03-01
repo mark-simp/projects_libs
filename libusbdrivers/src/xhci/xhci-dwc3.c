@@ -12,8 +12,7 @@
 #include <utils/zf_log.h>
 
 #include <uboot_io.h>
-#include "uboot/types.h"
-
+#include "types.h"
 #include "dwc3.h"
 
 // struct xhci_dwc3_plat {

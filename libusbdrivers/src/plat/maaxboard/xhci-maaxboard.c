@@ -9,7 +9,7 @@
 #include "../usb_otg.h"
 #include "../../services.h"
 
-#include "../../xhci/uboot/types.h"
+#include "../../xhci/types.h"
 #include "../../xhci/xhci.h"
 #include "../../xhci/dwc3.h"
 #include "../../xhci/xhci-dwc3.h"
