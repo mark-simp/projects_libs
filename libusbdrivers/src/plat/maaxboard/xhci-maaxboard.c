@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-#include "io.h"
+#include <uboot_io.h>
 
 #include "../usb_otg.h"
 #include "../../services.h"

@@ -11,9 +11,9 @@
 #include <platsupport/delay.h>
 #include <utils/zf_log.h>
 
-#include "../../xhci/uboot/types.h"
+#include <uboot_io.h>
+#include "uboot/types.h"
 
-#include "io.h"
 #include "dwc3.h"
 
 // struct xhci_dwc3_plat {
