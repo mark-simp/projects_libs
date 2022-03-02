@@ -1196,9 +1196,6 @@ static inline void xhci_writel(uint32_t volatile *regs, const unsigned int val)
 #define XHCI_STS_CNR		(1 << 11)
 
 struct xhci_ctrl {
-// #if CONFIG_IS_ENABLED(DM_USB)
-// 	struct udevice *dev;
-// #endif
 	struct xhci_hccr *hccr;	/* R/O registers, not need for volatile */
 	struct xhci_hcor *hcor;
 	struct xhci_doorbell_array *dba;
