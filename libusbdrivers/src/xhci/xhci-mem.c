@@ -27,6 +27,8 @@
 // #include <usb/xhci.h>
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <uboot_io.h>
 
 // #include "types.h"

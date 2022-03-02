@@ -20,6 +20,8 @@
  */
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <uboot_io.h>
 
 // #include "types.h"
@@ -1329,7 +1331,7 @@ static int xhci_submit_control_msg(struct udevice *dev, struct usb_device *udev,
 	struct udevice *hub;
 	int root_portnr = 0;
 
-	debug("%s: dev='%s', udev=%p, udev->dev='%s', portnr=%d\n", __func__,
+	ZF_LOGD("%s: dev='%s', udev=%p, udev->dev='%s', portnr=%d\n", __func__,
 	      dev->name, udev, udev->dev->name, udev->portnr);
 	hub = udev->dev;
 	if (device_get_uclass_id(hub) == UCLASS_USB_HUB) {
@@ -1356,7 +1358,7 @@ static int xhci_submit_control_msg(struct udevice *dev, struct usb_device *udev,
 static int xhci_submit_bulk_msg(struct udevice *dev, struct usb_device *udev,
 				unsigned long pipe, void *buffer, int length)
 {
-	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+	ZF_LOGD("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
 	return _xhci_submit_bulk_msg(udev, pipe, buffer, length);
 }
 
@@ -1364,14 +1366,14 @@ static int xhci_submit_int_msg(struct udevice *dev, struct usb_device *udev,
 			       unsigned long pipe, void *buffer, int length,
 			       int interval, bool nonblock)
 {
-	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+	ZF_LOGD("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
 	return _xhci_submit_int_msg(udev, pipe, buffer, length, interval,
 				    nonblock);
 }
 
 static int xhci_alloc_device(struct udevice *dev, struct usb_device *udev)
 {
-	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+	ZF_LOGD("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
 	return _xhci_alloc_device(udev);
 }
 
@@ -1387,7 +1389,7 @@ static int xhci_update_hub_device(struct udevice *dev, struct usb_device *udev)
 	int slot_id = udev->slot_id;
 	unsigned think_time;
 
-	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+	ZF_LOGD("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
 
 	/* Ignore root hubs */
 	if (usb_hub_is_root_hub(udev->dev))
@@ -1462,7 +1464,7 @@ int xhci_register(struct udevice *dev, struct xhci_hccr *hccr,
 	struct usb_bus_priv *priv = dev_get_uclass_priv(dev);
 	int ret;
 
-	debug("%s: dev='%s', ctrl=%p, hccr=%p, hcor=%p\n", __func__, dev->name,
+	ZF_LOGD("%s: dev='%s', ctrl=%p, hccr=%p, hcor=%p\n", __func__, dev->name,
 	      ctrl, hccr, hcor);
 
 	ctrl->dev = dev;
@@ -1488,7 +1490,7 @@ int xhci_register(struct udevice *dev, struct xhci_hccr *hccr,
 	return 0;
 err:
 	free(ctrl);
-	debug("%s: failed, ret=%d\n", __func__, ret);
+	ZF_LOGD("%s: failed, ret=%d\n", __func__, ret);
 	return ret;
 }
 

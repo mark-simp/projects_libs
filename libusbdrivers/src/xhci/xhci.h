@@ -23,7 +23,7 @@
 #include "usb_defs.h"
 #include "ch9.h"
 #include "usb.h"
-// #include "device.h"
+#include "phys2bus.h"
 
 
 #define MAX_EP_CTX_NUM		31
@@ -1098,35 +1098,35 @@ static inline void xhci_writel(uint32_t volatile *regs, const unsigned int val)
 	writel(val, regs);
 }
 
-// /*
-//  * Registers should always be accessed with double word or quad word accesses.
-//  * Some xHCI implementations may support 64-bit address pointers.  Registers
-//  * with 64-bit address pointers should be written to with dword accesses by
-//  * writing the low dword first (ptr[0]), then the high dword (ptr[1]) second.
-//  * xHCI implementations that do not support 64-bit address pointers will ignore
-//  * the high dword, and write order is irrelevant.
-//  */
-// static inline u64 xhci_readq(__le64 volatile *regs)
-// {
-// 	__u32 *ptr = (__u32 *)regs;
-// 	u64 val_lo = readl(ptr);
-// 	u64 val_hi = readl(ptr + 1);
-// 	return val_lo + (val_hi << 32);
-// }
+/*
+ * Registers should always be accessed with double word or quad word accesses.
+ * Some xHCI implementations may support 64-bit address pointers.  Registers
+ * with 64-bit address pointers should be written to with dword accesses by
+ * writing the low dword first (ptr[0]), then the high dword (ptr[1]) second.
+ * xHCI implementations that do not support 64-bit address pointers will ignore
+ * the high dword, and write order is irrelevant.
+ */
+static inline u64 xhci_readq(__le64 volatile *regs)
+{
+	__u32 *ptr = (__u32 *)regs;
+	u64 val_lo = readl(ptr);
+	u64 val_hi = readl(ptr + 1);
+	return val_lo + (val_hi << 32);
+}
 
-// static inline void xhci_writeq(__le64 volatile *regs, const u64 val)
-// {
-// 	__u32 *ptr = (__u32 *)regs;
-// 	u32 val_lo = lower_32_bits(val);
-// 	/* FIXME */
-// 	u32 val_hi = upper_32_bits(val);
-// 	writel(val_lo, ptr);
-// 	writel(val_hi, ptr + 1);
-// }
+static inline void xhci_writeq(__le64 volatile *regs, const u64 val)
+{
+	__u32 *ptr = (__u32 *)regs;
+	u32 val_lo = lower_32_bits(val);
+	/* FIXME */
+	u32 val_hi = upper_32_bits(val);
+	writel(val_lo, ptr);
+	writel(val_hi, ptr + 1);
+}
 
-// int xhci_hcd_init(int index, struct xhci_hccr **ret_hccr,
-// 					struct xhci_hcor **ret_hcor);
-// void xhci_hcd_stop(int index);
+int xhci_hcd_init(int index, struct xhci_hccr **ret_hccr,
+					struct xhci_hcor **ret_hcor);
+void xhci_hcd_stop(int index);
 
 
 /*************************************************************
@@ -1200,12 +1200,15 @@ static inline void xhci_writel(uint32_t volatile *regs, const unsigned int val)
 #define XHCI_STS_CNR		(1 << 11)
 
 struct xhci_ctrl {
+#if CONFIG_IS_ENABLED(DM_USB)
+	struct udevice *dev;
+#endif
 	struct xhci_hccr *hccr;	/* R/O registers, not need for volatile */
 	struct xhci_hcor *hcor;
 	struct xhci_doorbell_array *dba;
 	struct xhci_run_regs *run_regs;
-	struct xhci_device_context_array *dcbaa;
-			// __attribute__ ((aligned(ARCH_DMA_MINALIGN)));
+	struct xhci_device_context_array *dcbaa \
+			__attribute__ ((aligned(ARCH_DMA_MINALIGN)));
 	struct xhci_ring *event_ring;
 	struct xhci_ring *cmd_ring;
 	struct xhci_ring *transfer_ring;
@@ -1221,11 +1224,11 @@ struct xhci_ctrl {
 #define XHCI_MTK_HOST		BIT(0)
 };
 
-// #if CONFIG_IS_ENABLED(DM_USB)
-// #define xhci_to_dev(_ctrl)	_ctrl->dev
-// #else
-// #define xhci_to_dev(_ctrl)	NULL
-// #endif
+#if CONFIG_IS_ENABLED(DM_USB)
+#define xhci_to_dev(_ctrl)	_ctrl->dev
+#else
+#define xhci_to_dev(_ctrl)	NULL
+#endif
 
 unsigned long trb_addr(struct xhci_segment *seg, union xhci_trb *trb);
 struct xhci_input_control_ctx
@@ -1281,18 +1284,18 @@ int xhci_deregister(struct udevice *dev);
 int xhci_register(struct udevice *dev, struct xhci_hccr *hccr,
 		  struct xhci_hcor *hcor);
 
-// extern struct dm_usb_ops xhci_usb_ops;
+extern struct dm_usb_ops xhci_usb_ops;
 
-// struct xhci_ctrl *xhci_get_ctrl(struct usb_device *udev);
+struct xhci_ctrl *xhci_get_ctrl(struct usb_device *udev);
 
-// static inline dma_addr_t xhci_virt_to_bus(struct xhci_ctrl *ctrl, void *addr)
-// {
-// 	return dev_phys_to_bus(xhci_to_dev(ctrl), virt_to_phys(addr));
-// }
+static inline dma_addr_t xhci_virt_to_bus(struct xhci_ctrl *ctrl, void *addr)
+{
+	return dev_phys_to_bus(xhci_to_dev(ctrl), virt_to_phys(addr));
+}
 
-// static inline void *xhci_bus_to_virt(struct xhci_ctrl *ctrl, dma_addr_t addr)
-// {
-// 	return phys_to_virt(dev_bus_to_phys(xhci_to_dev(ctrl), addr));
-// }
+static inline void *xhci_bus_to_virt(struct xhci_ctrl *ctrl, dma_addr_t addr)
+{
+	return phys_to_virt(dev_bus_to_phys(xhci_to_dev(ctrl), addr));
+}
 
 #endif /* HOST_XHCI_H_ */

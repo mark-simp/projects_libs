@@ -9,7 +9,6 @@
 // #include "../usb_otg.h"
 #include "../../services.h"
 
-// #include "../../xhci/types.h"
 #include "../../xhci/xhci.h"
 #include "../../xhci/dwc3.h"
 #include "../../xhci/xhci-dwc3.h"
@@ -106,7 +105,9 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
         return err;
     }
 
-    err = xhci_register(NULL, hccr, hcor);
+    err = xhci_dwc3_probe(NULL)
+
+    // err = xhci_register(NULL, hccr, hcor);
 
     return 0;
 }

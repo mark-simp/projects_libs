@@ -12,8 +12,17 @@
 #include <utils/zf_log.h>
 
 #include <uboot_io.h>
+#include "uboot_helper.h"
 #include "xhci.h"
 #include "dwc3.h"
+
+#if CONFIG_IS_ENABLED(DM_USB)
+struct xhci_dwc3_plat {
+	struct clk_bulk clks;
+	struct phy_bulk phys;
+	struct reset_ctl_bulk resets;
+};
+#endif
 
 void dwc3_set_mode(struct dwc3 *dwc3_reg, u32 mode)
 {
@@ -101,3 +110,137 @@ void dwc3_set_fladj(struct dwc3 *dwc3_reg, u32 val)
 	setbits_le32(&dwc3_reg->g_fladj, GFLADJ_30MHZ_REG_SEL |
 			GFLADJ_30MHZ(val));
 }
+
+#if CONFIG_IS_ENABLED(DM_USB)
+static int xhci_dwc3_reset_init(struct udevice *dev,
+				struct xhci_dwc3_plat *plat)
+{
+	int ret;
+
+	ret = reset_get_bulk(dev, &plat->resets);
+	if (ret == -ENOTSUPP || ret == -ENOENT)
+		return 0;
+	else if (ret)
+		return ret;
+
+	ret = reset_deassert_bulk(&plat->resets);
+	if (ret) {
+		reset_release_bulk(&plat->resets);
+		return ret;
+	}
+
+	return 0;
+}
+
+static int xhci_dwc3_clk_init(struct udevice *dev,
+			      struct xhci_dwc3_plat *plat)
+{
+	int ret;
+
+	ret = clk_get_bulk(dev, &plat->clks);
+	if (ret == -ENOSYS || ret == -ENOENT)
+		return 0;
+	if (ret)
+		return ret;
+
+	ret = clk_enable_bulk(&plat->clks);
+	if (ret) {
+		clk_release_bulk(&plat->clks);
+		return ret;
+	}
+
+	return 0;
+}
+
+static int xhci_dwc3_probe(struct udevice *dev)
+{
+	struct xhci_hcor *hcor;
+	struct xhci_hccr *hccr;
+	struct dwc3 *dwc3_reg;
+	enum usb_dr_mode dr_mode;
+	struct xhci_dwc3_plat *plat = dev_get_plat(dev);
+	const char *phy;
+	u32 reg;
+	int ret;
+
+	ret = xhci_dwc3_reset_init(dev, plat);
+	if (ret)
+		return ret;
+
+	ret = xhci_dwc3_clk_init(dev, plat);
+	if (ret)
+		return ret;
+
+	hccr = (struct xhci_hccr *)((uintptr_t)dev_remap_addr(dev));
+	hcor = (struct xhci_hcor *)((uintptr_t)hccr +
+			HC_LENGTH(xhci_readl(&(hccr)->cr_capbase)));
+
+	ret = dwc3_setup_phy(dev, &plat->phys);
+	if (ret && (ret != -ENOTSUPP))
+		return ret;
+
+	dwc3_reg = (struct dwc3 *)((char *)(hccr) + DWC3_REG_OFFSET);
+
+	dwc3_core_init(dwc3_reg);
+
+	/* Set dwc3 usb2 phy config */
+	reg = readl(&dwc3_reg->g_usb2phycfg[0]);
+
+	phy = dev_read_string(dev, "phy_type");
+	if (phy && strcmp(phy, "utmi_wide") == 0) {
+		reg |= DWC3_GUSB2PHYCFG_PHYIF;
+		reg &= ~DWC3_GUSB2PHYCFG_USBTRDTIM_MASK;
+		reg |= DWC3_GUSB2PHYCFG_USBTRDTIM_16BIT;
+	}
+
+	if (dev_read_bool(dev, "snps,dis_enblslpm-quirk"))
+		reg &= ~DWC3_GUSB2PHYCFG_ENBLSLPM;
+
+	if (dev_read_bool(dev, "snps,dis-u2-freeclk-exists-quirk"))
+		reg &= ~DWC3_GUSB2PHYCFG_U2_FREECLK_EXISTS;
+
+	if (dev_read_bool(dev, "snps,dis_u2_susphy_quirk"))
+		reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
+
+	writel(reg, &dwc3_reg->g_usb2phycfg[0]);
+
+	dr_mode = usb_get_dr_mode(dev_ofnode(dev));
+	if (dr_mode == USB_DR_MODE_UNKNOWN)
+		/* by default set dual role mode to HOST */
+		dr_mode = USB_DR_MODE_HOST;
+
+	dwc3_set_mode(dwc3_reg, dr_mode);
+
+	return xhci_register(dev, hccr, hcor);
+}
+
+static int xhci_dwc3_remove(struct udevice *dev)
+{
+	struct xhci_dwc3_plat *plat = dev_get_plat(dev);
+
+	dwc3_shutdown_phy(dev, &plat->phys);
+
+	clk_release_bulk(&plat->clks);
+
+	reset_release_bulk(&plat->resets);
+
+	return xhci_deregister(dev);
+}
+
+static const struct udevice_id xhci_dwc3_ids[] = {
+	{ .compatible = "snps,dwc3" },
+	{ }
+};
+
+U_BOOT_DRIVER(xhci_dwc3) = {
+	.name = "xhci-dwc3",
+	.id = UCLASS_USB,
+	.of_match = xhci_dwc3_ids,
+	.probe = xhci_dwc3_probe,
+	.remove = xhci_dwc3_remove,
+	.ops = &xhci_usb_ops,
+	.priv_auto	= sizeof(struct xhci_ctrl),
+	.plat_auto	= sizeof(struct xhci_dwc3_plat),
+	.flags = DM_FLAG_ALLOC_PRIV_DMA,
+};
+#endif

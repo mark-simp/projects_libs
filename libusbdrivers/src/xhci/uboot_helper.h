@@ -4,14 +4,28 @@
  * sourced from U-Boot.
  */
 
+#define CONFIG_DM               true
+#define CONFIG_DM_USB           true
+#define CONFIG_DEVRES           false
+#define CONFIG_DM_DMA           false
+#define CONFIG_OF_PLATDATA_RT   false
+#define CONFIG_OF_REAL          false
+#define CONFIG_ACPIGEN          false
+#define CONFIG_PHYS_TO_BUS      false
+
+#define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
+
+
 // TODO: Need to remove this
-#define CONFIG_IS_ENABLED(X)   false
+// #define CONFIG_IS_ENABLED(X)   false
 
 #define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
 #define UBOOT_ALIGN(x, a)		__ALIGN_MASK((x), (typeof(x))(a) - 1)
 
 #define BUG_ON(X)  assert(!(X))
 #define BUG()  assert(false)
+
+#define of_live_active()    false
 
 #define __bitwise /*__attribute__((bitwise))*/
 #define __force /* __attribute__((force)) */
@@ -60,12 +74,48 @@ typedef s8  __bitwise __be8;
 #define S64_MAX		((s64)(U64_MAX>>1))
 #define S64_MIN		((s64)(-S64_MAX - 1))
 
-#define max(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-       __typeof__ (b) _b = (b); \
-     _a > _b ? _a : _b; })
+/*
+ * min()/max()/clamp() macros that also do
+ * strict type-checking.. See the
+ * "unnecessary" pointer comparison.
+ */
+#define min(x, y) ({				\
+	typeof(x) _min1 = (x);			\
+	typeof(y) _min2 = (y);			\
+	(void) (&_min1 == &_min2);		\
+	_min1 < _min2 ? _min1 : _min2; })
 
-#define min(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-       __typeof__ (b) _b = (b); \
-     _a < _b ? _a : _b; })
+#define max(x, y) ({				\
+	typeof(x) _max1 = (x);			\
+	typeof(y) _max2 = (y);			\
+	(void) (&_max1 == &_max2);		\
+	_max1 > _max2 ? _max1 : _max2; })
+
+/**
+ * upper_32_bits - return bits 32-63 of a number
+ * @n: the number we're accessing
+ *
+ * A basic shift-right of a 64- or 32-bit quantity.  Use this to suppress
+ * the "right shift count >= width of type" warning when that quantity is
+ * 32-bits.
+ */
+#define upper_32_bits(n) ((u32)(((n) >> 16) >> 16))
+
+/**
+ * lower_32_bits - return bits 0-31 of a number
+ * @n: the number we're accessing
+ */
+#define lower_32_bits(n) ((u32)(n))
+
+typedef u64 dma_addr_t;
+typedef u64 phys_addr_t;
+
+static inline void *phys_to_virt(phys_addr_t paddr)
+{
+	return (void *)(unsigned long)paddr;
+}
+
+static inline phys_addr_t virt_to_phys(void *vaddr)
+{
+	return (phys_addr_t)((unsigned long)vaddr);
+}
