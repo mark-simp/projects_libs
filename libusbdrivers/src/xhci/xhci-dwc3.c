@@ -15,6 +15,7 @@
 #include "uboot_helper.h"
 #include "xhci.h"
 #include "dwc3.h"
+#include "clk.h"
 
 #if CONFIG_IS_ENABLED(DM_USB)
 struct xhci_dwc3_plat {

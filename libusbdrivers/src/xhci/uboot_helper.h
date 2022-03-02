@@ -12,12 +12,12 @@
 #define CONFIG_OF_REAL          false
 #define CONFIG_ACPIGEN          false
 #define CONFIG_PHYS_TO_BUS      false
+#define CONFIG_OF_CONTROL       false
+#define CONFIG_CLK              false
 
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
 
-
-// TODO: Need to remove this
-// #define CONFIG_IS_ENABLED(X)   false
+#define CONFIG_ERR_PTR_OFFSET   1024
 
 #define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
 #define UBOOT_ALIGN(x, a)		__ALIGN_MASK((x), (typeof(x))(a) - 1)
@@ -29,7 +29,8 @@
 
 #define __bitwise /*__attribute__((bitwise))*/
 #define __force /* __attribute__((force)) */
-#define __packed	__attribute__((packed))
+#define __packed	    __attribute__((packed))
+#define __must_check    __attribute__((warn_unused_result))
 
 typedef uint64_t u64;
 typedef uint32_t u32;

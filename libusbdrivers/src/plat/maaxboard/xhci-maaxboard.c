@@ -105,7 +105,7 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
         return err;
     }
 
-    err = xhci_dwc3_probe(NULL)
+    err = xhci_dwc3_probe(NULL);
 
     // err = xhci_register(NULL, hccr, hcor);
 
