@@ -1236,59 +1236,59 @@ int xhci_host_init(usb_host_t *hdev, struct xhci_hccr *hccr);
 // #define xhci_to_dev(_ctrl)	NULL
 // #endif
 
-// unsigned long trb_addr(struct xhci_segment *seg, union xhci_trb *trb);
-// struct xhci_input_control_ctx
-// 		*xhci_get_input_control_ctx(struct xhci_container_ctx *ctx);
-// struct xhci_slot_ctx *xhci_get_slot_ctx(struct xhci_ctrl *ctrl,
-// 					struct xhci_container_ctx *ctx);
-// struct xhci_ep_ctx *xhci_get_ep_ctx(struct xhci_ctrl *ctrl,
-// 				    struct xhci_container_ctx *ctx,
-// 				    unsigned int ep_index);
-// void xhci_endpoint_copy(struct xhci_ctrl *ctrl,
-// 			struct xhci_container_ctx *in_ctx,
-// 			struct xhci_container_ctx *out_ctx,
-// 			unsigned int ep_index);
-// void xhci_slot_copy(struct xhci_ctrl *ctrl,
-// 		    struct xhci_container_ctx *in_ctx,
-// 		    struct xhci_container_ctx *out_ctx);
-// void xhci_setup_addressable_virt_dev(struct xhci_ctrl *ctrl,
-// 				     struct usb_device *udev, int hop_portnr);
-// void xhci_queue_command(struct xhci_ctrl *ctrl, u8 *ptr,
-// 			u32 slot_id, u32 ep_index, trb_type cmd);
-// void xhci_acknowledge_event(struct xhci_ctrl *ctrl);
-// union xhci_trb *xhci_wait_for_event(struct xhci_ctrl *ctrl, trb_type expected);
-// int xhci_bulk_tx(struct usb_device *udev, unsigned long pipe,
-// 		 int length, void *buffer);
-// int xhci_ctrl_tx(struct usb_device *udev, unsigned long pipe,
-// 		 struct devrequest *req, int length, void *buffer);
-// int xhci_check_maxpacket(struct usb_device *udev);
-// void xhci_flush_cache(uintptr_t addr, u32 type_len);
-// void xhci_inval_cache(uintptr_t addr, u32 type_len);
-// void xhci_cleanup(struct xhci_ctrl *ctrl);
-// struct xhci_ring *xhci_ring_alloc(struct xhci_ctrl *ctrl, unsigned int num_segs,
-// 				  bool link_trbs);
-// int xhci_alloc_virt_device(struct xhci_ctrl *ctrl, unsigned int slot_id);
-// int xhci_mem_init(struct xhci_ctrl *ctrl, struct xhci_hccr *hccr,
-// 		  struct xhci_hcor *hcor);
+unsigned long trb_addr(struct xhci_segment *seg, union xhci_trb *trb);
+struct xhci_input_control_ctx
+		*xhci_get_input_control_ctx(struct xhci_container_ctx *ctx);
+struct xhci_slot_ctx *xhci_get_slot_ctx(struct xhci_ctrl *ctrl,
+					struct xhci_container_ctx *ctx);
+struct xhci_ep_ctx *xhci_get_ep_ctx(struct xhci_ctrl *ctrl,
+				    struct xhci_container_ctx *ctx,
+				    unsigned int ep_index);
+void xhci_endpoint_copy(struct xhci_ctrl *ctrl,
+			struct xhci_container_ctx *in_ctx,
+			struct xhci_container_ctx *out_ctx,
+			unsigned int ep_index);
+void xhci_slot_copy(struct xhci_ctrl *ctrl,
+		    struct xhci_container_ctx *in_ctx,
+		    struct xhci_container_ctx *out_ctx);
+void xhci_setup_addressable_virt_dev(struct xhci_ctrl *ctrl,
+				     struct usb_device *udev, int hop_portnr);
+void xhci_queue_command(struct xhci_ctrl *ctrl, u8 *ptr,
+			u32 slot_id, u32 ep_index, trb_type cmd);
+void xhci_acknowledge_event(struct xhci_ctrl *ctrl);
+union xhci_trb *xhci_wait_for_event(struct xhci_ctrl *ctrl, trb_type expected);
+int xhci_bulk_tx(struct usb_device *udev, unsigned long pipe,
+		 int length, void *buffer);
+int xhci_ctrl_tx(struct usb_device *udev, unsigned long pipe,
+		 struct devrequest *req, int length, void *buffer);
+int xhci_check_maxpacket(struct usb_device *udev);
+void xhci_flush_cache(uintptr_t addr, u32 type_len);
+void xhci_inval_cache(uintptr_t addr, u32 type_len);
+void xhci_cleanup(struct xhci_ctrl *ctrl);
+struct xhci_ring *xhci_ring_alloc(struct xhci_ctrl *ctrl, unsigned int num_segs,
+				  bool link_trbs);
+int xhci_alloc_virt_device(struct xhci_ctrl *ctrl, unsigned int slot_id);
+int xhci_mem_init(struct xhci_ctrl *ctrl, struct xhci_hccr *hccr,
+		  struct xhci_hcor *hcor);
 
-// /**
-//  * xhci_deregister() - Unregister an XHCI controller
-//  *
-//  * @dev:	Controller device
-//  * Return: 0 if registered, -ve on error
-//  */
-// int xhci_deregister(struct udevice *dev);
+/**
+ * xhci_deregister() - Unregister an XHCI controller
+ *
+ * @dev:	Controller device
+ * Return: 0 if registered, -ve on error
+ */
+int xhci_deregister(struct udevice *dev);
 
-// /**
-//  * xhci_register() - Register a new XHCI controller
-//  *
-//  * @dev:	Controller device
-//  * @hccr:	Host controller control registers
-//  * @hcor:	Not sure what this means
-//  * Return: 0 if registered, -ve on error
-//  */
-// int xhci_register(struct udevice *dev, struct xhci_hccr *hccr,
-// 		  struct xhci_hcor *hcor);
+/**
+ * xhci_register() - Register a new XHCI controller
+ *
+ * @dev:	Controller device
+ * @hccr:	Host controller control registers
+ * @hcor:	Not sure what this means
+ * Return: 0 if registered, -ve on error
+ */
+int xhci_register(struct udevice *dev, struct xhci_hccr *hccr,
+		  struct xhci_hcor *hcor);
 
 // extern struct dm_usb_ops xhci_usb_ops;
 
