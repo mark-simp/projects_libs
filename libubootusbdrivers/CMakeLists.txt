@@ -7,7 +7,6 @@ cmake_minimum_required(VERSION 3.7.2)
 project(libubootusbdrivers C)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=ZF_LOG_VERBOSE")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DKernelSel4Arch=${KernelSel4Arch}")
 
 config_option(LibUBOOTUSB LIB_UBOOT_USB "Build USB interface library" DEFAULT ON)
 
@@ -28,9 +27,10 @@ if(LibUBOOTUSB)
 
     add_library(ubootusbdrivers STATIC EXCLUDE_FROM_ALL ${deps})
     target_include_directories(ubootusbdrivers PUBLIC include
+        include
         uboot_include
         uboot_arch_include/${KernelArch}
         plat_include/${KernelPlatform}
     )
-    target_link_libraries(ubootusbdrivers sel4 muslc platsupport)
+    target_link_libraries(ubootusbdrivers sel4 muslc platsupport ubootusbdrivers_Config)
 endif()

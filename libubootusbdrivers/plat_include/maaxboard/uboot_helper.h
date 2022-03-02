@@ -4,18 +4,8 @@
  * sourced from U-Boot.
  */
 
-#if (KernelSel4Arch == aarch32)
-#undef CONFIG_ARM64
-#elif (KernelSel4Arch == aarch64)
-#define CONFIG_ARM64	true
-#else
-#error "KernelSel4Arch not defined"
-#endif
-
-#define CONFIG_PHYS_64BIT		true
-#define CONFIG_DMA_ADDR_T_64BIT true
-// typedef u64 dma_addr_t;
-// typedef u64 phys_addr_t;
+// #define CONFIG_PHYS_64BIT		true
+// #define CONFIG_DMA_ADDR_T_64BIT true
 
 #define CONFIG_ARM				true
 #define CONFIG_DM               true
@@ -32,6 +22,8 @@
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
 
 #define CONFIG_ERR_PTR_OFFSET   1024
+
+#define CONFIG_NR_DRAM_BANKS	1
 
 #define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
 #define UBOOT_ALIGN(x, a)		__ALIGN_MASK((x), (typeof(x))(a) - 1)

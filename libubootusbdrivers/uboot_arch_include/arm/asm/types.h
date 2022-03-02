@@ -5,6 +5,9 @@
 
 typedef unsigned short umode_t;
 
+typedef u64 phys_addr_t;
+typedef u64 phys_size_t;
+
 /*
  * These aren't exported outside the kernel to avoid name space clashes
  */

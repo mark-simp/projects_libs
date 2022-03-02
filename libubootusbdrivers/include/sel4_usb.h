@@ -1,0 +1,1 @@
+int sel4_usb_init(void);

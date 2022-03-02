@@ -7,6 +7,8 @@
  * Author: Ramneek Mehresh<ramneek.mehresh@freescale.com>
  */
 
+#include <uboot_helper.h>
+
 #include <clk.h>
 #include <common.h>
 #include <dm.h>
