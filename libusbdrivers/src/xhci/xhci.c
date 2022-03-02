@@ -19,24 +19,6 @@
  * The quirk devices support hasn't been given yet.
  */
 
-// #include <common.h>
-// #include <cpu_func.h>
-// #include <dm.h>
-// #include <dm/device_compat.h>
-// #include <log.h>
-// #include <malloc.h>
-// #include <usb.h>
-// #include <usb/xhci.h>
-// #include <watchdog.h>
-// #include <asm/byteorder.h>
-// #include <asm/cache.h>
-// #include <asm/unaligned.h>
-// #include <linux/bitops.h>
-// #include <linux/bug.h>
-// #include <linux/delay.h>
-// #include <linux/errno.h>
-// #include <linux/iopoll.h>
-
 #include <stdint.h>
 #include <uboot_io.h>
 
@@ -1249,6 +1231,272 @@ static int xhci_lowlevel_stop(struct xhci_ctrl *ctrl)
 	xhci_writel(&ctrl->hcor->or_usbsts, temp & ~STS_EINT);
 	temp = xhci_readl(&ctrl->ir_set->irq_pending);
 	xhci_writel(&ctrl->ir_set->irq_pending, ER_IRQ_DISABLE(temp));
+
+	return 0;
+}
+
+int submit_control_msg(struct usb_device *udev, unsigned long pipe,
+		       void *buffer, int length, struct devrequest *setup)
+{
+	struct usb_device *hop = udev;
+
+	if (hop->parent)
+		while (hop->parent->parent)
+			hop = hop->parent;
+
+	return _xhci_submit_control_msg(udev, pipe, buffer, length, setup,
+					hop->portnr);
+}
+
+int submit_bulk_msg(struct usb_device *udev, unsigned long pipe, void *buffer,
+		    int length)
+{
+	return _xhci_submit_bulk_msg(udev, pipe, buffer, length);
+}
+
+int submit_int_msg(struct usb_device *udev, unsigned long pipe, void *buffer,
+		   int length, int interval, bool nonblock)
+{
+	return _xhci_submit_int_msg(udev, pipe, buffer, length, interval,
+				    nonblock);
+}
+
+/**
+ * Intialises the XHCI host controller
+ * and allocates the necessary data structures
+ *
+ * @param index	index to the host controller data structure
+ * Return: pointer to the intialised controller
+ */
+int usb_lowlevel_init(int index, enum usb_init_type init, void **controller)
+{
+	struct xhci_hccr *hccr;
+	struct xhci_hcor *hcor;
+	struct xhci_ctrl *ctrl;
+	int ret;
+
+	*controller = NULL;
+
+	if (xhci_hcd_init(index, &hccr, (struct xhci_hcor **)&hcor) != 0)
+		return -ENODEV;
+
+	if (xhci_reset(hcor) != 0)
+		return -ENODEV;
+
+	ctrl = &xhcic[index];
+
+	ctrl->hccr = hccr;
+	ctrl->hcor = hcor;
+
+	ret = xhci_lowlevel_init(ctrl);
+
+	if (ret) {
+		ctrl->hccr = NULL;
+		ctrl->hcor = NULL;
+	} else {
+		*controller = &xhcic[index];
+	}
+
+	return ret;
+}
+
+/**
+ * Stops the XHCI host controller
+ * and cleans up all the related data structures
+ *
+ * @param index	index to the host controller data structure
+ * Return: none
+ */
+int usb_lowlevel_stop(int index)
+{
+	struct xhci_ctrl *ctrl = (xhcic + index);
+
+	if (ctrl->hcor) {
+		xhci_lowlevel_stop(ctrl);
+		xhci_hcd_stop(index);
+		xhci_cleanup(ctrl);
+	}
+
+	return 0;
+}
+
+static int xhci_submit_control_msg(struct udevice *dev, struct usb_device *udev,
+				   unsigned long pipe, void *buffer, int length,
+				   struct devrequest *setup)
+{
+	struct usb_device *uhop;
+	struct udevice *hub;
+	int root_portnr = 0;
+
+	debug("%s: dev='%s', udev=%p, udev->dev='%s', portnr=%d\n", __func__,
+	      dev->name, udev, udev->dev->name, udev->portnr);
+	hub = udev->dev;
+	if (device_get_uclass_id(hub) == UCLASS_USB_HUB) {
+		/* Figure out our port number on the root hub */
+		if (usb_hub_is_root_hub(hub)) {
+			root_portnr = udev->portnr;
+		} else {
+			while (!usb_hub_is_root_hub(hub->parent))
+				hub = hub->parent;
+			uhop = dev_get_parent_priv(hub);
+			root_portnr = uhop->portnr;
+		}
+	}
+/*
+	struct usb_device *hop = udev;
+	if (hop->parent)
+		while (hop->parent->parent)
+			hop = hop->parent;
+*/
+	return _xhci_submit_control_msg(udev, pipe, buffer, length, setup,
+					root_portnr);
+}
+
+static int xhci_submit_bulk_msg(struct udevice *dev, struct usb_device *udev,
+				unsigned long pipe, void *buffer, int length)
+{
+	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+	return _xhci_submit_bulk_msg(udev, pipe, buffer, length);
+}
+
+static int xhci_submit_int_msg(struct udevice *dev, struct usb_device *udev,
+			       unsigned long pipe, void *buffer, int length,
+			       int interval, bool nonblock)
+{
+	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+	return _xhci_submit_int_msg(udev, pipe, buffer, length, interval,
+				    nonblock);
+}
+
+static int xhci_alloc_device(struct udevice *dev, struct usb_device *udev)
+{
+	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+	return _xhci_alloc_device(udev);
+}
+
+static int xhci_update_hub_device(struct udevice *dev, struct usb_device *udev)
+{
+	struct xhci_ctrl *ctrl = dev_get_priv(dev);
+	struct usb_hub_device *hub = dev_get_uclass_priv(udev->dev);
+	struct xhci_virt_device *virt_dev;
+	struct xhci_input_control_ctx *ctrl_ctx;
+	struct xhci_container_ctx *out_ctx;
+	struct xhci_container_ctx *in_ctx;
+	struct xhci_slot_ctx *slot_ctx;
+	int slot_id = udev->slot_id;
+	unsigned think_time;
+
+	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+
+	/* Ignore root hubs */
+	if (usb_hub_is_root_hub(udev->dev))
+		return 0;
+
+	virt_dev = ctrl->devs[slot_id];
+	BUG_ON(!virt_dev);
+
+	out_ctx = virt_dev->out_ctx;
+	in_ctx = virt_dev->in_ctx;
+
+	ctrl_ctx = xhci_get_input_control_ctx(in_ctx);
+	/* Initialize the input context control */
+	ctrl_ctx->add_flags = cpu_to_le32(SLOT_FLAG);
+	ctrl_ctx->drop_flags = 0;
+
+	xhci_inval_cache((uintptr_t)out_ctx->bytes, out_ctx->size);
+
+	/* slot context */
+	xhci_slot_copy(ctrl, in_ctx, out_ctx);
+	slot_ctx = xhci_get_slot_ctx(ctrl, in_ctx);
+
+	/* Update hub related fields */
+	slot_ctx->dev_info |= cpu_to_le32(DEV_HUB);
+	/*
+	 * refer to section 6.2.2: MTT should be 0 for full speed hub,
+	 * but it may be already set to 1 when setup an xHCI virtual
+	 * device, so clear it anyway.
+	 */
+	if (hub->tt.multi)
+		slot_ctx->dev_info |= cpu_to_le32(DEV_MTT);
+	else if (udev->speed == USB_SPEED_FULL)
+		slot_ctx->dev_info &= cpu_to_le32(~DEV_MTT);
+	slot_ctx->dev_info2 |= cpu_to_le32(XHCI_MAX_PORTS(udev->maxchild));
+	/*
+	 * Set TT think time - convert from ns to FS bit times.
+	 * Note 8 FS bit times == (8 bits / 12000000 bps) ~= 666ns
+	 *
+	 * 0 =  8 FS bit times, 1 = 16 FS bit times,
+	 * 2 = 24 FS bit times, 3 = 32 FS bit times.
+	 *
+	 * This field shall be 0 if the device is not a high-spped hub.
+	 */
+	think_time = hub->tt.think_time;
+	if (think_time != 0)
+		think_time = (think_time / 666) - 1;
+	if (udev->speed == USB_SPEED_HIGH)
+		slot_ctx->tt_info |= cpu_to_le32(TT_THINK_TIME(think_time));
+	slot_ctx->dev_state = 0;
+
+	return xhci_configure_endpoints(udev, false);
+}
+
+static int xhci_get_max_xfer_size(struct udevice *dev, size_t *size)
+{
+	/*
+	 * xHCD allocates one segment which includes 64 TRBs for each endpoint
+	 * and the last TRB in this segment is configured as a link TRB to form
+	 * a TRB ring. Each TRB can transfer up to 64K bytes, however data
+	 * buffers referenced by transfer TRBs shall not span 64KB boundaries.
+	 * Hence the maximum number of TRBs we can use in one transfer is 62.
+	 */
+	*size = (TRBS_PER_SEGMENT - 2) * TRB_MAX_BUFF_SIZE;
+
+	return 0;
+}
+
+int xhci_register(struct udevice *dev, struct xhci_hccr *hccr,
+		  struct xhci_hcor *hcor)
+{
+	struct xhci_ctrl *ctrl = dev_get_priv(dev);
+	struct usb_bus_priv *priv = dev_get_uclass_priv(dev);
+	int ret;
+
+	debug("%s: dev='%s', ctrl=%p, hccr=%p, hcor=%p\n", __func__, dev->name,
+	      ctrl, hccr, hcor);
+
+	ctrl->dev = dev;
+
+	/*
+	 * XHCI needs to issue a Address device command to setup
+	 * proper device context structures, before it can interact
+	 * with the device. So a get_descriptor will fail before any
+	 * of that is done for XHCI unlike EHCI.
+	 */
+	priv->desc_before_addr = false;
+
+	ret = xhci_reset(hcor);
+	if (ret)
+		goto err;
+
+	ctrl->hccr = hccr;
+	ctrl->hcor = hcor;
+	ret = xhci_lowlevel_init(ctrl);
+	if (ret)
+		goto err;
+
+	return 0;
+err:
+	free(ctrl);
+	debug("%s: failed, ret=%d\n", __func__, ret);
+	return ret;
+}
+
+int xhci_deregister(struct udevice *dev)
+{
+	struct xhci_ctrl *ctrl = dev_get_priv(dev);
+
+	xhci_lowlevel_stop(ctrl);
+	xhci_cleanup(ctrl);
 
 	return 0;
 }
