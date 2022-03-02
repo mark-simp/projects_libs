@@ -12,7 +12,7 @@
 #include <utils/zf_log.h>
 
 #include <uboot_io.h>
-#include "types.h"
+#include "xhci.h"
 #include "dwc3.h"
 
 void dwc3_set_mode(struct dwc3 *dwc3_reg, u32 mode)

@@ -6,10 +6,10 @@
 #include <uboot_io.h>
 #include <usb/plat/usb.h>
 
-#include "../usb_otg.h"
+// #include "../usb_otg.h"
 #include "../../services.h"
 
-#include "../../xhci/types.h"
+// #include "../../xhci/types.h"
 #include "../../xhci/xhci.h"
 #include "../../xhci/dwc3.h"
 #include "../../xhci/xhci-dwc3.h"
@@ -96,6 +96,8 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
 
     /* Create references to mapped data structures */
 	struct xhci_hccr *hccr = (struct xhci_hccr *)((uintptr_t)_usb_regs[id]);
+    struct xhci_hcor *hcor = (struct xhci_hcor *)((uintptr_t)hccr +
+		                      HC_LENGTH(xhci_readl(&(hccr)->cr_capbase)));
     struct dwc3 *dwc3_reg = (struct dwc3 *)((char *)(hccr) + DWC3_REG_OFFSET);
 
     err = imx8_xhci_core_init(dwc3_reg);
@@ -104,7 +106,7 @@ int usb_host_init(enum usb_host_id id, ps_io_ops_t *io_ops, ps_mutex_ops_t *sync
         return err;
     }
 
-    err = xhci_host_init(hdev, hccr);
+    err = xhci_register(NULL, hccr, hcor);
 
     return 0;
 }
@@ -123,7 +125,7 @@ const int *usb_host_irqs(usb_host_t *host, int *nirqs)
     return host->irqs;
 }
 
-int usb_plat_otg_init(usb_otg_t odev, ps_io_ops_t *io_ops)
-{
-    return -1;
-}
+// int usb_plat_otg_init(usb_otg_t odev, ps_io_ops_t *io_ops)
+// {
+//     return -1;
+// }

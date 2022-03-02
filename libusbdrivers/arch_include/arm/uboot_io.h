@@ -5,6 +5,9 @@
  */
 #pragma once
 
+#define CONFIG_SYS_CACHELINE_SIZE 64 /* for cortex a53 MPCore */
+#define ARCH_DMA_MINALIGN   CONFIG_SYS_CACHELINE_SIZE
+
 #define __arch_getl(addr)         *((volatile uint32_t*)(addr))
 #define __arch_getw(addr)         *((volatile uint16_t*)(addr))
 #define __arch_getb(addr)         *((volatile uint8_t*)(addr))

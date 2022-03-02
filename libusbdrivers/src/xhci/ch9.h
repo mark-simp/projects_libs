@@ -35,7 +35,7 @@
 
 #include <uboot_io.h>
 #include <unaligned.h>
-#include "types.h"
+#include "uboot_helper.h"
 
 
 /*-------------------------------------------------------------------------*/

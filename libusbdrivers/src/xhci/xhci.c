@@ -22,9 +22,10 @@
 #include <stdint.h>
 #include <uboot_io.h>
 
-#include "types.h"
+// #include "types.h"
+// #include "usb_defs.h"
 #include "xhci.h"
-#include "ch9.h"
+// #include "ch9.h"
 
 
 #ifndef CONFIG_USB_MAX_CONTROLLER_COUNT

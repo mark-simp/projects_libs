@@ -19,7 +19,11 @@
 #include <usb/usb_host.h>
 #include <uboot_io.h>
 
-#include "types.h"
+#include "uboot_helper.h"
+#include "usb_defs.h"
+#include "ch9.h"
+#include "usb.h"
+// #include "device.h"
 
 
 #define MAX_EP_CTX_NUM		31
@@ -1216,19 +1220,6 @@ struct xhci_ctrl {
 	u32 quirks;
 #define XHCI_MTK_HOST		BIT(0)
 };
-
-/**
- * Initialise an XHCI host controller
- * @param[in/out] hdev        A host controller structure to
- *                            populate. Must be pre-filled with a
- *                            DMA allocator. This function will
- *                            fill the private data and function
- *                            pointers of this structure.
- * @param[in]     hccr        The mapped XCHI capability registers.
- * @return                    0 on success
- */
-int xhci_host_init(usb_host_t *hdev, struct xhci_hccr *hccr);
-
 
 // #if CONFIG_IS_ENABLED(DM_USB)
 // #define xhci_to_dev(_ctrl)	_ctrl->dev
