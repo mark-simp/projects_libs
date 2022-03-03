@@ -16,6 +16,8 @@
 
 #define printf(...)         ZF_LOGD(__VA_ARGS__)
 
+#define printk(...)         ZF_LOGD(__VA_ARGS__)
+
 #define log_ret(_ret) ({ \
 	int __ret = (_ret); \
 	if (__ret < 0) \

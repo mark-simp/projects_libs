@@ -17,6 +17,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_USB_XHCI_DWC3		true
 #define CONFIG_DM_DEVICE_REMOVE		true
 #define CONFIG_OF_LIBFDT			true
+#define CONFIG_OF_LIVE   			true
 
 #define CONFIG_DM_RESET         	false
 #define CONFIG_DEVRES           	false
@@ -49,8 +50,9 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define DO_DEPS_ONLY				true
 #define errno_str(X)				""
 
-#define BUG_ON(X)  assert(!(X))
-#define BUG()  assert(false)
+#define mutex_init(...)
+#define mutex_lock(...)
+#define mutex_unlock(...)
 
 #define likely(x)       __builtin_expect(!!(x), 1)
 #define unlikely(x)     __builtin_expect(!!(x), 0)
