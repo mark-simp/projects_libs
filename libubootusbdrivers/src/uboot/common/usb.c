@@ -25,6 +25,8 @@
  *
  * For each transfer (except "Interrupt") we wait for completion.
  */
+#include <uboot_helper.h>
+
 #include <common.h>
 #include <command.h>
 #include <dm.h>
