@@ -5,20 +5,6 @@
 
 typedef unsigned short umode_t;
 
-typedef u64 phys_addr_t;
-typedef u64 phys_size_t;
-typedef u64 dma_addr_t;
-
-static inline void *phys_to_virt(phys_addr_t paddr)
-{
-	return (void *)(unsigned long)paddr;
-}
-
-static inline phys_addr_t virt_to_phys(void *vaddr)
-{
-	return (phys_addr_t)((unsigned long)vaddr);
-}
-
 /*
  * These aren't exported outside the kernel to avoid name space clashes
  */

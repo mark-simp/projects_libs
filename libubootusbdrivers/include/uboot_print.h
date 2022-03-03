@@ -2,8 +2,12 @@
 
 #include <utils/zf_log.h>
 
-#define puts(...)   ZF_LOGD(__VA_ARGS__)
+#define puts(...)       ZF_LOGD(__VA_ARGS__)
 
-#define debug(...)  ZF_LOGD(__VA_ARGS__)
+#define debug(...)      ZF_LOGD(__VA_ARGS__)
 
-#define printf(...)  ZF_LOGD(__VA_ARGS__)
+#define log(A, B, ...)  ZF_LOGD(__VA_ARGS__)
+
+#define log_debug(...)  ZF_LOGD(__VA_ARGS__)
+
+#define printf(...)     ZF_LOGD(__VA_ARGS__)
