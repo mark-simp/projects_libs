@@ -99,4 +99,11 @@ static inline ofnode ofnode_null(void)
 	return node;
 }
 
+/* Stubs for routines we do not rely upon */
+
+#define ofnode_for_each_subnode(node, parent)	while(false)
+
+#define ofnode_read_u32(...)		 			0
+
+
 #endif
