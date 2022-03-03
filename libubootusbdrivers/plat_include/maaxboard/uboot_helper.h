@@ -1,14 +1,18 @@
 #pragma once
 
 #include <stddef.h>
+#include <uboot_io.h>
 
 /* This file contains adaptors and definitions / symbols required by code
  * sourced from U-Boot.
  */
 
 #define CONFIG_ARM				true
+#define CONFIG_ARM64   			true    /* TODO: Look at AARCH32 support */
 #define CONFIG_DM               true
 #define CONFIG_DM_USB           true
+#define CONFIG_USB_XHCI_DWC3	true
+
 #define CONFIG_DM_RESET         false
 #define CONFIG_DEVRES           false
 #define CONFIG_DM_DMA           false
@@ -24,8 +28,6 @@
 #define CONFIG_ERR_PTR_OFFSET   1024
 
 #define CONFIG_NR_DRAM_BANKS	1
-
-#define ARCH_DMA_MINALIGN		64
 
 // #define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
 #define UBOOT_ALIGN(x, a)		__ALIGN_MASK((x), (typeof(x))(a) - 1)
