@@ -1,24 +1,17 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-#include <uboot_print.h>
-#include <linux/types.h>
-#include <linux/errno.h>
+#define __LINUX_ARM_ARCH__			8
+#define __KERNEL__
 
 /* This file contains adaptors and definitions / symbols required by code
  * sourced from U-Boot.
  */
 
-struct udevice;		/* Not clear why this is forward declaration is required */
+// struct udevice;		/* Not clear why this is forward declaration is required */
 
-typedef u64 phys_addr_t;
-typedef u64 phys_size_t;
-typedef u64 dma_addr_t;
-
-#define __LINUX_ARM_ARCH__			8
+// typedef u64 phys_addr_t;
+// typedef u64 phys_size_t;
+// typedef u64 dma_addr_t;
 
 #define CONFIG_ARM					true
 #define CONFIG_ARM64   				true    /* TODO: Look at AARCH32 support */
@@ -37,6 +30,7 @@ typedef u64 dma_addr_t;
 #define CONFIG_OF_PLATDATA_NO_BIND	false
 #define CONFIG_OF_PLATDATA_PARENT	false
 #define CONFIG_OF_REAL          	false
+#define CONFIG_OF_TRANSLATE			false
 #define CONFIG_ACPIGEN          	false
 #define CONFIG_PHYS_TO_BUS      	false
 #define CONFIG_OF_CONTROL       	false
@@ -46,12 +40,15 @@ typedef u64 dma_addr_t;
 #define CONFIG_POWER_DOMAIN			false
 #define CONFIG_IOMMU				false
 
+#define IS_ENABLED(OPTION)   		OPTION
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
 #define CONFIG_VAL(OPTION)  		CONFIG_VAL_ ## OPTION
 
 #define CONFIG_ERR_PTR_OFFSET   	1024
 #define CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_LINKER_LIST_ALIGN	4
+#define CONFIG_SYS_CACHELINE_SIZE 	64 /* for cortex a53 MPCore */
+#define ARCH_DMA_MINALIGN   		CONFIG_SYS_CACHELINE_SIZE
 #define DO_DEPS_ONLY				true
 #define errno_str(X)				""
 
@@ -61,7 +58,7 @@ typedef u64 dma_addr_t;
 #define likely(x)       __builtin_expect(!!(x), 1)
 #define unlikely(x)     __builtin_expect(!!(x), 0)
 
-#define __bitwise 		/*__attribute__((bitwise))*/
+#define __bitwise 		/*__attribute__((bitwise)) */
 #define __force 		/* __attribute__((force)) */
 #define __maybe_unused	/* __attribute__((maybe_unused)) */
 #define __packed	    __attribute__((packed))
@@ -71,5 +68,17 @@ typedef u64 dma_addr_t;
 #define __section(x) 	__attribute__((section(x)))
 #define __always_inline	inline __attribute__((always_inline))
 #define noinline		__attribute__((noinline))
+#define __iomem			/* __attribute__((iomem)) */
+#define __deprecated	__attribute__((deprecated))
 
-#include <uboot_io.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+#include <uboot_print.h>
+#include <linux/types.h>
+#include <linux/errno.h>
+#include <linux/byteorder/little_endian.h>
+#include <linux/byteorder/generic.h>
+#include <asm/barriers.h>
+#include <asm/io.h>
