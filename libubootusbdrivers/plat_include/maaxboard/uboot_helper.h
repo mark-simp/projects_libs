@@ -53,6 +53,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define mutex_init(...)
 #define mutex_lock(...)
 #define mutex_unlock(...)
+#define EXPORT_SYMBOL(...)
 
 #define likely(x)       __builtin_expect(!!(x), 1)
 #define unlikely(x)     __builtin_expect(!!(x), 0)
