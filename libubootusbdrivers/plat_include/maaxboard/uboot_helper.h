@@ -35,6 +35,7 @@ typedef u64 dma_addr_t;
 #define CONFIG_OF_PLATDATA_RT   	false
 #define CONFIG_OF_PLATDATA_INST		false
 #define CONFIG_OF_PLATDATA_NO_BIND	false
+#define CONFIG_OF_PLATDATA_PARENT	false
 #define CONFIG_OF_REAL          	false
 #define CONFIG_ACPIGEN          	false
 #define CONFIG_PHYS_TO_BUS      	false
