@@ -6,6 +6,8 @@
 
 #define debug(...)      ZF_LOGD(__VA_ARGS__)
 
+#define pr_debug(...)   ZF_LOGD(__VA_ARGS__)
+
 #define log(A, B, ...)  ZF_LOGD(__VA_ARGS__)
 
 #define log_debug(...)  ZF_LOGD(__VA_ARGS__)
