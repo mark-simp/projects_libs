@@ -1,7 +1,9 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include <uboot_io.h>
 #include <uboot_print.h>
 
@@ -27,9 +29,11 @@
 
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
 
-#define CONFIG_ERR_PTR_OFFSET   1024
+#define CONFIG_ERR_PTR_OFFSET   	1024
 
-#define CONFIG_NR_DRAM_BANKS	1
+#define CONFIG_NR_DRAM_BANKS		1
+
+#define CONFIG_LINKER_LIST_ALIGN	4
 
 #define BUG_ON(X)  assert(!(X))
 #define BUG()  assert(false)
