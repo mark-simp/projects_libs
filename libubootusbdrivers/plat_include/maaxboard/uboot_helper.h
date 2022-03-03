@@ -25,12 +25,15 @@ typedef u64 dma_addr_t;
 #define CONFIG_DM               	true
 #define CONFIG_DM_USB           	true
 #define CONFIG_USB_XHCI_DWC3		true
+#define CONFIG_DM_DEVICE_REMOVE		true
 
 #define CONFIG_DM_RESET         	false
 #define CONFIG_DEVRES           	false
 #define CONFIG_DM_DMA           	false
+#define CONFIG_OF_PLATDATA			false
 #define CONFIG_OF_PLATDATA_RT   	false
 #define CONFIG_OF_PLATDATA_INST		false
+#define CONFIG_OF_PLATDATA_NO_BIND	false
 #define CONFIG_OF_REAL          	false
 #define CONFIG_ACPIGEN          	false
 #define CONFIG_PHYS_TO_BUS      	false
@@ -38,6 +41,8 @@ typedef u64 dma_addr_t;
 #define CONFIG_CLK    				false
 #define CONFIG_VAL_SYS_MALLOC_F_LEN	false
 #define CONFIG_DM_SEQ_ALIAS			false
+#define CONFIG_POWER_DOMAIN			false
+#define CONFIG_IOMMU				false
 
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
 #define CONFIG_VAL(OPTION)  		CONFIG_VAL_ ## OPTION
@@ -46,6 +51,7 @@ typedef u64 dma_addr_t;
 #define CONFIG_NR_DRAM_BANKS		1
 #define CONFIG_LINKER_LIST_ALIGN	4
 #define DO_DEPS_ONLY				true
+#define errno_str(X)				""
 
 #define BUG_ON(X)  assert(!(X))
 #define BUG()  assert(false)
