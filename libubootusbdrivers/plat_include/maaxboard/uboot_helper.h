@@ -11,6 +11,8 @@
  * sourced from U-Boot.
  */
 
+struct udevice;		/* Not clear why this is forward declaration is required */
+
 typedef u64 phys_addr_t;
 typedef u64 phys_size_t;
 typedef u64 dma_addr_t;
@@ -28,12 +30,14 @@ typedef u64 dma_addr_t;
 #define CONFIG_DEVRES           	false
 #define CONFIG_DM_DMA           	false
 #define CONFIG_OF_PLATDATA_RT   	false
+#define CONFIG_OF_PLATDATA_INST		false
 #define CONFIG_OF_REAL          	false
 #define CONFIG_ACPIGEN          	false
 #define CONFIG_PHYS_TO_BUS      	false
 #define CONFIG_OF_CONTROL       	false
 #define CONFIG_CLK    				false
 #define CONFIG_VAL_SYS_MALLOC_F_LEN	false
+#define CONFIG_DM_SEQ_ALIAS			false
 
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
 #define CONFIG_VAL(OPTION)  		CONFIG_VAL_ ## OPTION
