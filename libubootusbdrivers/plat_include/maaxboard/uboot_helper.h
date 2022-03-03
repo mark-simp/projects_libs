@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <uboot_print.h>
 #include <linux/types.h>
+#include <linux/errno.h>
 
 /* This file contains adaptors and definitions / symbols required by code
  * sourced from U-Boot.
