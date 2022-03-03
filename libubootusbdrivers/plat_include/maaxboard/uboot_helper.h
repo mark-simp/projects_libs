@@ -1,15 +1,15 @@
 #pragma once
 
+#include <stddef.h>
+
 /* This file contains adaptors and definitions / symbols required by code
  * sourced from U-Boot.
  */
 
-// #define CONFIG_PHYS_64BIT		true
-// #define CONFIG_DMA_ADDR_T_64BIT true
-
 #define CONFIG_ARM				true
 #define CONFIG_DM               true
 #define CONFIG_DM_USB           true
+#define CONFIG_DM_RESET         false
 #define CONFIG_DEVRES           false
 #define CONFIG_DM_DMA           false
 #define CONFIG_OF_PLATDATA_RT   false
@@ -25,13 +25,18 @@
 
 #define CONFIG_NR_DRAM_BANKS	1
 
-#define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
+#define ARCH_DMA_MINALIGN		64
+
+// #define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
 #define UBOOT_ALIGN(x, a)		__ALIGN_MASK((x), (typeof(x))(a) - 1)
 
 #define BUG_ON(X)  assert(!(X))
 #define BUG()  assert(false)
 
-// #define of_live_active()    false
+#define likely(x)       __builtin_expect(!!(x), 1)
+#define unlikely(x)     __builtin_expect(!!(x), 0)
+
+#define of_live_active()    false
 
 #define __bitwise /*__attribute__((bitwise))*/
 #define __force /* __attribute__((force)) */

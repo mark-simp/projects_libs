@@ -8,7 +8,6 @@
 #define _DM_OF_H
 
 #include <asm/u-boot.h>
-#include <asm/global_data.h>
 
 /* integer value within a device tree property which references another node */
 typedef u32 phandle;
@@ -81,53 +80,5 @@ struct of_phandle_args {
 	int args_count;
 	uint32_t args[OF_MAX_PHANDLE_ARGS];
 };
-
-DECLARE_GLOBAL_DATA_PTR;
-
-/**
- * of_live_active() - check if livetree is active
- *
- * @returns true if livetree is active, false it not
- */
-static inline bool of_live_active(void)
-{
-	return gd_of_root() != NULL;
-}
-
-#define OF_BAD_ADDR	((u64)-1)
-
-static inline const char *of_node_full_name(const struct device_node *np)
-{
-	return np ? np->full_name : "<no-node>";
-}
-
-/* Default #address and #size cells */
-#if !defined(OF_ROOT_NODE_ADDR_CELLS_DEFAULT)
-#define OF_ROOT_NODE_ADDR_CELLS_DEFAULT 2
-#define OF_ROOT_NODE_SIZE_CELLS_DEFAULT 1
-#endif
-
-/* Default string compare functions */
-#if !defined(of_compat_cmp)
-#define of_compat_cmp(s1, s2, l)	strcasecmp((s1), (s2))
-#define of_prop_cmp(s1, s2)		strcmp((s1), (s2))
-#define of_node_cmp(s1, s2)		strcasecmp((s1), (s2))
-#endif
-
-/* Helper to read a big number; size is in cells (not bytes) */
-static inline u64 of_read_number(const __be32 *cell, int size)
-{
-	u64 r = 0;
-	while (size--)
-		r = (r << 32) | be32_to_cpu(*(cell++));
-	return r;
-}
-
-/* Like of_read_number, but we want an unsigned long result */
-static inline unsigned long of_read_ulong(const __be32 *cell, int size)
-{
-	/* toss away upper bits if unsigned long is smaller than u64 */
-	return of_read_number(cell, size);
-}
 
 #endif
