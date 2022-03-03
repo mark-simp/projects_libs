@@ -1,7 +1,9 @@
 #pragma once
 
 #include <stddef.h>
+#include <string.h>
 #include <uboot_io.h>
+#include <uboot_print.h>
 
 /* This file contains adaptors and definitions / symbols required by code
  * sourced from U-Boot.
@@ -30,7 +32,7 @@
 #define CONFIG_NR_DRAM_BANKS	1
 
 // #define __ALIGN_MASK(x, mask)	(((x) + (mask)) & ~(mask))
-#define UBOOT_ALIGN(x, a)		__ALIGN_MASK((x), (typeof(x))(a) - 1)
+// #define UBOOT_ALIGN(x, a)		__ALIGN_MASK((x), (typeof(x))(a) - 1)
 
 #define BUG_ON(X)  assert(!(X))
 #define BUG()  assert(false)
@@ -44,6 +46,8 @@
 #define __force /* __attribute__((force)) */
 #define __packed	    __attribute__((packed))
 #define __must_check    __attribute__((warn_unused_result))
+#define __aligned(x) 	__attribute__((aligned(x)))
+#define __section(x) 	__attribute__((section(x)))
 
 // typedef uint64_t u64;
 // typedef uint32_t u32;

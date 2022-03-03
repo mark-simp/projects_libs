@@ -46,10 +46,10 @@
 
 #define REPEAT_BYTE(x)	((~0ul / 0xff) * (x))
 
-#define ALIGN(x,a)		__ALIGN_MASK((x),(typeof(x))(a)-1)
-#define ALIGN_DOWN(x, a)	ALIGN((x) - ((a) - 1), (a))
+#define UBOOT_ALIGN(x,a)		__ALIGN_MASK((x),(typeof(x))(a)-1)
+#define UBOOT_ALIGN_DOWN(x, a)	UBOOT_ALIGN((x) - ((a) - 1), (a))
 #define __ALIGN_MASK(x,mask)	(((x)+(mask))&~(mask))
-#define PTR_ALIGN(p, a)		((typeof(p))ALIGN((unsigned long)(p), (a)))
+#define PTR_ALIGN(p, a)		((typeof(p))UBOOT_ALIGN((unsigned long)(p), (a)))
 #define IS_ALIGNED(x, a)		(((x) & ((typeof(x))(a) - 1)) == 0)
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
