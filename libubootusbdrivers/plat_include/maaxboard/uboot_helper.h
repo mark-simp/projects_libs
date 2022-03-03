@@ -1,17 +1,13 @@
 #pragma once
 
-#define __LINUX_ARM_ARCH__			8
-#define __KERNEL__
-
 /* This file contains adaptors and definitions / symbols required by code
  * sourced from U-Boot.
  */
 
-// struct udevice;		/* Not clear why this is forward declaration is required */
+#define __LINUX_ARM_ARCH__			8
+#define __KERNEL__
 
-// typedef u64 phys_addr_t;
-// typedef u64 phys_size_t;
-// typedef u64 dma_addr_t;
+struct udevice;		/* Not clear why this is forward declaration is required */
 
 #define CONFIG_ARM					true
 #define CONFIG_ARM64   				true    /* TODO: Look at AARCH32 support */
@@ -20,6 +16,7 @@
 #define CONFIG_DM_USB           	true
 #define CONFIG_USB_XHCI_DWC3		true
 #define CONFIG_DM_DEVICE_REMOVE		true
+#define CONFIG_OF_LIBFDT			true
 
 #define CONFIG_DM_RESET         	false
 #define CONFIG_DEVRES           	false
@@ -73,7 +70,6 @@
 
 #include <stddef.h>
 #include <stdio.h>
-#include <string.h>
 #include <assert.h>
 #include <uboot_print.h>
 #include <linux/types.h>
