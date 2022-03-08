@@ -17,6 +17,8 @@ if(LibUBOOTUSB)
         GLOB
             deps
             src/*.c
+            src/stubs/*.c
+            src/stubs/libfdt/*.c
             src/uboot/*.c
             src/uboot/common/*.c
             src/uboot/drivers/core/*.c
