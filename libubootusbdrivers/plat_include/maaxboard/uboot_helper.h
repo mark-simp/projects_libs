@@ -85,6 +85,8 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
+#include <vsprintf.h>
 #include <assert.h>
 #include <time.h>
 #include <uboot_print.h>
