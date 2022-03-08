@@ -19,34 +19,36 @@ struct udevice;		/* Not clear why this is forward declaration is required */
  * - Disable OF_TRANSLATE. Don't need to translate between device tree
  *      addresses and physical addresses.
  */
-#define CONFIG_OF_LIVE   			true
-#define CONFIG_OF_REAL          	false
-#define CONFIG_OF_PLATDATA			false
-#define CONFIG_OF_PLATDATA_RT   	false
-#define CONFIG_OF_PLATDATA_INST		false
-#define CONFIG_OF_PLATDATA_NO_BIND	false
-#define CONFIG_OF_PLATDATA_PARENT	false
-#define CONFIG_OF_LIBFDT			false
-#define CONFIG_OF_TRANSLATE			false
+#define CONFIG_OF_LIVE   				true
+#define CONFIG_OF_REAL          		false
+#define CONFIG_OF_PLATDATA				false
+#define CONFIG_OF_PLATDATA_RT   		false
+#define CONFIG_OF_PLATDATA_DRIVER_RT	false
+#define CONFIG_OF_PLATDATA_INST			false
+#define CONFIG_OF_PLATDATA_NO_BIND		false
+#define CONFIG_OF_PLATDATA_PARENT		false
+#define CONFIG_OF_LIBFDT				false
+#define CONFIG_OF_TRANSLATE				false
 
-#define CONFIG_ARM					true
-#define CONFIG_ARM64   				true  /* TODO: Look at AARCH32 support */
-#define CONFIG_LTO              	true  /* Don't use a register as a pointer to global_data */
-#define CONFIG_DM               	true
-#define CONFIG_DM_USB           	true
-#define CONFIG_USB_XHCI_DWC3		true
-#define CONFIG_DM_DEVICE_REMOVE		true
-#define CONFIG_DM_RESET         	false /* Don't need to handle reset */
-#define CONFIG_DEVRES           	false
-#define CONFIG_DM_DMA           	false
-#define CONFIG_ACPIGEN          	false
-#define CONFIG_PHYS_TO_BUS      	false
-#define CONFIG_OF_CONTROL       	false
-#define CONFIG_VAL_SYS_MALLOC_F_LEN	false
-#define CONFIG_DM_SEQ_ALIAS			false
-#define CONFIG_POWER_DOMAIN			false /* No power domain driver support */
-#define CONFIG_IOMMU				false /* No IOMMU driver support */
-#define CONFIG_CLK    				false /* No clock driver support */
+#define CONFIG_ARM						true
+#define CONFIG_ARM64   					true  /* TODO: Look at AARCH32 support */
+#define CONFIG_LTO              		true  /* Don't use a register as a pointer to global_data */
+#define CONFIG_DM               		true
+#define CONFIG_DM_USB           		true
+#define CONFIG_USB_XHCI_DWC3			true
+#define CONFIG_DM_DEVICE_REMOVE			true
+#define CONFIG_DM_RESET         		false /* Don't need to handle reset */
+#define CONFIG_DEVRES           		false
+#define CONFIG_DM_DMA           		false
+#define CONFIG_ACPIGEN          		false
+#define CONFIG_PHYS_TO_BUS      		false
+#define CONFIG_OF_CONTROL       		false
+#define CONFIG_VAL_SYS_MALLOC_F_LEN		false
+#define CONFIG_DM_SEQ_ALIAS				false
+#define CONFIG_POWER_DOMAIN				false /* No power domain driver support */
+#define CONFIG_IOMMU					false /* No IOMMU driver support */
+#define CONFIG_CLK    					false /* No clock driver support */
+#define CONFIG_NEEDS_MANUAL_RELOC   	false
 
 #define IS_ENABLED(OPTION)   		OPTION
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
