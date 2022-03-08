@@ -20,7 +20,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
  *      addresses and physical addresses.
  */
 #define CONFIG_OF_LIVE   				true
-#define CONFIG_OF_REAL          		false
+#define CONFIG_OF_REAL          		true
 #define CONFIG_OF_PLATDATA				false
 #define CONFIG_OF_PLATDATA_RT   		false
 #define CONFIG_OF_PLATDATA_DRIVER_RT	false
@@ -40,7 +40,6 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_DM_RESET         		false /* Don't need to handle reset */
 #define CONFIG_DEVRES           		false
 #define CONFIG_DM_DMA           		false
-#define CONFIG_ACPIGEN          		false
 #define CONFIG_PHYS_TO_BUS      		false
 #define CONFIG_OF_CONTROL       		false
 #define CONFIG_VAL_SYS_MALLOC_F_LEN		false
@@ -50,6 +49,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_CLK    					false /* No clock driver support */
 #define CONFIG_PCI						false /* No PCI support */
 #define CONFIG_NEEDS_MANUAL_RELOC   	false
+#define CONFIG_SIMPLE_BUS				false
 
 #define IS_ENABLED(OPTION)   		OPTION
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
