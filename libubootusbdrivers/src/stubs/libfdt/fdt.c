@@ -2,7 +2,7 @@
 
 #include <uboot_helper.h>
 
-#include <linux/libfdt_env.h>"
+#include <linux/libfdt_env.h>
 #include "fdt.h"
 #include "libfdt.h"
 #include "libfdt_internal.h"
