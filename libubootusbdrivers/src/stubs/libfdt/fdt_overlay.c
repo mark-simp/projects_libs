@@ -1,16 +1,10 @@
 // SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
-/*
- * libfdt - Flat Device Tree manipulation
- * Copyright (C) 2016 Free Electrons
- * Copyright (C) 2016 NextThing Co.
- */
+
 #include <uboot_helper.h>
 
-#include "libfdt_env.h"
-
-#include <fdt.h>
-#include <libfdt.h>
-
+#include <linux/libfdt_env.h>
+#include "fdt.h"
+#include "libfdt.h"
 #include "libfdt_internal.h"
 
 static uint32_t overlay_get_target_phandle(const void *fdto, int fragment)

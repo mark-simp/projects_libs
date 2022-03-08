@@ -31,6 +31,7 @@ if(LibUBOOTUSB)
 
     add_library(ubootusbdrivers STATIC EXCLUDE_FROM_ALL ${deps})
     target_include_directories(ubootusbdrivers PUBLIC include
+        src/stubs
         include
         uboot_include
         uboot_arch_include/${KernelArch}

@@ -1,25 +1,9 @@
 // SPDX-License-Identifier: GPL-2.0+
-/*
- * Copyright (c) 2011 The Chromium OS Authors.
- */
 
 #include <uboot_helper.h>
 
-#include <common.h>
 #include <dm.h>
-#include <log.h>
-#include <malloc.h>
-// #include <net.h>
-// #include <dm/of_extra.h>
-#include <env.h>
-#include <errno.h>
 #include <fdtdec.h>
-#include <fdt_support.h>
-#include <linux/libfdt.h>
-// #include <serial.h>
-#include <asm/global_data.h>
-// #include <asm/sections.h>
-#include <linux/ctype.h>
 
 const char *fdtdec_get_srcname(void)
 {
@@ -275,7 +259,7 @@ static int uncompress_blob(const void *src, ulong sz_src, void **dstp)
 static void *fdt_find_separate(void)
 {
     assert(false);
-
+}
 
 int fdtdec_set_ethernet_mac_address(void *fdt, const u8 *mac, size_t size)
 {
