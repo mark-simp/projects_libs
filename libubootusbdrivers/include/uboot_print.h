@@ -18,6 +18,11 @@
 
 #define printk(...)         ZF_LOGD(__VA_ARGS__)
 
+#define panic(...) ({ \
+	ZF_LOGE(__VA_ARGS__); \
+	assert(false); \
+	})
+
 #define log_ret(_ret) ({ \
 	int __ret = (_ret); \
 	if (__ret < 0) \
