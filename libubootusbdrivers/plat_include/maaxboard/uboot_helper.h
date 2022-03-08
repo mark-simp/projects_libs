@@ -48,6 +48,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_POWER_DOMAIN				false /* No power domain driver support */
 #define CONFIG_IOMMU					false /* No IOMMU driver support */
 #define CONFIG_CLK    					false /* No clock driver support */
+#define CONFIG_PCI						false /* No PCI support */
 #define CONFIG_NEEDS_MANUAL_RELOC   	false
 
 #define IS_ENABLED(OPTION)   		OPTION
