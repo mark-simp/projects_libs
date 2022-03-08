@@ -70,6 +70,8 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define likely(x)       __builtin_expect(!!(x), 1)
 #define unlikely(x)     __builtin_expect(!!(x), 0)
 
+#define assert_noisy(x)	assert(x)
+
 #define __bitwise 		/*__attribute__((bitwise)) */
 #define __force 		/* __attribute__((force)) */
 #define __maybe_unused	/* __attribute__((maybe_unused)) */
