@@ -7,6 +7,7 @@
 
 #define __LINUX_ARM_ARCH__			8
 #define __KERNEL__
+#define __UBOOT__
 
 struct udevice;		/* Not clear why this is forward declaration is required */
 
@@ -36,6 +37,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_DM               		true
 #define CONFIG_DM_USB           		true
 #define CONFIG_USB_XHCI_DWC3			true
+#define CONFIG_USB_HOST					true
 #define CONFIG_DM_DEVICE_REMOVE			true
 #define CONFIG_DM_RESET         		false /* Don't need to handle reset */
 #define CONFIG_DEVRES           		false

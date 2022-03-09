@@ -18,6 +18,10 @@
 
 #define printk(...)         ZF_LOGD(__VA_ARGS__)
 
+#define pr_info(...)        ZF_LOGI(__VA_ARGS__)
+
+#define pr_err(...)         ZF_LOGE(__VA_ARGS__)
+
 #define panic(...) ({ \
 	ZF_LOGE(__VA_ARGS__); \
 	assert(false); \
