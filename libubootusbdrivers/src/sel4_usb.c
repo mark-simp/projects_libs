@@ -5,15 +5,18 @@
 #include <usb.h>
 
 #include <asm/global_data.h>
+#include <driver_data.h>
 
 /*
- * Global declaration of gd.
+ * Global declaration of global_data.
  */
 struct global_data* gd;
 
-
 int sel4_usb_init(void)
 {
+    initialise_driver_data();
+
+
     // Allocation of global_data
     gd = malloc(sizeof(*gd));
 

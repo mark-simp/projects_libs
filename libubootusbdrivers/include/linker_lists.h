@@ -1,23 +1,24 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * include/linker_lists.h
- *
- * Implementation of linker-generated arrays
- *
- * Copyright (C) 2012 Marek Vasut <marex@denx.de>
+ * Stubbed version of linker lists to allow for
  */
 
 #ifndef __LINKER_LISTS_H__
 #define __LINKER_LISTS_H__
 
-#include <linux/compiler.h>
+// #define DECLARE_GLOBAL_DATA_PTR   extern gd_t *gd
 
-/*
- * There is no use in including this from ASM files.
- * So just don't define anything when included from ASM.
- */
+// #define ll_entry_declare(_type, _name, _list)				\
+//     extern uboot_driver_data *udd; \
+// 	udd->driver_count += 1;
 
-#if !defined(__ASSEMBLY__)
+#define ll_entry_declare(_type, _name, _list)				\
+	_type _u_boot_list_2_##_list##_2_##_name
+
+#define llsym(_type, _name, _list) \
+		((_type *)&_u_boot_list_2_##_list##_2_##_name)
+
+
 
 /**
  * llsym() - Access a linker-generated array entry
@@ -26,8 +27,8 @@
  * @_list:	name of the list. Should contain only characters allowed
  *		in a C variable name!
  */
-#define llsym(_type, _name, _list) \
-		((_type *)&_u_boot_list_2_##_list##_2_##_name)
+// #define llsym(_type, _name, _list) \
+// 		((_type *)&_u_boot_list_2_##_list##_2_##_name)
 
 /**
  * ll_entry_declare() - Declare linker-generated array entry
@@ -67,10 +68,10 @@
  *           .y = 4,
  *   };
  */
-#define ll_entry_declare(_type, _name, _list)				\
-	_type _u_boot_list_2_##_list##_2_##_name __aligned(4)		\
-			__attribute__((unused))				\
-			__section(".u_boot_list_2_"#_list"_2_"#_name)
+// #define ll_entry_declare(_type, _name, _list)				\
+// 	_type _u_boot_list_2_##_list##_2_##_name __aligned(4)		\
+// 			__attribute__((unused))				\
+// 			__section(".u_boot_list_2_"#_list"_2_"#_name)
 
 /**
  * ll_entry_declare_list() - Declare a list of link-generated array entries
@@ -90,10 +91,10 @@
  *        { .x = 1, .y = 7 }
  *   };
  */
-#define ll_entry_declare_list(_type, _name, _list)			\
-	_type _u_boot_list_2_##_list##_2_##_name[] __aligned(4)		\
-			__attribute__((unused))				\
-			__section(".u_boot_list_2_"#_list"_2_"#_name)
+// #define ll_entry_declare_list(_type, _name, _list)			\
+// 	_type _u_boot_list_2_##_list##_2_##_name[] __aligned(4)		\
+// 			__attribute__((unused))				\
+// 			__section(".u_boot_list_2_"#_list"_2_"#_name)
 
 /*
  * We need a 0-byte-size type for iterator symbols, and the compiler
@@ -122,13 +123,10 @@
  *
  *   struct my_sub_cmd *msc = ll_entry_start(struct my_sub_cmd, cmd_sub);
  */
-#define ll_entry_start(_type, _list)					\
-({									\
-	static char start[0] __aligned(CONFIG_LINKER_LIST_ALIGN)	\
-		__attribute__((unused))					\
-		__section(".u_boot_list_2_"#_list"_1");			\
-	(_type *)&start;						\
-})
+#define ll_entry_start(_type, _list)	(_type *)&_u_boot_list_2_##_list##_1
+// ({									\
+// 	(_type *)&_u_boot_list_2_##_list##_1;						\
+// })
 
 /**
  * ll_entry_end() - Point after last entry of linker-generated array
@@ -149,12 +147,13 @@
  *
  *   struct my_sub_cmd *msc = ll_entry_end(struct my_sub_cmd, cmd_sub);
  */
-#define ll_entry_end(_type, _list)					\
-({									\
-	static char end[0] __aligned(4) __attribute__((unused))		\
-		__section(".u_boot_list_2_"#_list"_3");			\
-	(_type *)&end;							\
-})
+#define ll_entry_end(_type, _list)	(_type *)&_u_boot_list_2_##_list##_3
+// ({									\
+// 	static char end[0] __aligned(4) __attribute__((unused))		\
+// 		__section(".u_boot_list_2_"#_list"_3");			\
+// 	(_type *)&end;							\
+// })
+
 /**
  * ll_entry_count() - Return the number of elements in linker-generated array
  * @_type:	Data type of the entry
@@ -224,8 +223,8 @@
  * @_name: name of the entry
  * @_list: name of the list
  */
-#define ll_entry_ref(_type, _name, _list)				\
-	((_type *)&_u_boot_list_2_##_list##_2_##_name)
+// #define ll_entry_ref(_type, _name, _list)				\
+// 	((_type *)&_u_boot_list_2_##_list##_2_##_name)
 
 /**
  * ll_start() - Point to first entry of first linker-generated array
@@ -243,12 +242,12 @@
  *
  *   struct my_sub_cmd *msc = ll_start(struct my_sub_cmd);
  */
-#define ll_start(_type)							\
-({									\
-	static char start[0] __aligned(4) __attribute__((unused))	\
-		__section(".u_boot_list_1");				\
-	(_type *)&start;						\
-})
+// #define ll_start(_type)							\
+// ({									\
+// 	static char start[0] __aligned(4) __attribute__((unused))	\
+// 		__section(".u_boot_list_1");				\
+// 	(_type *)&start;						\
+// })
 
 /**
  * ll_end() - Point after last entry of last linker-generated array
@@ -266,13 +265,11 @@
  *
  *   struct my_sub_cmd *msc = ll_end(struct my_sub_cmd);
  */
-#define ll_end(_type)							\
-({									\
-	static char end[0] __aligned(4) __attribute__((unused))		\
-		__section(".u_boot_list_3");				\
-	(_type *)&end;							\
-})
-
-#endif /* __ASSEMBLY__ */
+// #define ll_end(_type)							\
+// ({									\
+// 	static char end[0] __aligned(4) __attribute__((unused))		\
+// 		__section(".u_boot_list_3");				\
+// 	(_type *)&end;							\
+// })
 
 #endif	/* __LINKER_LISTS_H__ */

@@ -99,3 +99,4 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #include <linux/byteorder/generic.h>
 #include <asm/barriers.h>
 #include <asm/io.h>
+#include <driver_data.h>
