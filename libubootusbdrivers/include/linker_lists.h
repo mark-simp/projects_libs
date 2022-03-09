@@ -1,24 +1,14 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * Stubbed version of linker lists to allow for
+ * include/linker_lists.h
+ *
+ * Implementation of linker-generated arrays
+ *
+ * Copyright (C) 2012 Marek Vasut <marex@denx.de>
  */
 
 #ifndef __LINKER_LISTS_H__
 #define __LINKER_LISTS_H__
-
-// #define DECLARE_GLOBAL_DATA_PTR   extern gd_t *gd
-
-// #define ll_entry_declare(_type, _name, _list)				\
-//     extern uboot_driver_data *udd; \
-// 	udd->driver_count += 1;
-
-#define ll_entry_declare(_type, _name, _list)				\
-	_type _u_boot_list_2_##_list##_2_##_name
-
-#define llsym(_type, _name, _list) \
-		((_type *)&_u_boot_list_2_##_list##_2_##_name)
-
-
 
 /**
  * llsym() - Access a linker-generated array entry
@@ -27,8 +17,8 @@
  * @_list:	name of the list. Should contain only characters allowed
  *		in a C variable name!
  */
-// #define llsym(_type, _name, _list) \
-// 		((_type *)&_u_boot_list_2_##_list##_2_##_name)
+#define llsym(_type, _name, _list) \
+		((_type *)&_u_boot_list_2_##_list##_2_##_name)
 
 /**
  * ll_entry_declare() - Declare linker-generated array entry
@@ -68,33 +58,7 @@
  *           .y = 4,
  *   };
  */
-// #define ll_entry_declare(_type, _name, _list)				\
-// 	_type _u_boot_list_2_##_list##_2_##_name __aligned(4)		\
-// 			__attribute__((unused))				\
-// 			__section(".u_boot_list_2_"#_list"_2_"#_name)
-
-/**
- * ll_entry_declare_list() - Declare a list of link-generated array entries
- * @_type:	Data type of each entry
- * @_name:	Name of the entry
- * @_list:	name of the list. Should contain only characters allowed
- *		in a C variable name!
- *
- * This is like ll_entry_declare() but creates multiple entries. It should
- * be assigned to an array.
- *
- * ::
- *
- *   ll_entry_declare_list(struct my_sub_cmd, my_sub_cmd, cmd_sub) = {
- *        { .x = 3, .y = 4 },
- *        { .x = 8, .y = 2 },
- *        { .x = 1, .y = 7 }
- *   };
- */
-// #define ll_entry_declare_list(_type, _name, _list)			\
-// 	_type _u_boot_list_2_##_list##_2_##_name[] __aligned(4)		\
-// 			__attribute__((unused))				\
-// 			__section(".u_boot_list_2_"#_list"_2_"#_name)
+#define ll_entry_declare(_type, _name, _list)	_type _u_boot_list_2_##_list##_2_##_name
 
 /*
  * We need a 0-byte-size type for iterator symbols, and the compiler
@@ -123,36 +87,7 @@
  *
  *   struct my_sub_cmd *msc = ll_entry_start(struct my_sub_cmd, cmd_sub);
  */
-#define ll_entry_start(_type, _list)	(_type *)&_u_boot_list_2_##_list##_1
-// ({									\
-// 	(_type *)&_u_boot_list_2_##_list##_1;						\
-// })
-
-/**
- * ll_entry_end() - Point after last entry of linker-generated array
- * @_type:	Data type of the entry
- * @_list:	Name of the list in which this entry is placed
- *		(with underscores instead of dots)
- *
- * This function returns ``(_type *)`` pointer after the very last entry of
- * a linker-generated array placed into subsection of .u_boot_list
- * section specified by _list argument.
- *
- * Since this macro defines an array end symbol, its leftmost index
- * must be 2 and its rightmost index must be 3.
- *
- * Example:
- *
- * ::
- *
- *   struct my_sub_cmd *msc = ll_entry_end(struct my_sub_cmd, cmd_sub);
- */
-#define ll_entry_end(_type, _list)	(_type *)&_u_boot_list_2_##_list##_3
-// ({									\
-// 	static char end[0] __aligned(4) __attribute__((unused))		\
-// 		__section(".u_boot_list_2_"#_list"_3");			\
-// 	(_type *)&end;							\
-// })
+#define ll_entry_start(_type, _list)	(_type *)&driver_data._list##_array[0]
 
 /**
  * ll_entry_count() - Return the number of elements in linker-generated array
@@ -173,13 +108,8 @@
  *   for (i = 0; i < count; i++, msc++)
  *           printf("Entry %i, x=%i y=%i\n", i, msc->x, msc->y);
  */
-#define ll_entry_count(_type, _list)					\
-	({								\
-		_type *start = ll_entry_start(_type, _list);		\
-		_type *end = ll_entry_end(_type, _list);		\
-		unsigned int _ll_result = end - start;			\
-		_ll_result;						\
-	})
+#define ll_entry_count(_type, _list) \
+    sizeof driver_data._list##_array / sizeof *driver_data._list##_array
 
 /**
  * ll_entry_get() - Retrieve entry from linker-generated array by name
