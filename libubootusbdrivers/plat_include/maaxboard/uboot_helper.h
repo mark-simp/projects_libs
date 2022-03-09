@@ -39,6 +39,8 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_USB_XHCI_DWC3			true
 #define CONFIG_USB_HOST					true
 #define CONFIG_DM_DEVICE_REMOVE			true
+#define CONFIG_USB_KEYBOARD             true
+#define CONFIG_USB_STORAGE              true
 #define CONFIG_USB_DWC3_GADGET			false
 #define CONFIG_DM_RESET         		false /* Don't need to handle reset */
 #define CONFIG_DEVRES           		false
@@ -68,6 +70,8 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define ARCH_DMA_MINALIGN   		CONFIG_SYS_CACHELINE_SIZE
 #define DO_DEPS_ONLY				true
 #define errno_str(X)				""
+#define CONFIG_SYS_HZ               1000
+#define MAX_FILES                   3
 
 #define mutex_init(...)
 #define mutex_lock(...)

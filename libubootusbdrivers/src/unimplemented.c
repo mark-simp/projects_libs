@@ -11,3 +11,5 @@ unsigned long  timer_get_us(void) {
 void flush_dcache_range(unsigned long start, unsigned long stop) { }
 
 void invalidate_dcache_range(unsigned long start, unsigned long stop) { }
+
+int console_assign(int file, const char *devname) { }
