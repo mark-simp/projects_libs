@@ -18,7 +18,7 @@
  *		in a C variable name!
  */
 #define llsym(_type, _name, _list) \
-		((_type *)&_u_boot_list_2_##_list##_2_##_name)
+		((_type *)&_u_boot_##_list##__##_name)
 
 /**
  * ll_entry_declare() - Declare linker-generated array entry
@@ -58,7 +58,7 @@
  *           .y = 4,
  *   };
  */
-#define ll_entry_declare(_type, _name, _list)	_type _u_boot_list_2_##_list##_2_##_name
+#define ll_entry_declare(_type, _name, _list)	_type _u_boot_##_list##__##_name
 
 /*
  * We need a 0-byte-size type for iterator symbols, and the compiler
@@ -134,72 +134,10 @@
  */
 #define ll_entry_get(_type, _name, _list)				\
 	({								\
-		extern _type _u_boot_list_2_##_list##_2_##_name;	\
+		extern _type _u_boot_##_list##__##_name;	\
 		_type *_ll_result =					\
-			&_u_boot_list_2_##_list##_2_##_name;		\
+			&_u_boot_##_list##__##_name;		\
 		_ll_result;						\
 	})
-
-/**
- * ll_entry_ref() - Get a reference to a linker-generated array entry
- *
- * Once an extern ll_entry_declare() has been used to declare the reference,
- * this macro allows the entry to be accessed.
- *
- * This is like ll_entry_get(), but without the extra code, so it is suitable
- * for putting into data structures.
- *
- * @_type: C type of the list entry, e.g. 'struct foo'
- * @_name: name of the entry
- * @_list: name of the list
- */
-// #define ll_entry_ref(_type, _name, _list)				\
-// 	((_type *)&_u_boot_list_2_##_list##_2_##_name)
-
-/**
- * ll_start() - Point to first entry of first linker-generated array
- * @_type:	Data type of the entry
- *
- * This function returns ``(_type *)`` pointer to the very first entry of
- * the very first linker-generated array.
- *
- * Since this macro defines the start of the linker-generated arrays,
- * its leftmost index must be 1.
- *
- * Example:
- *
- * ::
- *
- *   struct my_sub_cmd *msc = ll_start(struct my_sub_cmd);
- */
-// #define ll_start(_type)							\
-// ({									\
-// 	static char start[0] __aligned(4) __attribute__((unused))	\
-// 		__section(".u_boot_list_1");				\
-// 	(_type *)&start;						\
-// })
-
-/**
- * ll_end() - Point after last entry of last linker-generated array
- * @_type:	Data type of the entry
- *
- * This function returns ``(_type *)`` pointer after the very last entry of
- * the very last linker-generated array.
- *
- * Since this macro defines the end of the linker-generated arrays,
- * its leftmost index must be 3.
- *
- * Example:
- *
- * ::
- *
- *   struct my_sub_cmd *msc = ll_end(struct my_sub_cmd);
- */
-// #define ll_end(_type)							\
-// ({									\
-// 	static char end[0] __aligned(4) __attribute__((unused))		\
-// 		__section(".u_boot_list_3");				\
-// 	(_type *)&end;							\
-// })
 
 #endif	/* __LINKER_LISTS_H__ */
