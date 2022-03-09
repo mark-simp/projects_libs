@@ -96,6 +96,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #include <linux/byteorder/little_endian.h>
 #include <linux/byteorder/generic.h>
 #include <linux/compiler_types.h>
+#include <linux/bitops.h>
 #include <asm/barriers.h>
 #include <asm/io.h>
 #include <driver_data.h>
