@@ -39,12 +39,12 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_USB_XHCI_DWC3			true
 #define CONFIG_USB_HOST					true
 #define CONFIG_DM_DEVICE_REMOVE			true
+#define CONFIG_USB_DWC3_GADGET			false
 #define CONFIG_DM_RESET         		false /* Don't need to handle reset */
 #define CONFIG_DEVRES           		false
 #define CONFIG_DM_DMA           		false
 #define CONFIG_PHYS_TO_BUS      		false
 #define CONFIG_OF_CONTROL       		false
-#define CONFIG_VAL_SYS_MALLOC_F_LEN		false
 #define CONFIG_DM_SEQ_ALIAS				false
 #define CONFIG_POWER_DOMAIN				false /* No power domain driver support */
 #define CONFIG_IOMMU					false /* No IOMMU driver support */
@@ -52,6 +52,10 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #define CONFIG_PCI						false /* No PCI support */
 #define CONFIG_NEEDS_MANUAL_RELOC   	false
 #define CONFIG_SIMPLE_BUS				false
+#define CONFIG_LOG						false
+
+#define CONFIG_VAL_SYS_MALLOC_F_LEN		0
+#define CONFIG_VAL_LOGLEVEL				0
 
 #define IS_ENABLED(OPTION)   		OPTION
 #define CONFIG_IS_ENABLED(OPTION)   CONFIG_ ## OPTION
@@ -72,21 +76,13 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 
 #define likely(x)       __builtin_expect(!!(x), 1)
 #define unlikely(x)     __builtin_expect(!!(x), 0)
-
 #define assert_noisy(x)	assert(x)
 
 #define __bitwise 		/*__attribute__((bitwise)) */
 #define __force 		/* __attribute__((force)) */
-#define __maybe_unused	/* __attribute__((maybe_unused)) */
-#define __packed	    __attribute__((packed))
-#define __weak   	    __attribute__((weak))
-#define __must_check    __attribute__((warn_unused_result))
-#define __aligned(x) 	__attribute__((aligned(x)))
-#define __section(x) 	__attribute__((section(x)))
-#define __always_inline	inline __attribute__((always_inline))
-#define noinline		__attribute__((noinline))
 #define __iomem			/* __attribute__((iomem)) */
-#define __deprecated	__attribute__((deprecated))
+
+#define _DEBUG			false
 
 #include <stddef.h>
 #include <stdio.h>
@@ -99,6 +95,7 @@ struct udevice;		/* Not clear why this is forward declaration is required */
 #include <linux/errno.h>
 #include <linux/byteorder/little_endian.h>
 #include <linux/byteorder/generic.h>
+#include <linux/compiler_types.h>
 #include <asm/barriers.h>
 #include <asm/io.h>
 #include <driver_data.h>
