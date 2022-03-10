@@ -6,6 +6,8 @@
 
 #include <asm/global_data.h>
 #include <fdtdec.h>
+#include <of_live.h>
+
 #include <driver_data.h>
 
 /*
@@ -15,15 +17,15 @@ struct global_data* gd;
 
 int sel4_usb_init(char* fdt_blob)
 {
+    // Set up the driver data.
     initialise_driver_data();
 
-
-    // Allocation of global_data
+    // Allocation of global_data.
     gd = malloc(sizeof(*gd));
 
-    // Initialisation of (unused sections of the) global_data
+    // Initialisation of (unused sections of the) global_data.
     gd->bd = NULL;
-    gd->flags = 0;
+    gd->flags = GD_FLG_RELOC; /* Work as if u-boot has finished relocation to RAM */
 	gd->baudrate = 0;
 	gd->cpu_clk = 0;
 	gd->bus_clk = 0;
@@ -49,7 +51,7 @@ int sel4_usb_init(char* fdt_blob)
 	gd->timebase_l = 0;
     gd->cur_serial_dev = NULL;
 
-    // Initialisation of the DM specific parts of global_data
+    // Initialisation of the DM specific parts of global_data.
     gd->dm_root = NULL;
     gd->dm_root_f = NULL;
 	gd->uclass_root_s.next = NULL;
@@ -63,12 +65,12 @@ int sel4_usb_init(char* fdt_blob)
 	gd->fdt_size = 0;
 	gd->fdt_src = FDTSRC_EMBED;
 
-    // Initialisation of open-firmware data (a pre-parsed device tree)
-    gd->of_root = NULL; // TODO: Need to define this!
-
+    // Build the live tree from the FDT.
+    int ret = of_live_build(gd->fdt_blob, gd->of_root);
+    assert(0 == ret);
 
     debug("Calling dm_init_and_scan\n");
-    int ret = dm_init_and_scan(false);
+    ret = dm_init_and_scan(false);
     assert(0 == ret);
     debug("Returned from dm_init_and_scan\n");
 
