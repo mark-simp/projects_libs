@@ -34,7 +34,7 @@
 #define ENABLED_CONFIG_OF_PLATDATA_NO_BIND		false
 #define ENABLED_CONFIG_OF_PLATDATA_PARENT		false
 #define ENABLED_CONFIG_OF_TRANSLATE	            false
-#define ENABLED_CONFIG_LTO              		true  /* Don't use a register as a pointer to global_data */
+#define ENABLED_CONFIG_SIMPLE_BUS_CORRECT_RANGE true
 #define ENABLED_CONFIG_DM_USB           		true
 #define ENABLED_CONFIG_USB_XHCI_DWC3			true
 #define ENABLED_CONFIG_DM_DEVICE_REMOVE			true
