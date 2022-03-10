@@ -1,4 +1,5 @@
 #include <uboot_helper.h>
+// #include <drivers/usb/dwc3/core.h>
 
 unsigned long get_timer(unsigned long base) {
     return 0;
@@ -13,3 +14,20 @@ void flush_dcache_range(unsigned long start, unsigned long stop) { }
 void invalidate_dcache_range(unsigned long start, unsigned long stop) { }
 
 int console_assign(int file, const char *devname) { }
+
+/* Not required / used routines. Ensure they are not used by raising an assert */
+long get_ram_size(long *base, long size) {
+    assert(false);
+}
+
+void *locate_dtb_in_fit(const void *fit) {
+    assert(false);
+}
+
+u32 dm_pci_read_bar32(const struct udevice *dev, int barnum) {
+    assert(false);
+}
+
+// void dwc3_gadget_uboot_handle_interrupt(struct dwc3 *dwc) {
+//     assert(false);
+// }

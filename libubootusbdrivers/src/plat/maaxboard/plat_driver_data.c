@@ -9,7 +9,7 @@
 
 struct driver_data_t driver_data;
 
-// Note: The following is only
+// TBD - believe this is not used.
 struct udevice _u_boot_udevice__root; // Not defined...
 
 void initialise_driver_data(void) {

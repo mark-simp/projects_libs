@@ -5,6 +5,7 @@
 #include <usb.h>
 
 #include <asm/global_data.h>
+#include <fdtdec.h>
 #include <driver_data.h>
 
 /*
@@ -12,7 +13,7 @@
  */
 struct global_data* gd;
 
-int sel4_usb_init(void)
+int sel4_usb_init(char* fdt_blob)
 {
     initialise_driver_data();
 
@@ -55,18 +56,20 @@ int sel4_usb_init(void)
 	gd->uclass_root_s.prev = NULL;
 	gd->uclass_root = NULL;
 
-    // Initialisation of the (unused) FDT parts of global_data
-    gd->fdt_blob = NULL;
-	gd->new_fdt =NULL;
+    // Manually initialise of the FDT parts of global_data as if FDT handling
+    // had been set up for an embedded FDT.
+    gd->fdt_blob = fdt_blob;
+	gd->new_fdt = NULL;
 	gd->fdt_size = 0;
-	gd->fdt_src = 0;
+	gd->fdt_src = FDTSRC_EMBED;
 
     // Initialisation of open-firmware data (a pre-parsed device tree)
     gd->of_root = NULL; // TODO: Need to define this!
 
 
     debug("Calling dm_init\n");
-    int ret = dm_init(CONFIG_IS_ENABLED(OF_LIVE));
+    int ret = dm_init_and_scan(false);
+    // int ret = dm_init(CONFIG_IS_ENABLED(OF_LIVE));
     assert(0 == ret);
     debug("Returned from dm_init\n");
 

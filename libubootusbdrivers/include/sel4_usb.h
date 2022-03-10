@@ -1,1 +1,1 @@
-int sel4_usb_init(void);
+int sel4_usb_init(char* fdt_blob);

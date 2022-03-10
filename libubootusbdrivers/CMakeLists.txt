@@ -13,13 +13,19 @@ config_option(LibUBOOTUSB LIB_UBOOT_USB "Build USB interface library" DEFAULT ON
 add_config_library(ubootusbdrivers "${configure_string}")
 if(LibUBOOTUSB)
 
+    if(KernelArchArmV8a)
+        set(kernel_arch_cpu armv8)
+    endif()
+
     file(
         GLOB
             deps
             src/*.c
+            src/libs/libfdt/*.c
             src/stubs/*.c
-            src/stubs/libfdt/*.c
             src/uboot/*.c
+            src/uboot/arch/${kernel_arch}/cpu/${kernel_arch_cpu}/*.c
+            src/uboot/arch/${kernel_arch}/cpu/${kernel_arch_cpu}/*.S
             src/uboot/common/*.c
             src/uboot/drivers/core/*.c
             src/uboot/drivers/usb/common/*.c
@@ -33,12 +39,13 @@ if(LibUBOOTUSB)
     list(SORT deps)
 
     add_library(ubootusbdrivers STATIC EXCLUDE_FROM_ALL ${deps})
-    target_include_directories(ubootusbdrivers PUBLIC include
-        src/stubs
+    target_include_directories(ubootusbdrivers PUBLIC
         include
+        src/libs
         uboot_include
         uboot_arch_include/${KernelArch}
         plat_include/${KernelPlatform}
     )
-    target_link_libraries(ubootusbdrivers sel4 muslc platsupport ubootusbdrivers_Config)
+    target_link_libraries(ubootusbdrivers muslc platsupport)
+    # target_link_libraries(ubootusbdrivers sel4 muslc platsupport ubootusbdrivers_Config)
 endif()
