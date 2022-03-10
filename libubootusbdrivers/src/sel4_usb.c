@@ -67,11 +67,10 @@ int sel4_usb_init(char* fdt_blob)
     gd->of_root = NULL; // TODO: Need to define this!
 
 
-    debug("Calling dm_init\n");
+    debug("Calling dm_init_and_scan\n");
     int ret = dm_init_and_scan(false);
-    // int ret = dm_init(CONFIG_IS_ENABLED(OF_LIVE));
     assert(0 == ret);
-    debug("Returned from dm_init\n");
+    debug("Returned from dm_init_and_scan\n");
 
     debug("usb_init usb_init\n");
     ret = usb_init();
