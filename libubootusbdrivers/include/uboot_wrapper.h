@@ -1,0 +1,1 @@
+int init_uboot(char* fdt_blob);

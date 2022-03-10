@@ -46,6 +46,5 @@ if(LibUBOOTUSB)
         uboot_arch_include/${KernelArch}
         plat_include/${KernelPlatform}
     )
-    target_link_libraries(ubootusbdrivers muslc platsupport)
-    # target_link_libraries(ubootusbdrivers sel4 muslc platsupport ubootusbdrivers_Config)
+    target_link_libraries(ubootusbdrivers sel4 muslc sel4platsupport)
 endif()

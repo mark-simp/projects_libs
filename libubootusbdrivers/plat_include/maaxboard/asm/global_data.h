@@ -15,16 +15,7 @@
 #include <linux/types.h>
 
 /* Architecture-specific global data */
-struct arch_global_data {
-
-	/* "static data" needed by most of timer.c on ARM platforms */
-	// unsigned long timer_rate_hz;
-	// unsigned int tbu;
-	// unsigned int tbl;
-	// unsigned long lastinc;
-	// unsigned long long timer_reset_value;
-
-};
+struct arch_global_data {};
 
 #include <asm-generic/global_data.h>
 
