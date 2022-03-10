@@ -1,5 +1,4 @@
 #include <uboot_helper.h>
-// #include <drivers/usb/dwc3/core.h>
 
 unsigned long get_timer(unsigned long base) {
     return 0;
@@ -27,7 +26,3 @@ void *locate_dtb_in_fit(const void *fit) {
 u32 dm_pci_read_bar32(const struct udevice *dev, int barnum) {
     assert(false);
 }
-
-// void dwc3_gadget_uboot_handle_interrupt(struct dwc3 *dwc) {
-//     assert(false);
-// }
