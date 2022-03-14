@@ -4,9 +4,10 @@
 
 cmake_minimum_required(VERSION 3.7.2)
 
-project(libubootusbdrivers C)
+project(libubootusbdrivers C ASM)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=ZF_LOG_VERBOSE")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -D__ASSEMBLY__")
 
 config_option(LibUBOOTUSB LIB_UBOOT_USB "Build USB interface library" DEFAULT ON)
 
@@ -15,17 +16,18 @@ if(LibUBOOTUSB)
 
     if(KernelArchArmV8a)
         set(kernel_arch_cpu armv8)
+        set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -DCONFIG_ARM64")
     endif()
 
     file(
         GLOB
             deps
+            arch_src/${KernelArch}/cpu/${kernel_arch_cpu}/*.c
+            arch_src/${KernelArch}/cpu/${kernel_arch_cpu}/*.S
             src/*.c
             src/libs/libfdt/*.c
             src/stubs/*.c
             src/uboot/*.c
-            src/uboot/arch/${kernel_arch}/cpu/${kernel_arch_cpu}/*.c
-            src/uboot/arch/${kernel_arch}/cpu/${kernel_arch_cpu}/*.S
             src/uboot/common/*.c
             src/uboot/drivers/core/*.c
             src/uboot/drivers/usb/common/*.c

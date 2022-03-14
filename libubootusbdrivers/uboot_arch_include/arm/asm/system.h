@@ -652,9 +652,3 @@ phys_addr_t noncached_alloc(size_t size, size_t align);
 #endif /* __ASSEMBLY__ */
 
 #endif
-© 2022 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
