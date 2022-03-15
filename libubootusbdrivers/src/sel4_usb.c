@@ -2,6 +2,7 @@
 #include <plat_resources.h>
 #include <libfdt.h>
 #include <uboot_wrapper.h>
+#include <sel4_timer.h>
 
 #define MAP_DEVICE(o, p, s) ps_io_map(&o->io_mapper, p, s, 0, PS_MEM_NORMAL)
 #define GET_RESOURCE(ops, id) MAP_DEVICE(ops, id##_PADDR, id##_SIZE)
@@ -169,8 +170,15 @@ int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* path) {
     return 0;
 }
 
-int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count)
+int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count, const char *timer_path)
 {
+    int ret;
+
+    // Start the monotonic timer.
+    ret = init_and_start_timer(io_ops, timer_path);
+    if (0 != ret)
+        return -1;
+
     void* orig_fdt_blob = io_ops->io_fdt.get_fn(io_ops->io_fdt.cookie);
 
     // Create a copy of the FDT for U-Boot to use.
@@ -179,7 +187,6 @@ int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t devic
     memcpy(uboot_fdt_pointer, orig_fdt_blob, fdt_size);
 
     // Allocate resoucres and modify addresses in the device tree for each device.
-    int ret;
     for (int dev_index=0; dev_index < device_count; dev_index++) {
         ret = allocate_dev_resource_and_fdt_fixup(io_ops, device_paths[dev_index]);
         if (0 != ret) {

@@ -1,13 +1,5 @@
 #include <uboot_helper.h>
 
-unsigned long get_timer(unsigned long base) {
-    return 0;
-}
-
-unsigned long  timer_get_us(void) {
-    return 0;
-}
-
 int console_assign(int file, const char *devname) { }
 
 /* Not required / used routines. Ensure they are not used by raising an assert */
