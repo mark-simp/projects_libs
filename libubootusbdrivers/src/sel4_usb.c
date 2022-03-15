@@ -3,6 +3,7 @@
 #include <libfdt.h>
 #include <uboot_wrapper.h>
 #include <sel4_timer.h>
+#include <utils/page.h>
 
 #define MAP_DEVICE(o, p, s) ps_io_map(&o->io_mapper, p, s, 0, PS_MEM_NORMAL)
 #define GET_RESOURCE(ops, id) MAP_DEVICE(ops, id##_PADDR, id##_SIZE)
@@ -144,8 +145,16 @@ int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* path) {
         return -1;
     }
 
-    // We now have a known and verified address and size for hte device.
-    // Map it into our virtual address space.
+    // We now have a known and verified address and size for the device.
+    // Map it into our virtual address space. Note that the address must
+    // be on a 4K boundary to be accepted, this is achieved by rounding
+    // the address to the nearest 4K boundary and increasing the size to
+    // compensate.
+    uintptr_t unaligned_paddr = paddr;
+    paddr = PAGE_ALIGN_4K(paddr);
+    assert(paddr <= unaligned_paddr);
+    size = size + (unaligned_paddr - paddr);
+
     uintptr_t vaddr = (uintptr_t) ps_io_map(&io_ops->io_mapper, paddr, size, 0, PS_MEM_NORMAL);
     if (0 == vaddr) {
         ZF_LOGE("Unable to map virtual address for path '%s'.", path);

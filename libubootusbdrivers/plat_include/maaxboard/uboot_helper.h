@@ -11,19 +11,10 @@
 
 // struct udevice;		/* Not clear why this is forward declaration is required */
 
-#define CONFIG_DM                          		true
 #define CONFIG_ARM					        	true
 #define CONFIG_ARM64   					        true  /* TODO: Look at AARCH32 support */
 
-/*
- * Device tree handling.
- * - Enable OF_REAL / OF_LIVE. Use of real / live device tree data
- * - Disable OF_PLATDATA_*. Use of compiled in device tree data is not
- *      supported by USB drivers
- * - Disable OF_LIBFDT. Not using a FDT blob.
- * - Disable OF_TRANSLATE. Don't need to translate between device tree
- *      addresses and physical addresses.
- */
+#define CONFIG_DM                          		true
 #define CONFIG_OF_LIBFDT				        true
 #define ENABLED_CONFIG_OF_LIVE   				true
 #define ENABLED_CONFIG_OF_REAL          		true
@@ -36,6 +27,8 @@
 #define ENABLED_CONFIG_OF_TRANSLATE	            false
 #define ENABLED_CONFIG_SIMPLE_BUS_CORRECT_RANGE true
 #define ENABLED_CONFIG_DM_USB           		true
+#define ENABLED_CONFIG_PHY                      true
+#define CONFIG_PHY                              true
 #define ENABLED_CONFIG_USB_XHCI_DWC3			true
 #define ENABLED_CONFIG_DM_DEVICE_REMOVE			true
 #define CONFIG_USB_KEYBOARD                     true

@@ -30,6 +30,7 @@ if(LibUBOOTUSB)
             src/uboot/*.c
             src/uboot/common/*.c
             src/uboot/drivers/core/*.c
+            src/uboot/drivers/phy/*.c
             src/uboot/drivers/usb/common/*.c
             src/uboot/drivers/usb/dwc3/*.c
             src/uboot/drivers/usb/host/*.c
@@ -48,5 +49,5 @@ if(LibUBOOTUSB)
         uboot_arch_include/${KernelArch}
         plat_include/${KernelPlatform}
     )
-    target_link_libraries(ubootusbdrivers sel4 muslc sel4platsupport)
+    target_link_libraries(ubootusbdrivers sel4 muslc sel4platsupport utils)
 endif()
