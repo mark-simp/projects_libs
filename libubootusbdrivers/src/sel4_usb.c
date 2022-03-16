@@ -120,6 +120,8 @@ int replace_physical_address_with_virtual(uintptr_t paddr, uintptr_t vaddr, size
         ZF_LOGE("Unable to update device for path '%s' with device virtual address.", path_name);
         return -1;
     }
+    else
+        ZF_LOGD(" -> Re-mapped '%s' from paddr %p to vaddr %x.", path_name, node_paddr, node_vaddr);
 
     return 0;
 }
