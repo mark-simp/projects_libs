@@ -5,11 +5,13 @@
  * sourced from U-Boot.
  */
 
-#define __LINUX_ARM_ARCH__			8
+
+/* TODO: Remove this work-around once underlying issue is resolved */
+#define memalign(ALIGN, SIZE)                   malloc(SIZE)
+
+#define __LINUX_ARM_ARCH__			            8
 #define __KERNEL__
 #define __UBOOT__
-
-// struct udevice;		/* Not clear why this is forward declaration is required */
 
 #define CONFIG_ARM					        	true
 #define CONFIG_ARM64   					        true  /* TODO: Look at AARCH32 support */

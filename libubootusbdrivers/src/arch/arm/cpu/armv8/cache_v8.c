@@ -15,7 +15,8 @@
  */
 void invalidate_dcache_range(unsigned long start, unsigned long stop)
 {
-	__asm_invalidate_dcache_range(start, stop);
+	/* TODO: Reinstate after resolving underlying issue */
+	// __asm_invalidate_dcache_range(start, stop);
 }
 
 /*
@@ -23,5 +24,6 @@ void invalidate_dcache_range(unsigned long start, unsigned long stop)
  */
 void flush_dcache_range(unsigned long start, unsigned long stop)
 {
-	__asm_flush_dcache_range(start, stop);
+	/* TODO: Reinstate after resolving underlying issue */
+	// __asm_flush_dcache_range(start, stop);
 }
