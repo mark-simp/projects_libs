@@ -36,6 +36,7 @@
 #define CONFIG_USB_KEYBOARD                     true
 #define CONFIG_USB_STORAGE                      true
 #define CONFIG_USB_HOST                         true
+#define CONFIG_USB_XHCI_HCD                     true
 #define ENABLED_CONFIG_USB_HOST                 true
 #define CONFIG_USB_DWC3_GADGET                  true
 #define ENABLED_CONFIG_USB_DWC3_GADGET          false
