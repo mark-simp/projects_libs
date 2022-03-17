@@ -5,9 +5,6 @@
 #include <sel4_timer.h>
 #include <utils/page.h>
 
-#define MAP_DEVICE(o, p, s) ps_io_map(&o->io_mapper, p, s, 0, PS_MEM_NORMAL)
-#define GET_RESOURCE(ops, id) MAP_DEVICE(ops, id##_PADDR, id##_SIZE)
-
 void* uboot_fdt_pointer = NULL;
 
 
@@ -105,15 +102,15 @@ int replace_physical_address_with_virtual(uintptr_t paddr, uintptr_t vaddr, size
     char *p = tmp;
 
     if (addr_cells == 2)
-        *(fdt64_t *)p = cpu_to_fdt64((uintptr_t) node_vaddr);
+        *(fdt64_t *)p = cpu_to_fdt64(node_vaddr);
     else
-        *(fdt32_t *)p = cpu_to_fdt32((uintptr_t) node_vaddr);
+        *(fdt32_t *)p = cpu_to_fdt32(node_vaddr);
     p += 4 * addr_cells;
 
     if (size_cells == 2)
-        *(fdt64_t *)p = cpu_to_fdt64(fdt64_to_cpu(node_size));
+        *(fdt64_t *)p = cpu_to_fdt64(node_size);
     else
-        *(fdt32_t *)p = cpu_to_fdt32(fdt32_to_cpu(node_size));
+        *(fdt32_t *)p = cpu_to_fdt32(node_size);
 
     ret = fdt_setprop_inplace(uboot_fdt_pointer, node_offset, "reg", tmp, prop_len);
     if (0 != ret) {
@@ -163,7 +160,7 @@ int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* path) {
         return -1;
     }
 
-    ZF_LOGD("Mapped '%s' of size %x from paddr %p to vaddr %x.", path, size, paddr, vaddr);
+    ZF_LOGD("Mapped '%s' of size 0x%x from paddr %p to vaddr %x.", path, size, paddr, vaddr);
 
     // Update the FDT to point to the virtual rather than physical address. Need to perform this
     // for all nodes that sit under the device node.
