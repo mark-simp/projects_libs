@@ -2,8 +2,6 @@
 
 #include <utils/zf_log.h>
 
-#define puts(...)           ZF_LOGD(__VA_ARGS__)
-
 #define debug(...)          ZF_LOGD(__VA_ARGS__)
 
 #define debug_cond(A, ...)  ZF_LOGD(__VA_ARGS__)
@@ -16,9 +14,9 @@
 
 #define log_warning(...)    ZF_LOGW(__VA_ARGS__)
 
-#define printf(...)         ZF_LOGD(__VA_ARGS__)
+#define printk(...)         printf(__VA_ARGS__)
 
-#define printk(...)         ZF_LOGD(__VA_ARGS__)
+#define puts(...)           printf(__VA_ARGS__)
 
 #define pr_info(...)        ZF_LOGI(__VA_ARGS__)
 
