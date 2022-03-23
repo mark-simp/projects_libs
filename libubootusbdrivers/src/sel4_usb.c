@@ -1,5 +1,4 @@
 #include <sel4platsupport/io.h>
-#include <plat_resources.h>
 #include <libfdt.h>
 #include <uboot_wrapper.h>
 #include <sel4_timer.h>
