@@ -2,8 +2,9 @@
 #include <uboot_helper.h>
 #include <linux/types.h>
 #include <dm/root.h>
+#include <dm/util.h>
 #include <usb.h>
-#include <asm/global_data.h>
+#include <asm-generic/global_data.h>
 #include <fdtdec.h>
 #include <of_live.h>
 #include <driver_data.h>
@@ -19,7 +20,7 @@ int init_uboot(char* fdt_blob)
     initialise_driver_data();
 
     // Allocation of global_data.
-    gd = malloc(sizeof(*gd));
+    gd = malloc(sizeof(gd_t));
 
     // Initialisation of (unused sections of the) global_data.
     gd->bd = NULL;
@@ -60,7 +61,7 @@ int init_uboot(char* fdt_blob)
     // had been set up for an embedded FDT.
     gd->fdt_blob = fdt_blob;
 	gd->new_fdt = NULL;
-	gd->fdt_size = 0;
+	gd->fdt_size = fdt_totalsize(fdt_blob);
 	gd->fdt_src = FDTSRC_EMBED;
 
     // Build the live tree from the FDT.
@@ -72,10 +73,36 @@ int init_uboot(char* fdt_blob)
     assert(0 == ret);
     debug("Returned from dm_init_and_scan\n");
 
+    // Dump out what info dm_init_and_scan has determined.
+    printf("------\n\n");
+    dm_dump_all();
+    printf("------\n\n");
+    dm_dump_static_driver_info();
+    printf("------\n\n");
+    dm_dump_drivers();
+    printf("------\n\n");
+    dm_dump_driver_compat();
+    printf("------\n\n");
+    dm_dump_uclass();
+    printf("------\n\n");
+
     debug("usb_init usb_init\n");
     ret = usb_init();
     assert(0 == ret);
     debug("Returned from usb_init\n");
+
+    // Dump out what info dm_init_and_scan has determined.
+    printf("------\n\n");
+    dm_dump_all();
+    printf("------\n\n");
+    dm_dump_static_driver_info();
+    printf("------\n\n");
+    dm_dump_drivers();
+    printf("------\n\n");
+    dm_dump_driver_compat();
+    printf("------\n\n");
+    dm_dump_uclass();
+    printf("------\n\n");
 
     return 0;
 }
