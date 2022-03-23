@@ -1,4 +1,8 @@
 #include <uboot_helper.h>
+#include <dm/device.h>
+
+/* This is required to prevent a linker error but is never used (because OF_PLATDATA_INST is not defined) */
+struct udevice _u_boot_udevice__root;
 
 int console_assign(int file, const char *devname) { }
 
