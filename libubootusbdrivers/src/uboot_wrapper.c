@@ -86,7 +86,7 @@ int init_uboot(char* fdt_blob)
     dm_dump_uclass();
     printf("------\n\n");
 
-    debug("usb_init usb_init\n");
+    debug("Calling usb_init\n");
     ret = usb_init();
     assert(0 == ret);
     debug("Returned from usb_init\n");
@@ -103,6 +103,11 @@ int init_uboot(char* fdt_blob)
     printf("------\n\n");
     dm_dump_uclass();
     printf("------\n\n");
+
+    debug("Calling usb_stor_scan\n");
+    ret = usb_stor_scan(1);
+    assert(0 == ret);
+    debug("Returned from usb_stor_scan\n");
 
     return 0;
 }
