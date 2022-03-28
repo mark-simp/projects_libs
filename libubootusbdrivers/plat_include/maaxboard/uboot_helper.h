@@ -5,10 +5,6 @@
  * sourced from U-Boot.
  */
 
-
-/* TODO: Remove this work-around once underlying issue is resolved */
-#define memalign(ALIGN, SIZE)                   malloc(SIZE)
-
 #define __LINUX_ARM_ARCH__			            8
 #define __KERNEL__
 #define __UBOOT__
@@ -16,10 +12,14 @@
 #define CONFIG_ARM					        	true
 #define CONFIG_ARM64   					        true  /* TODO: Look at AARCH32 support */
 
+#define CONFIG_SEL4                             true  /* Enable seL4 specific modifications */
+
 #define CONFIG_DM                          		true
+#define CONFIG_DM_USB                           true
 #define CONFIG_OF_LIBFDT				        true
 #define ENABLED_CONFIG_OF_LIVE   				true
 #define ENABLED_CONFIG_OF_REAL          		true
+#define ENABLED_CONFIG_OF_CONTROL          		true
 #define ENABLED_CONFIG_OF_PLATDATA				false
 #define ENABLED_CONFIG_OF_PLATDATA_RT   		false
 #define ENABLED_CONFIG_OF_PLATDATA_DRIVER_RT	false
@@ -37,6 +37,7 @@
 #define CONFIG_USB_STORAGE                      true
 #define CONFIG_USB_HOST                         true
 #define CONFIG_USB_XHCI_HCD                     true
+#define CONFIG_USB_XHCI_DWC3                    true
 #define ENABLED_CONFIG_USB_HOST                 true
 #define CONFIG_USB_DWC3_GADGET                  true
 #define ENABLED_CONFIG_USB_DWC3_GADGET          false
@@ -60,16 +61,14 @@
 #define ENABLED_CONFIG_SPL_BUILD                false
 #define ENABLED_CONFIG_PHANDLE_CHECK_SEQ        false
 
-#define CONFIG_VAL_SYS_MALLOC_F_LEN		0
 #define CONFIG_VAL_LOGLEVEL				0
 
 #define IS_ENABLED(OPTION)   		ENABLED_ ## OPTION
 #define CONFIG_IS_ENABLED(OPTION)   ENABLED_CONFIG_ ## OPTION
 #define CONFIG_VAL(OPTION)  		CONFIG_VAL_ ## OPTION
 
-#define CONFIG_ERR_PTR_OFFSET   	1024
-#define CONFIG_NR_DRAM_BANKS		1
-#define CONFIG_LINKER_LIST_ALIGN	4
+#define CONFIG_ERR_PTR_OFFSET   	0
+#define CONFIG_NR_DRAM_BANKS		0
 #define CONFIG_SYS_CACHELINE_SIZE 	64 /* for cortex a53 MPCore */
 #define ARCH_DMA_MINALIGN   		CONFIG_SYS_CACHELINE_SIZE
 #define DO_DEPS_ONLY				true
@@ -99,6 +98,7 @@
 #include <vsprintf.h>
 #include <assert.h>
 #include <time.h>
+#include <sel4_dma.h>
 #include <uboot_print.h>
 #include <linux/types.h>
 #include <linux/errno.h>
