@@ -1,7 +1,7 @@
 // Define the number of different driver elements to be used on this platform.
 #define DEFINE_UBOOT_UCLASS_DRIVER_COUNT        8
 #define DEFINE_UBOOT_DRIVER_COUNT               8
-#define DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT     0
+#define DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT     2
 #define DEFINE_UBOOT_DRIVER_INFO_COUNT          0
 #define DEFINE_UBOOT_UDEVICE_COUNT              0
 
@@ -25,3 +25,6 @@ extern struct driver _u_boot_driver__dwc3_generic_host;
 extern struct driver _u_boot_driver__nxp_imx8mq_usb_phy;
 extern struct driver _u_boot_driver__usb_mass_storage;
 
+// Define the driver entries to be used on this platform.
+extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_generic_hub;
+extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_mass_storage;

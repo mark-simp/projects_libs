@@ -27,4 +27,7 @@ void initialise_driver_data(void) {
     driver_data.driver_array[5] = _u_boot_driver__dwc3_generic_host;
     driver_data.driver_array[6] = _u_boot_driver__nxp_imx8mq_usb_phy;
     driver_data.driver_array[7] = _u_boot_driver__usb_mass_storage;
+
+    driver_data.usb_driver_entry_array[0] = _u_boot_usb_driver_entry__usb_generic_hub;
+    driver_data.usb_driver_entry_array[1] = _u_boot_usb_driver_entry__usb_mass_storage;
 }
