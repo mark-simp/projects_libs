@@ -3,6 +3,7 @@
 #include <uboot_wrapper.h>
 #include <sel4_timer.h>
 #include <utils/page.h>
+#include <sel4_dma_wrapper.h>
 
 void* uboot_fdt_pointer = NULL;
 
@@ -186,14 +187,16 @@ int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t devic
     if (0 != ret)
         return -1;
 
-    void* orig_fdt_blob = io_ops->io_fdt.get_fn(io_ops->io_fdt.cookie);
+    // Initialise the DMA management.
+    sel4_dma_initialise(io_ops->dma_manager);
 
     // Create a copy of the FDT for U-Boot to use.
+    void* orig_fdt_blob = io_ops->io_fdt.get_fn(io_ops->io_fdt.cookie);
     int fdt_size = fdt_totalsize(orig_fdt_blob);
     uboot_fdt_pointer = malloc(fdt_size);
     memcpy(uboot_fdt_pointer, orig_fdt_blob, fdt_size);
 
-    // Allocate resoucres and modify addresses in the device tree for each device.
+    // Allocate resources and modify addresses in the device tree for each device.
     for (int dev_index=0; dev_index < device_count; dev_index++) {
         ret = allocate_dev_resource_and_fdt_fixup(io_ops, device_paths[dev_index]);
         if (0 != ret) {
