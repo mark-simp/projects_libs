@@ -45,7 +45,6 @@
 #define CONFIG_DEVRES           		        true
 #define ENABLED_CONFIG_DM_DMA           		false
 #define ENABLED_CONFIG_PHYS_TO_BUS      		false
-#define ENABLED_CONFIG_OF_CONTROL       		false
 #define ENABLED_CONFIG_DM_SEQ_ALIAS				false
 #define ENABLED_CONFIG_POWER_DOMAIN				false /* No power domain driver support */
 #define ENABLED_CONFIG_IOMMU					false /* No IOMMU driver support */
