@@ -6,7 +6,18 @@ struct udevice _u_boot_udevice__root;
 
 int console_assign(int file, const char *devname) { }
 
-/* Not required / used routines. Ensure they are not used by raising an assert */
+/* Not required routine. Perform a 'nop' */
+void invalidate_dcache_range(unsigned long start, unsigned long stop)
+{
+	// Not required. seL4 DMA cache operations will be used instead for any DMA memory.
+}
+
+void flush_dcache_range(unsigned long start, unsigned long stop)
+{
+	// Not required. seL4 DMA cache operations will be used instead for any DMA memory.
+}
+
+/* Unused routines. Ensure they are not used by raising an assert */
 long get_ram_size(long *base, long size) {
     assert(false);
 }

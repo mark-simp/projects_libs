@@ -22,8 +22,6 @@ if(LibUBOOTUSB)
     file(
         GLOB
             deps
-            src/arch/${KernelArch}/cpu/${kernel_arch_cpu}/*.c
-            src/arch/${KernelArch}/cpu/${kernel_arch_cpu}/*.S
             src/*.c
             src/libs/libfdt/*.c
             src/stubs/*.c
