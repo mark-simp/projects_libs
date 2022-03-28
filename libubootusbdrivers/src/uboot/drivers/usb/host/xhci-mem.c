@@ -40,8 +40,13 @@ void xhci_flush_cache(uintptr_t addr, u32 len)
 {
 	BUG_ON((void *)addr == NULL || len == 0);
 
+#ifdef CONFIG_SEL4
+	sel4_dma_flush_range(addr & ~(CACHELINE_SIZE - 1),
+				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+#else
 	flush_dcache_range(addr & ~(CACHELINE_SIZE - 1),
 				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+#endif
 }
 
 /**
@@ -55,8 +60,13 @@ void xhci_inval_cache(uintptr_t addr, u32 len)
 {
 	BUG_ON((void *)addr == NULL || len == 0);
 
+#ifdef CONFIG_SEL4
+	sel4_dma_invalidate_range(addr & ~(CACHELINE_SIZE - 1),
+				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+#else
 	invalidate_dcache_range(addr & ~(CACHELINE_SIZE - 1),
 				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+#endif
 }
 
 
@@ -68,7 +78,11 @@ void xhci_inval_cache(uintptr_t addr, u32 len)
  */
 static void xhci_segment_free(struct xhci_segment *seg)
 {
+#ifdef CONFIG_SEL4
+	sel4_dma_free(seg->trbs);
+#else
 	free(seg->trbs);
+#endif
 	seg->trbs = NULL;
 
 	free(seg);
@@ -96,7 +110,12 @@ static void xhci_ring_free(struct xhci_ring *ring)
 	}
 	xhci_segment_free(first_seg);
 
+#ifdef CONFIG_SEL4
+	sel4_dma_free(ring);
+#else
 	free(ring);
+#endif
+
 }
 
 /**
@@ -112,8 +131,13 @@ static void xhci_scratchpad_free(struct xhci_ctrl *ctrl)
 
 	ctrl->dcbaa->dev_context_ptrs[0] = 0;
 
+#ifdef CONFIG_SEL4
+	sel4_dma_free(xhci_bus_to_virt(ctrl, le64_to_cpu(ctrl->scratchpad->sp_array[0])));
+	sel4_dma_free(ctrl->scratchpad->sp_array);
+#else
 	free(xhci_bus_to_virt(ctrl, le64_to_cpu(ctrl->scratchpad->sp_array[0])));
 	free(ctrl->scratchpad->sp_array);
+#endif
 	free(ctrl->scratchpad);
 	ctrl->scratchpad = NULL;
 }
@@ -180,8 +204,13 @@ void xhci_cleanup(struct xhci_ctrl *ctrl)
 	xhci_ring_free(ctrl->cmd_ring);
 	xhci_scratchpad_free(ctrl);
 	xhci_free_virt_devices(ctrl);
+#ifdef CONFIG_SEL4
+	sel4_dma_free(ctrl->erst.entries);
+	sel4_dma_free(ctrl->dcbaa);
+#else
 	free(ctrl->erst.entries);
 	free(ctrl->dcbaa);
+#endif
 	memset(ctrl, '\0', sizeof(struct xhci_ctrl));
 }
 
@@ -196,7 +225,12 @@ static void *xhci_malloc(unsigned int size)
 	void *ptr;
 	size_t cacheline_size = max(XHCI_ALIGNMENT, CACHELINE_SIZE);
 
+#ifdef CONFIG_SEL4
+	ptr = sel4_dma_memalign(cacheline_size, UBOOT_ALIGN(size, cacheline_size));
+#else
 	ptr = memalign(cacheline_size, UBOOT_ALIGN(size, cacheline_size));
+#endif
+
 	BUG_ON(!ptr);
 	memset(ptr, '\0', size);
 
@@ -310,7 +344,11 @@ struct xhci_ring *xhci_ring_alloc(struct xhci_ctrl *ctrl, unsigned int num_segs,
 	struct xhci_ring *ring;
 	struct xhci_segment *prev;
 
+#ifdef CONFIG_SEL4
+	ring = sel4_dma_malloc(sizeof(struct xhci_ring));
+#else
 	ring = malloc(sizeof(struct xhci_ring));
+#endif
 	BUG_ON(!ring);
 
 	if (num_segs == 0)
@@ -389,7 +427,12 @@ static int xhci_scratchpad_alloc(struct xhci_ctrl *ctrl)
 	BUG_ON(i == 16);
 
 	page_size = 1 << (i + 12);
+#ifdef CONFIG_SEL4
+	buf = sel4_dma_memalign(page_size, num_sp * page_size);
+#else
 	buf = memalign(page_size, num_sp * page_size);
+#endif
+
 	if (!buf)
 		goto fail_sp3;
 	memset(buf, '\0', num_sp * page_size);
@@ -406,7 +449,11 @@ static int xhci_scratchpad_alloc(struct xhci_ctrl *ctrl)
 	return 0;
 
 fail_sp3:
+#ifdef CONFIG_SEL4
+	sel4_dma_free(scratchpad->sp_array);
+#else
 	free(scratchpad->sp_array);
+#endif
 
 fail_sp2:
 	free(scratchpad);
