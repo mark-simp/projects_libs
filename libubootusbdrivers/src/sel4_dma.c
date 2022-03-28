@@ -50,20 +50,28 @@ void sel4_dma_initialise(ps_dma_man_t dma_manager)
 
 void sel4_dma_flush_range(unsigned long start, unsigned long stop)
 {
-    ZF_LOGD("start = 0x%x, stop = 0x%x", start, stop);
+    // ZF_LOGD("start = 0x%x, stop = 0x%x", start, stop);
 
     assert(sel4_dma_manager != NULL);
+
+    size_t flush_size;
+    if (stop > start)
+        flush_size = (size_t) stop - start;
+    else if (stop == start)
+        flush_size = (size_t) 4;
+    else
+        return;
 
     sel4_dma_manager->dma_cache_op_fn(
         sel4_dma_manager->cookie,
         (void *) start,
-        (size_t) stop - start + 4,
+        flush_size,
         DMA_CACHE_OP_CLEAN);
 }
 
 void sel4_dma_invalidate_range(unsigned long start, unsigned long stop)
 {
-    ZF_LOGD("start = 0x%x, stop = 0x%x", start, stop);
+    // ZF_LOGD("start = 0x%x, stop = 0x%x", start, stop);
 
     assert(sel4_dma_manager != NULL);
 
