@@ -26,7 +26,9 @@ if(LibUBOOTUSB)
             src/libs/libfdt/*.c
             src/stubs/*.c
             src/uboot/*.c
+            src/uboot/cmd/*.c
             src/uboot/common/*.c
+            src/uboot/drivers/block/*.c
             src/uboot/drivers/core/*.c
             src/uboot/drivers/phy/*.c
             src/uboot/drivers/usb/common/*.c
