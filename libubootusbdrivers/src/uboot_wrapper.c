@@ -1,6 +1,4 @@
-#include <stdlib.h>
 #include <uboot_helper.h>
-#include <linux/types.h>
 #include <dm/root.h>
 #include <dm/util.h>
 #include <usb.h>
@@ -24,8 +22,9 @@ int init_uboot(char* fdt_blob)
 
     // Initialisation of (unused sections of the) global_data.
     gd->bd = NULL;
-    gd->flags = GD_FLG_RELOC; /* Work as if u-boot has finished relocation to RAM */
-	gd->baudrate = 0;
+    gd->flags = 0;
+    gd->flags |= GD_FLG_RELOC;  /* Work as if u-boot has finished relocation to RAM */
+    gd->baudrate = 0;
 	gd->cpu_clk = 0;
 	gd->bus_clk = 0;
 	gd->pci_clk = 0;
@@ -73,41 +72,19 @@ int init_uboot(char* fdt_blob)
     assert(0 == ret);
     debug("Returned from dm_init_and_scan\n");
 
-    // Dump out what info dm_init_and_scan has determined.
-    printf("------\n\n");
-    dm_dump_all();
-    printf("------\n\n");
-    dm_dump_static_driver_info();
-    printf("------\n\n");
-    dm_dump_drivers();
-    printf("------\n\n");
-    dm_dump_driver_compat();
-    printf("------\n\n");
-    dm_dump_uclass();
-    printf("------\n\n");
+    // Run u-boot commands.
 
-    debug("Calling usb_init\n");
-    ret = usb_init();
-    assert(0 == ret);
-    debug("Returned from usb_init\n");
+    run_command("dm tree", CMD_FLAG_ENV);
 
-    // Dump out what info dm_init_and_scan has determined.
-    printf("------\n\n");
-    dm_dump_all();
-    printf("------\n\n");
-    dm_dump_static_driver_info();
-    printf("------\n\n");
-    dm_dump_drivers();
-    printf("------\n\n");
-    dm_dump_driver_compat();
-    printf("------\n\n");
-    dm_dump_uclass();
-    printf("------\n\n");
+    run_command("usb start", CMD_FLAG_ENV);
 
-    debug("Calling usb_stor_scan\n");
-    ret = usb_stor_scan(1);
-    assert(0 == ret);
-    debug("Returned from usb_stor_scan\n");
+    run_command("dm tree", CMD_FLAG_ENV);
+
+    run_command("usb tree", CMD_FLAG_ENV);
+
+    run_command("usb info", CMD_FLAG_ENV);
+
+    run_command("usb storeage", CMD_FLAG_ENV);
 
     return 0;
 }
