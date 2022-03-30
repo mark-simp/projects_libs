@@ -18,6 +18,8 @@
 
 #define puts(...)           printf(__VA_ARGS__)
 
+#define putc(CHAR)          putc(CHAR, stdout)
+
 #define pr_info(...)        ZF_LOGI(__VA_ARGS__)
 
 #define pr_err(...)         ZF_LOGE(__VA_ARGS__)
