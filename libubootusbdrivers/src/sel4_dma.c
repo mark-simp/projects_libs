@@ -28,13 +28,6 @@ int find_allocation_index_by_vaddr(void *vaddr)
     return -1;
 }
 
-int find_allocation_index_by_paddr(void *paddr)
-{
-    for (int x = 0; x < MAX_DMA_ALLOCS; x++)
-        if (dma_allocation[x].in_use && dma_allocation[x].paddr == paddr) return x;
-    return -1;
-}
-
 void sel4_dma_initialise(ps_dma_man_t dma_manager)
 {
     sel4_dma_manager = &dma_manager;
@@ -50,8 +43,6 @@ void sel4_dma_initialise(ps_dma_man_t dma_manager)
 
 void sel4_dma_flush_range(unsigned long start, unsigned long stop)
 {
-    // ZF_LOGD("start = 0x%x, stop = 0x%x", start, stop);
-
     assert(sel4_dma_manager != NULL);
 
     size_t flush_size;
@@ -71,8 +62,6 @@ void sel4_dma_flush_range(unsigned long start, unsigned long stop)
 
 void sel4_dma_invalidate_range(unsigned long start, unsigned long stop)
 {
-    // ZF_LOGD("start = 0x%x, stop = 0x%x", start, stop);
-
     assert(sel4_dma_manager != NULL);
 
     sel4_dma_manager->dma_cache_op_fn(
@@ -123,15 +112,15 @@ void* sel4_dma_memalign(size_t align, size_t size)
         sel4_dma_manager->cookie,
         size,
         align,
-        false, // Don't cache
+        false,
         PS_MEM_NORMAL);
     if (vaddr == NULL)
     {
-        ZF_LOGE("DMA allocation return null pointer");
+        ZF_LOGE("DMA allocation returned null pointer");
         return NULL;
     }
 
-    void* paddr = sel4_dma_manager->dma_pin_fn(
+    void* paddr = (void *) sel4_dma_manager->dma_pin_fn(
         sel4_dma_manager->cookie,
         vaddr,
         size);
@@ -166,32 +155,73 @@ void* sel4_dma_virt_to_phys(void* vaddr)
 {
     assert(sel4_dma_manager != NULL);
 
-    // Find the previous allocation.
-    int alloc_index = find_allocation_index_by_vaddr(vaddr);
+    // Find the allocation containing this address.
+    int alloc_index = -1;
+    for (int x = 0; x < MAX_DMA_ALLOCS; x++)
+        if (dma_allocation[x].in_use &&
+            vaddr >= dma_allocation[x].vaddr &&
+            vaddr < dma_allocation[x].vaddr + dma_allocation[x].size)
+            {
+                alloc_index = x;
+                break;
+            }
     if (alloc_index < 0)
     {
-        ZF_LOGE("Unable to determine physical address from virtual");
-        return (uintptr_t) NULL;
+        ZF_LOGE("Unable to determine physical address from virtual %p", vaddr);
+        for (int y = 0; y < MAX_DMA_ALLOCS; y++)
+            if (dma_allocation[y].in_use)
+                ZF_LOGE(" --> Index %i: vaddr = %p, size = 0x%x", y, dma_allocation[y].vaddr, dma_allocation[y].size);
+        /* This is a fatal error. Not being able to determine an address
+         * indicates that we are attempting to communicate with the XHCI
+         * device via memory that has not been mapped into the physical
+         * address space. This implies that additional data needs to be
+         * DMA allocated. */
+        assert(false);
     }
 
-    ZF_LOGD("vaddr = %p -> paddr = %p", vaddr, dma_allocation[alloc_index].paddr);
-
-    return (uintptr_t) dma_allocation[alloc_index].paddr;
+    // Return the translated address
+    return dma_allocation[alloc_index].paddr + (vaddr - dma_allocation[alloc_index].vaddr);
 }
 
 void* sel4_dma_phys_to_virt(void *paddr)
 {
     assert(sel4_dma_manager != NULL);
 
-    // Find the previous allocation.
-    int alloc_index = find_allocation_index_by_paddr(paddr);
+    // Find the allocation containing this address.
+    int alloc_index = -1;
+    for (int x = 0; x < MAX_DMA_ALLOCS; x++)
+        if (dma_allocation[x].in_use &&
+            paddr >= dma_allocation[x].paddr &&
+            paddr < dma_allocation[x].paddr + dma_allocation[x].size)
+            {
+                alloc_index = x;
+                break;
+            }
     if (alloc_index < 0)
     {
-        ZF_LOGE("Unable to determine virtual address from physical");
-        return (uintptr_t) NULL;
+        ZF_LOGE("Unable to determine virtual address from physical %p", paddr);
+        /* This is a fatal error. Not being able to determine an address
+         * indicates that we are attempting to communicate with the XHCI
+         * device via memory that has not been mapped into the physical
+         * address space. This implies that additional data needs to be
+         * DMA allocated. */
+        assert(false);
     }
 
-    ZF_LOGD("paddr = %p -> vaddr = %p", paddr, dma_allocation[alloc_index].vaddr);
+    // Return the translated address
+    return dma_allocation[alloc_index].vaddr + (paddr - dma_allocation[alloc_index].paddr);
+}
 
-    return (uintptr_t) dma_allocation[alloc_index].vaddr;
+bool sel4_dma_is_virt_mapped(void * vaddr)
+{
+    assert(sel4_dma_manager != NULL);
+
+    // Find the allocation containing this address.
+    int alloc_index = -1;
+    for (int x = 0; x < MAX_DMA_ALLOCS; x++)
+        if (dma_allocation[x].in_use &&
+            vaddr >= dma_allocation[x].vaddr &&
+            vaddr < dma_allocation[x].vaddr + dma_allocation[x].size)
+                return true;
+    return false;
 }
