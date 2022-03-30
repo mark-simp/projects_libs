@@ -27,6 +27,13 @@
 	assert(false); \
 	})
 
+#define assert_noisy(x) \
+	({ bool _val = (x); \
+	if (!_val) \
+		panic("assert_noisy triggered"); \
+	_val; \
+	})
+
 #define log_ret(_ret) ({ \
 	int __ret = (_ret); \
 	if (__ret < 0) \

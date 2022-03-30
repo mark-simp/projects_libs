@@ -5,67 +5,58 @@
  * sourced from U-Boot.
  */
 
-#define __LINUX_ARM_ARCH__			            8
 #define __KERNEL__
 #define __UBOOT__
 
-#define CONFIG_ARM					        	true
-#define CONFIG_ARM64   					        true  /* TODO: Look at AARCH32 support */
+#define CONFIG_SEL4                     1  /* Enable seL4 specific modifications */
 
-#define CONFIG_SEL4                             true  /* Enable seL4 specific modifications */
+/* TODO: This set should be being set by CMAKE based upon arch */
+#define __LINUX_ARM_ARCH__			    8
+#define CONFIG_ARM
+#define CONFIG_ARM64
 
-#define CONFIG_DM                          		true
-#define CONFIG_DM_USB                           true
-#define CONFIG_OF_LIBFDT				        true
-#define ENABLED_CONFIG_OF_LIVE   				true
-#define ENABLED_CONFIG_OF_REAL          		true
-#define ENABLED_CONFIG_OF_CONTROL          		true
-#define ENABLED_CONFIG_OF_PLATDATA				false
-#define ENABLED_CONFIG_OF_PLATDATA_RT   		false
-#define ENABLED_CONFIG_OF_PLATDATA_DRIVER_RT	false
-#define ENABLED_CONFIG_OF_PLATDATA_INST			false
-#define ENABLED_CONFIG_OF_PLATDATA_NO_BIND		false
-#define ENABLED_CONFIG_OF_PLATDATA_PARENT		false
-#define ENABLED_CONFIG_OF_TRANSLATE	            false
-#define ENABLED_CONFIG_SIMPLE_BUS_CORRECT_RANGE true
-#define ENABLED_CONFIG_DM_USB           		true
-#define ENABLED_CONFIG_PHY                      true
-#define CONFIG_PHY                              true
-#define ENABLED_CONFIG_USB_XHCI_DWC3			true
-#define ENABLED_CONFIG_DM_DEVICE_REMOVE			true
-#define CONFIG_USB_KEYBOARD                     true
-#define CONFIG_USB_STORAGE                      true
-#define CONFIG_USB_HOST                         true
-#define CONFIG_USB_XHCI_HCD                     true
-#define CONFIG_USB_XHCI_DWC3                    true
-#define ENABLED_CONFIG_USB_HOST                 true
-#define CONFIG_USB_DWC3_GADGET                  true
-#define ENABLED_CONFIG_USB_DWC3_GADGET          false
-#define ENABLED_CONFIG_DM_RESET         		false /* Don't need to handle reset */
-#define CONFIG_DEVRES           		        true
-#define ENABLED_CONFIG_DM_DMA           		false
-#define ENABLED_CONFIG_PHYS_TO_BUS      		false
-#define ENABLED_CONFIG_DM_SEQ_ALIAS				false
-#define ENABLED_CONFIG_POWER_DOMAIN				false /* No power domain driver support */
-#define ENABLED_CONFIG_IOMMU					false /* No IOMMU driver support */
-#define ENABLED_CONFIG_CLK    					false /* No clock driver support */
-#define ENABLED_CONFIG_PCI						false /* No PCI support */
-#define ENABLED_CONFIG_NEEDS_MANUAL_RELOC   	false
-#define ENABLED_CONFIG_SIMPLE_BUS				false
-#define ENABLED_CONFIG_LOG						false
-#define ENABLED_CONFIG_OF_SEPARATE              false
-#define ENABLED_CONFIG_OF_BOARD                 false
-#define ENABLED_CONFIG_MULTI_DTB_FIT            false
-#define ENABLED_CONFIG_SPL_SEPARATE_BSS         false
-#define ENABLED_CONFIG_SPL_BUILD                false
-#define ENABLED_CONFIG_PHANDLE_CHECK_SEQ        false
+#define CONFIG_DM                       1
+#define CONFIG_DM_USB                   1
+#define CONFIG_DM_DEVICE_REMOVE			1
+#define CONFIG_DM_RESET         		0 /* Don't need to handle reset */
 
-#define CONFIG_VAL_LOGLEVEL				0
+#define CONFIG_OF_LIBFDT				1
+#define CONFIG_OF_LIVE   				1
+#define CONFIG_OF_REAL          		1
+#define CONFIG_OF_CONTROL          		1
+#define CONFIG_OF_PLATDATA				0
+#define CONFIG_OF_PLATDATA_RT   		0
+#define CONFIG_OF_PLATDATA_DRIVER_RT	0
+#define CONFIG_OF_PLATDATA_INST			0
+#define CONFIG_OF_PLATDATA_NO_BIND		0
+#define CONFIG_OF_PLATDATA_PARENT		0
+#define CONFIG_OF_TRANSLATE	            0
+#define CONFIG_SIMPLE_BUS_CORRECT_RANGE 1
+#define CONFIG_PHY                      1
+#define CONFIG_USB_XHCI_DWC3			1
+#define CONFIG_USB_KEYBOARD             1
+#define CONFIG_USB_STORAGE              1
+#define CONFIG_USB_HOST                 1
+#define CONFIG_USB_XHCI_HCD             1
+#define CONFIG_USB_DWC3_GADGET          0
+#define CONFIG_DEVRES           		1
+#define CONFIG_DM_DMA           		0
+#define CONFIG_PHYS_TO_BUS      		0
+#define CONFIG_DM_SEQ_ALIAS				0
+#define CONFIG_POWER_DOMAIN				0 /* No power domain driver support */
+#define CONFIG_IOMMU					0 /* No IOMMU driver support */
+#define CONFIG_CLK    					0 /* No clock driver support */
+#define CONFIG_PCI						0 /* No PCI support */
+#define CONFIG_NEEDS_MANUAL_RELOC   	0
+#define CONFIG_SIMPLE_BUS				0
+#define CONFIG_LOG						0
+#define CONFIG_OF_SEPARATE              0
+#define CONFIG_OF_BOARD                 0
+#define CONFIG_MULTI_DTB_FIT            0
+#define CONFIG_SPL_SEPARATE_BSS         0
+#define CONFIG_PHANDLE_CHECK_SEQ        0
 
-#define IS_ENABLED(OPTION)   		ENABLED_ ## OPTION
-#define CONFIG_IS_ENABLED(OPTION)   ENABLED_CONFIG_ ## OPTION
-#define CONFIG_VAL(OPTION)  		CONFIG_VAL_ ## OPTION
-
+#define CONFIG_LOGLEVEL				0
 #define CONFIG_ERR_PTR_OFFSET   	0
 #define CONFIG_NR_DRAM_BANKS		0
 #define CONFIG_SYS_CACHELINE_SIZE 	64 /* for cortex a53 MPCore */
@@ -80,11 +71,7 @@
 #define mutex_unlock(...)
 #define EXPORT_SYMBOL(...)
 
-#define likely(x)       __builtin_expect(!!(x), 1)
-#define unlikely(x)     __builtin_expect(!!(x), 0)
-#define assert_noisy(x)	assert(x)
-
-#define __bitwise 		/*__attribute__((bitwise)) */
+#define __bitwise 		/* __attribute__((bitwise)) */
 #define __force 		/* __attribute__((force)) */
 #define __iomem			/* __attribute__((iomem)) */
 
@@ -94,6 +81,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
+#include <linux/kconfig.h>
 #include <vsprintf.h>
 #include <assert.h>
 #include <time.h>
@@ -104,6 +92,7 @@
 #include <linux/byteorder/little_endian.h>
 #include <linux/byteorder/generic.h>
 #include <linux/compiler_types.h>
+#include <linux/compiler.h>
 #include <linux/bitops.h>
 #include <asm/barriers.h>
 #include <asm/io.h>
