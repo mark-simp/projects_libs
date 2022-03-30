@@ -156,6 +156,7 @@
  * abs() should not be used for 64-bit types (s64, u64, long long) - use abs64()
  * for those.
  */
+#ifndef CONFIG_SEL4
 #define abs(x) ({						\
 		long ret;					\
 		if (sizeof(x) == sizeof(long)) {		\
@@ -167,6 +168,7 @@
 		}						\
 		ret;						\
 	})
+#endif
 
 #define abs64(x) ({				\
 		s64 __x = (x);			\
