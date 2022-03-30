@@ -1387,15 +1387,48 @@ static int xhci_submit_control_msg(struct udevice *dev, struct usb_device *udev,
 		while (hop->parent->parent)
 			hop = hop->parent;
 */
+#ifdef CONFIG_SEL4
+	if (sel4_dma_is_virt_mapped(buffer))
+		return _xhci_submit_control_msg(udev, pipe, buffer, length, setup,
+						root_portnr);
+	else {
+		// Buffer is not DMA mapped. Allocate DMA now then clear afterwards.
+		void* dma_buffer = sel4_dma_memalign(max(XHCI_ALIGNMENT, CONFIG_SYS_CACHELINE_SIZE), length);
+		if (dma_buffer == NULL) return -ENOMEM;
+		memcpy(dma_buffer, buffer, length);
+		int ret = _xhci_submit_control_msg(udev, pipe, dma_buffer, length, setup,
+						root_portnr);
+		memcpy(buffer, dma_buffer, length);
+		sel4_dma_free(dma_buffer);
+		return ret;
+	}
+#else
 	return _xhci_submit_control_msg(udev, pipe, buffer, length, setup,
 					root_portnr);
+#endif
 }
 
 static int xhci_submit_bulk_msg(struct udevice *dev, struct usb_device *udev,
 				unsigned long pipe, void *buffer, int length)
 {
 	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+
+#ifdef CONFIG_SEL4
+	if (sel4_dma_is_virt_mapped(buffer))
+		return _xhci_submit_bulk_msg(udev, pipe, buffer, length);
+	else {
+		// Buffer is not DMA mapped. Allocate DMA now then clear afterwards.
+		void* dma_buffer = sel4_dma_memalign(max(XHCI_ALIGNMENT, CONFIG_SYS_CACHELINE_SIZE), length);
+		if (dma_buffer == NULL) return -ENOMEM;
+		memcpy(dma_buffer, buffer, length);
+		int ret = _xhci_submit_bulk_msg(udev, pipe, dma_buffer, length);
+		memcpy(buffer, dma_buffer, length);
+		sel4_dma_free(dma_buffer);
+		return ret;
+	}
+#else
 	return _xhci_submit_bulk_msg(udev, pipe, buffer, length);
+#endif
 }
 
 static int xhci_submit_int_msg(struct udevice *dev, struct usb_device *udev,
@@ -1403,8 +1436,26 @@ static int xhci_submit_int_msg(struct udevice *dev, struct usb_device *udev,
 			       int interval, bool nonblock)
 {
 	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
+
+#ifdef CONFIG_SEL4
+	if (sel4_dma_is_virt_mapped(buffer))
+		return _xhci_submit_int_msg(udev, pipe, buffer, length, interval,
+						nonblock);
+	else {
+		// Buffer is not DMA mapped. Allocate DMA now then clear afterwards.
+		void* dma_buffer = sel4_dma_memalign(max(XHCI_ALIGNMENT, CONFIG_SYS_CACHELINE_SIZE), length);
+		if (dma_buffer == NULL) return -ENOMEM;
+		memcpy(dma_buffer, buffer, length);
+		int ret = _xhci_submit_int_msg(udev, pipe, dma_buffer, length, interval,
+						nonblock);
+		memcpy(buffer, dma_buffer, length);
+		sel4_dma_free(dma_buffer);
+		return ret;
+	}
+#else
 	return _xhci_submit_int_msg(udev, pipe, buffer, length, interval,
 				    nonblock);
+#endif
 }
 
 static int xhci_alloc_device(struct udevice *dev, struct usb_device *udev)
