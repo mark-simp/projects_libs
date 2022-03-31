@@ -4,8 +4,8 @@
 
 struct dma_allocation_t {
     bool in_use;
-    void* vaddr;
-    void* paddr;
+    uintptr_t vaddr;
+    uintptr_t paddr;
     size_t size;
 };
 
@@ -21,7 +21,7 @@ int next_free_allocation_index(void)
     return -1;
 }
 
-int find_allocation_index_by_vaddr(void *vaddr)
+int find_allocation_index_by_vaddr(uintptr_t vaddr)
 {
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
         if (dma_allocation[x].in_use && dma_allocation[x].vaddr == vaddr) return x;
@@ -35,8 +35,8 @@ void sel4_dma_initialise(ps_dma_man_t dma_manager)
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
     {
         dma_allocation[x].in_use = false;
-        dma_allocation[x].vaddr = NULL;
-        dma_allocation[x].paddr = NULL;
+        dma_allocation[x].vaddr = 0;
+        dma_allocation[x].paddr = 0;
         dma_allocation[x].size = 0;
     }
 }
@@ -76,7 +76,7 @@ void sel4_dma_free(void *vaddr)
     assert(sel4_dma_manager != NULL);
 
     // Find the previous allocation.
-    int alloc_index = find_allocation_index_by_vaddr(vaddr);
+    int alloc_index = find_allocation_index_by_vaddr((uintptr_t) vaddr);
     if (alloc_index < 0)
     {
         ZF_LOGE("Call to free DMA allocation not in bookkeeping");
@@ -87,13 +87,13 @@ void sel4_dma_free(void *vaddr)
 
     sel4_dma_manager->dma_free_fn(
         sel4_dma_manager->cookie,
-        dma_allocation[alloc_index].vaddr,
+        (void *) dma_allocation[alloc_index].vaddr,
         dma_allocation[alloc_index].size);
 
     // Memory allocated and pinned. Update bookkeeping.
     dma_allocation[alloc_index].in_use = false;
-    dma_allocation[alloc_index].vaddr = NULL;
-    dma_allocation[alloc_index].paddr = NULL;
+    dma_allocation[alloc_index].vaddr = 0;
+    dma_allocation[alloc_index].paddr = 0;
     dma_allocation[alloc_index].size = 0;
 }
 
@@ -120,7 +120,7 @@ void* sel4_dma_memalign(size_t align, size_t size)
         return NULL;
     }
 
-    void* paddr = (void *) sel4_dma_manager->dma_pin_fn(
+    uintptr_t paddr = sel4_dma_manager->dma_pin_fn(
         sel4_dma_manager->cookie,
         vaddr,
         size);
@@ -139,7 +139,7 @@ void* sel4_dma_memalign(size_t align, size_t size)
 
     // Memory allocated and pinned. Update bookkeeping.
     dma_allocation[alloc_index].in_use = true;
-    dma_allocation[alloc_index].vaddr = vaddr;
+    dma_allocation[alloc_index].vaddr = (uintptr_t) vaddr;
     dma_allocation[alloc_index].paddr = paddr;
     dma_allocation[alloc_index].size = size;
 
@@ -151,7 +151,7 @@ void* sel4_dma_malloc(size_t size)
     return sel4_dma_memalign(4, size);
 }
 
-void* sel4_dma_virt_to_phys(void* vaddr)
+uintptr_t sel4_dma_virt_to_phys(uintptr_t vaddr)
 {
     assert(sel4_dma_manager != NULL);
 
@@ -183,7 +183,7 @@ void* sel4_dma_virt_to_phys(void* vaddr)
     return dma_allocation[alloc_index].paddr + (vaddr - dma_allocation[alloc_index].vaddr);
 }
 
-void* sel4_dma_phys_to_virt(void *paddr)
+uintptr_t sel4_dma_phys_to_virt(uintptr_t paddr)
 {
     assert(sel4_dma_manager != NULL);
 
@@ -191,8 +191,8 @@ void* sel4_dma_phys_to_virt(void *paddr)
     int alloc_index = -1;
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
         if (dma_allocation[x].in_use &&
-            paddr >= dma_allocation[x].paddr &&
-            paddr < dma_allocation[x].paddr + dma_allocation[x].size)
+            paddr >= (uintptr_t) dma_allocation[x].paddr &&
+            paddr < (uintptr_t) dma_allocation[x].paddr + dma_allocation[x].size)
             {
                 alloc_index = x;
                 break;
@@ -212,7 +212,7 @@ void* sel4_dma_phys_to_virt(void *paddr)
     return dma_allocation[alloc_index].vaddr + (paddr - dma_allocation[alloc_index].paddr);
 }
 
-bool sel4_dma_is_virt_mapped(void * vaddr)
+bool sel4_dma_is_virt_mapped(void *vaddr)
 {
     assert(sel4_dma_manager != NULL);
 
@@ -220,8 +220,8 @@ bool sel4_dma_is_virt_mapped(void * vaddr)
     int alloc_index = -1;
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
         if (dma_allocation[x].in_use &&
-            vaddr >= dma_allocation[x].vaddr &&
-            vaddr < dma_allocation[x].vaddr + dma_allocation[x].size)
+            (uintptr_t) vaddr >= dma_allocation[x].vaddr &&
+            (uintptr_t) vaddr < dma_allocation[x].vaddr + dma_allocation[x].size)
                 return true;
     return false;
 }

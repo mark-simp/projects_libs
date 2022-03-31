@@ -8,8 +8,8 @@ void* sel4_dma_memalign(size_t align, size_t size);
 
 void* sel4_dma_malloc(size_t size);
 
-void* sel4_dma_virt_to_phys(void *vaddr);
+uintptr_t sel4_dma_virt_to_phys(uintptr_t vaddr);
 
-void* sel4_dma_phys_to_virt(void *paddr);
+uintptr_t sel4_dma_phys_to_virt(uintptr_t paddr);
 
 bool sel4_dma_is_virt_mapped(void * vaddr);
