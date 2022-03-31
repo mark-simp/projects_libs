@@ -8,9 +8,32 @@
 #define __KERNEL__
 #define __UBOOT__
 
-#define CONFIG_SEL4                     1  /* Enable seL4 specific modifications */
+/* Enable seL4 specific modifications */
+#define CONFIG_SEL4
 
-/* TODO: This set should be being set by CMAKE based upon arch */
+/* Define which routines the muslc library provides for us. Those not provided
+ * are instead provided by U-Boot's string.c */
+#define __HAVE_ARCH_STRCPY
+#define __HAVE_ARCH_STRNCPY
+#define __HAVE_ARCH_STRLCPY
+#define __HAVE_ARCH_STRCAT
+#define __HAVE_ARCH_STRNCAT
+#define __HAVE_ARCH_STRLCAT
+#define __HAVE_ARCH_STRCMP
+#define __HAVE_ARCH_STRNCMP
+#define __HAVE_ARCH_STRCHR
+#define __HAVE_ARCH_STRRCHR
+#define __HAVE_ARCH_STRSTR
+#define __HAVE_ARCH_STRLEN
+#define __HAVE_ARCH_STRNLEN
+#define __HAVE_ARCH_STRDUP
+#define __HAVE_ARCH_MEMSET
+#define __HAVE_ARCH_MEMCPY
+#define __HAVE_ARCH_MEMMOVE
+#define __HAVE_ARCH_MEMCMP
+#define __HAVE_ARCH_MEMCHR
+
+/* TODO: This set should be being set by CMake based upon arch */
 #define __LINUX_ARM_ARCH__			    8
 #define CONFIG_ARM
 #define CONFIG_ARM64
@@ -20,7 +43,6 @@
 #define CONFIG_DM_DEVICE_REMOVE			1
 
 #define CONFIG_CMDLINE                  1
-#define CONFIG_SILENT_CONSOLE           1
 
 #define CONFIG_OF_LIBFDT				1
 #define CONFIG_OF_LIVE   				1

@@ -30,6 +30,7 @@ if(LibUBOOTUSB)
             src/uboot/common/*.c
             src/uboot/drivers/block/*.c
             src/uboot/drivers/core/*.c
+            src/uboot/drivers/input/*.c
             src/uboot/drivers/phy/*.c
             src/uboot/drivers/usb/common/*.c
             src/uboot/drivers/usb/dwc3/*.c

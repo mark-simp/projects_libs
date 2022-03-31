@@ -4,6 +4,8 @@
 #include <linux/usb/gadget.h>
 #include "uboot/drivers/usb/dwc3/core.h"
 
+#include <input.h>
+
 /* This is required to prevent a linker error but is never used (because OF_PLATDATA_INST is not defined) */
 struct udevice _u_boot_udevice__root;
 
@@ -25,11 +27,16 @@ int common_diskboot(struct cmd_tbl *cmdtp, const char *intf, int argc,
 }
 
 // Console related routines.
-int console_assign(int file, const char *devname) {}
-int ctrlc(void) {}
-int had_ctrlc(void) {}
+int console_assign(int file, const char *devname) { return 0; }
+int ctrlc(void) { return 0; }
+int had_ctrlc(void) { return 0; }
 void clear_ctrlc(void) {}
-int disable_ctrlc(int file) {}
+int disable_ctrlc(int file) { return 0; }
+
+// Input related routines. Will probably need these for the keyboard driver...
+int input_tstc(struct input_config *config) { return 0; }
+int input_getc(struct input_config *config) { return 0; }
+int input_init(struct input_config *config, int leds) { return 0; }
 
 /* Unused routines. Ensure they are not used by raising an assert */
 long get_ram_size(long *base, long size) {
