@@ -12,13 +12,22 @@
  */
 struct global_data* gd;
 
-int init_uboot(char* fdt_blob)
+bool library_initialised = false;
+
+int initialise_uboot_drivers(char* fdt_blob)
 {
+    // Return immediately if already initialised (nothing to do).
+    if (library_initialised) return 0;
+
     // Set up the driver data.
     initialise_driver_data();
 
     // Allocation of global_data.
     gd = malloc(sizeof(gd_t));
+    if (gd == NULL) {
+        // Failed to initialise library, clean up and return error code.
+        return -ENOMEM;
+    }
 
     // Initialisation of (unused sections of the) global_data.
     gd->bd = NULL;
@@ -65,26 +74,44 @@ int init_uboot(char* fdt_blob)
 
     // Build the live tree from the FDT.
     int ret = of_live_build(gd->fdt_blob, (struct device_node **)gd_of_root_ptr());
-    assert(0 == ret);
+    if (0 != ret) {
+        // Failed to initialise library, clean up and return error code.
+        free(gd);
+        gd = NULL;
+        return -1;
+    }
 
-    debug("Calling dm_init_and_scan\n");
+    // Scan the device tree for compatible drivers.
     ret = dm_init_and_scan(false);
-    assert(0 == ret);
-    debug("Returned from dm_init_and_scan\n");
+    if (0 != ret) {
+        // Failed to initialise library, clean up and return error code.
+        free(gd);
+        gd = NULL;
+        return -1;
+    }
 
-    // Run u-boot commands.
-
-    run_command("dm tree", CMD_FLAG_ENV);
-
-    run_command("usb start", CMD_FLAG_ENV);
-
-    run_command("dm tree", CMD_FLAG_ENV);
-
-    run_command("usb tree", CMD_FLAG_ENV);
-
-    run_command("usb info", CMD_FLAG_ENV);
-
-    run_command("usb storeage", CMD_FLAG_ENV);
-
+    // Success.
+    library_initialised = true;
     return 0;
+}
+
+int run_uboot_command(char* cmd)
+{
+    // Fail immediately if library not initialised.
+    if (!library_initialised) return -1;
+
+    // Perform the command.
+    return run_command(cmd, CMD_FLAG_ENV);
+}
+
+void shutdown_uboot_drivers(void)
+{
+    // Return immediately if library not initialsed (nothing to do).
+    if (!library_initialised) return;
+
+    // Delete persistant state.
+    free(gd);
+    gd = NULL;
+
+    return;
 }

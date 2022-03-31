@@ -1,4 +1,6 @@
 #include <sel4platsupport/io.h>
+#include <platsupport/delay.h>
+
 #include <libfdt.h>
 #include <uboot_wrapper.h>
 #include <sel4_timer.h>
@@ -205,12 +207,33 @@ int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t devic
         }
     }
 
-    // Start the U-Boot device model and provide it a pointer to the FDT blob.
-    ret = init_uboot(uboot_fdt_pointer);
+    // Start the U-Boot driver library. Provide it a pointer to the FDT blob.
+    ret = initialise_uboot_drivers(uboot_fdt_pointer);
     if (ret) {
         free(uboot_fdt_pointer);
         return ret;
     }
 
+    // Perform some U-Boot commands.
+
+    run_uboot_command("dm tree");
+
+    run_uboot_command("usb start");
+
+    run_uboot_command("dm tree");
+
+    run_uboot_command("usb tree");
+
+    run_uboot_command("usb info");
+
+    // Wait a bit then shut things down.
+
+    ps_mdelay(5 * 1000);
+
+    run_uboot_command("usb stop");
+
+    shutdown_uboot_drivers();
+
+    // All done.
     return 0;
 }
