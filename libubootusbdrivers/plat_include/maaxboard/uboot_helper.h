@@ -48,7 +48,6 @@
 #define CONFIG_SYS_PROMPT           ""
 #define CONFIG_ENV_SIZE             0x2000
 #define ARCH_DMA_MINALIGN   		CONFIG_SYS_CACHELINE_SIZE
-// #define DO_DEPS_ONLY				true
 #define errno_str(X)				""
 #define CONFIG_SYS_HZ               1000
 #define UBOOT_STDIN		            0
