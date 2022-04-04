@@ -23,7 +23,8 @@ if(LibUBOOTUSB)
         GLOB
             deps
             src/*.c
-            src/libs/libfdt/*.c
+            src/lib/*.c
+            src/lib/libfdt/*.c
             src/stubs/*.c
             src/uboot/*.c
             src/uboot/cmd/*.c
@@ -36,6 +37,7 @@ if(LibUBOOTUSB)
             src/uboot/drivers/usb/dwc3/*.c
             src/uboot/drivers/usb/host/*.c
             src/uboot/drivers/usb/gadget/*.c
+            src/uboot/env/*.c
             src/uboot/lib/*.c
             src/plat/${KernelPlatform}/*.c
     )
@@ -45,7 +47,7 @@ if(LibUBOOTUSB)
     add_library(ubootusbdrivers STATIC EXCLUDE_FROM_ALL ${deps})
     target_include_directories(ubootusbdrivers PUBLIC
         include
-        src/libs
+        src/lib
         uboot_include
         uboot_arch_include/${KernelArch}
         plat_include/${KernelPlatform}
