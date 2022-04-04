@@ -74,3 +74,8 @@ extern void serial_stdio_init(void) {
 void dwc3_gadget_uboot_handle_interrupt(struct dwc3 *dwc) {
     assert(false);
 }
+
+// Provide an implementation of hang.
+void hang(void) {
+    assert(false);
+}
