@@ -150,7 +150,11 @@ static void xhci_scratchpad_free(struct xhci_ctrl *ctrl)
  */
 static void xhci_free_container_ctx(struct xhci_container_ctx *ctx)
 {
+#ifdef CONFIG_SEL4
+	sel4_dma_free(ctx->bytes);
+#else
 	free(ctx->bytes);
+#endif
 	free(ctx);
 }
 
