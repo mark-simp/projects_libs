@@ -53,12 +53,15 @@
 #define CONFIG_PHY                      1
 #define CONFIG_USB_XHCI_DWC3			1
 #define CONFIG_USB_KEYBOARD             1
+#define CONFIG_SYS_USB_EVENT_POLL       1
 #define CONFIG_USB_STORAGE              1
 #define CONFIG_USB_HOST                 1
 #define CONFIG_USB_XHCI_HCD             1
 #define CONFIG_DEVRES           		1
 
 #define CONFIG_BLK                      1
+
+#define CONFIG_ENV_IS_NOWHERE           1
 
 #define CONFIG_LOGLEVEL				0
 #define CONFIG_ERR_PTR_OFFSET   	0
@@ -69,13 +72,15 @@
 #define CONFIG_SYS_PBSIZE           256
 #define CONFIG_SYS_PROMPT           ""
 #define CONFIG_ENV_SIZE             0x2000
+#define CONFIG_LMB_MEMORY_REGIONS   0
+#define CONFIG_LMB_RESERVED_REGIONS 0
 #define ARCH_DMA_MINALIGN   		CONFIG_SYS_CACHELINE_SIZE
-#define errno_str(X)				""
 #define CONFIG_SYS_HZ               1000
 #define UBOOT_STDIN		            0
 #define UBOOT_STDOUT		        1
 #define UBOOT_STDERR		        2
 #define MAX_FILES	                3
+#define _DEBUG			            false
 
 #define mutex_init(...)
 #define mutex_lock(...)
@@ -85,8 +90,6 @@
 #define __bitwise 		/* __attribute__((bitwise)) */
 #define __force 		/* __attribute__((force)) */
 #define __iomem			/* __attribute__((iomem)) */
-
-#define _DEBUG			false
 
 #include <linux/kconfig.h>
 #include <common.h>

@@ -6,13 +6,16 @@
 #include <fdtdec.h>
 #include <of_live.h>
 #include <driver_data.h>
+#include <stdio_dev.h>
 
-/*
- * Global declaration of global_data.
- */
+// Global declaration of global_data.
 struct global_data* gd;
 
-bool library_initialised = false;
+// Global declaration of errno_uboot.
+int errno_uboot = 0;
+
+// State determining whether the library has been initialised.
+static bool library_initialised = false;
 
 int initialise_uboot_drivers(char* fdt_blob)
 {
@@ -80,6 +83,9 @@ int initialise_uboot_drivers(char* fdt_blob)
         gd = NULL;
         return -1;
     }
+
+    // Initialise the stdio system.
+    stdio_init();
 
     // Scan the device tree for compatible drivers.
     ret = dm_init_and_scan(false);

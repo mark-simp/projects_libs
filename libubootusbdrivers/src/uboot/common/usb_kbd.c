@@ -578,27 +578,39 @@ static int probe_usb_keyboard(struct usb_device *dev)
 	usb_kbd_dev.getc = usb_kbd_getc;
 	usb_kbd_dev.tstc = usb_kbd_testc;
 	usb_kbd_dev.priv = (void *)dev;
+	debug("1");
 	error = stdio_register(&usb_kbd_dev);
+	debug("2");
 	if (error)
 		return error;
 
 	stdinname = env_get("stdin");
+	debug("3");
+
 #if CONFIG_IS_ENABLED(CONSOLE_MUX)
 	error = iomux_doenv(UBOOT_STDIN, stdinname);
 	if (error)
 		return error;
 #else
 	/* Check if this is the standard input device. */
-	if (strcmp(stdinname, DEVNAME))
+	if (strcmp(stdinname, DEVNAME)) {
+		debug("3.1");
 		return 1;
+	}
+
+	debug("4");
 
 	/* Reassign the console */
 	if (overwrite_console())
 		return 1;
 
+	debug("5");
+
 	error = console_assign(UBOOT_STDIN, DEVNAME);
 	if (error)
 		return error;
+
+	debug("6");
 #endif
 
 	return 0;

@@ -8,6 +8,8 @@
 #include <dm/platdata.h>
 #include <usb.h>
 #include <command.h>
+#include <env.h>
+#include <env_internal.h>
 
 #include <plat_driver_data.h>
 
@@ -20,6 +22,9 @@ struct driver_data_t {
     struct usb_driver_entry usb_driver_entry_array[DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT];
     /* The array of commands compiled in */
     struct cmd_tbl cmd_array[DEFINE_UBOOT_CMD_COUNT];
+    /* The array of environment variable drivers and callbacks compiled in */
+    struct env_driver env_driver_array[DEFINE_UBOOT_ENV_DRIVER_COUNT];
+    struct env_clbk_tbl env_clbk_array[DEFINE_UBOOT_ENV_CLBK_COUNT];
     /*
      * The remaining entries are used for 'static' drivers, i.e. drivers to
      * be statically bound to devices. These are normally empty / unused;
