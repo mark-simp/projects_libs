@@ -40,6 +40,7 @@
 
 #define CONFIG_DM                       1
 #define CONFIG_DM_USB                   1
+#define CONFIG_DM_KEYBOARD              1
 #define CONFIG_DM_DEVICE_REMOVE			1
 
 #define CONFIG_CMDLINE                  1
@@ -62,6 +63,7 @@
 #define CONFIG_BLK                      1
 
 #define CONFIG_ENV_IS_NOWHERE           1
+#define CONFIG_ENV_SIZE                 0x2000 /* 8K of storage for env variables */
 
 #define CONFIG_LOGLEVEL				0
 #define CONFIG_ERR_PTR_OFFSET   	0
@@ -71,7 +73,6 @@
 #define CONFIG_SYS_CBSIZE           256
 #define CONFIG_SYS_PBSIZE           256
 #define CONFIG_SYS_PROMPT           ""
-#define CONFIG_ENV_SIZE             0x2000 /* 8K of storage for env variables */
 #define CONFIG_LMB_MEMORY_REGIONS   0
 #define CONFIG_LMB_RESERVED_REGIONS 0
 #define ARCH_DMA_MINALIGN   		CONFIG_SYS_CACHELINE_SIZE

@@ -228,9 +228,13 @@ int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t devic
 
     run_uboot_command("usb info");
 
-    // Wait a bit then shut things down.
-
-    ps_mdelay(5 * 1000);
+    // Loop for a while reading keypresses
+    printf("Echoing input from the USB keyboard:\n");
+    for (int x=0; x<=1000; x++) {
+        while (uboot_stdin_tstc())
+            printf("Received character: %c\n", uboot_stdin_getc(), stdout);
+        ps_mdelay(10);
+    }
 
     run_uboot_command("usb stop");
 

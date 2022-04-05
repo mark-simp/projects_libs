@@ -131,3 +131,19 @@ void shutdown_uboot_drivers(void)
 
     return;
 }
+
+int uboot_stdin_tstc(void)
+{
+    if (NULL == stdio_devices[UBOOT_STDIN])
+        return 0;
+
+    return stdio_devices[UBOOT_STDIN]->tstc(stdio_devices[UBOOT_STDIN]);
+}
+
+int uboot_stdin_getc(void)
+{
+    if (NULL == stdio_devices[UBOOT_STDIN])
+        return 0;
+
+    return stdio_devices[UBOOT_STDIN]->getc(stdio_devices[UBOOT_STDIN]);
+}
