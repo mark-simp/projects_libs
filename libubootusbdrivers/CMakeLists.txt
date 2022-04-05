@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 3.7.2)
 
 project(libubootusbdrivers C ASM)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=ZF_LOG_VERBOSE")
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=ZF_LOG_VERBOSE")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=ZF_LOG_INFO")
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -D__ASSEMBLY__")
 
 config_option(LibUBOOTUSB LIB_UBOOT_USB "Build USB interface library" DEFAULT ON)
