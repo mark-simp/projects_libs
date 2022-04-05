@@ -7,6 +7,7 @@
 #include <of_live.h>
 #include <driver_data.h>
 #include <stdio_dev.h>
+#include <console.h>
 
 // Global declaration of global_data.
 struct global_data* gd;
@@ -27,10 +28,8 @@ int initialise_uboot_drivers(char* fdt_blob)
 
     // Allocation of global_data.
     gd = malloc(sizeof(gd_t));
-    if (gd == NULL) {
-        // Failed to initialise library, clean up and return error code.
+    if (gd == NULL)
         return -ENOMEM;
-    }
 
     // Initialisation of (unused sections of the) global_data.
     gd->bd = NULL;
@@ -73,12 +72,8 @@ int initialise_uboot_drivers(char* fdt_blob)
 
     // Build the live tree from the FDT.
     int ret = of_live_build(gd->fdt_blob, (struct device_node **)gd_of_root_ptr());
-    if (0 != ret) {
-        // Failed to initialise library, clean up and return error code.
-        free(gd);
-        gd = NULL;
-        return -1;
-    }
+    if (0 != ret)
+        goto error;
 
     // Manually initialise the environment system. We do this by marking the
     // the pre-relocation environment as invalid, i.e. not present, and then
@@ -89,26 +84,29 @@ int initialise_uboot_drivers(char* fdt_blob)
 	gd->env_has_init = 0;
 	gd->env_load_prio = 0;
     env_relocate();
-    // Set up a few basic environment variables that u-boot expects to be defined.
-    env_set("stdin", "none");
-    env_set("stdout", "none");
-    env_set("stderr", "none");
 
-    // Initialise the stdio system.
-    stdio_init();
+    // Initialise the stdio files / devices and the (stubbed) cosole.
+    ret = stdio_init();
+    if (0 != ret)
+        goto error;
+    ret = console_init_r();
+    if (0 != ret)
+        goto error;
 
     // Scan the device tree for compatible drivers.
     ret = dm_init_and_scan(false);
-    if (0 != ret) {
-        // Failed to initialise library, clean up and return error code.
-        free(gd);
-        gd = NULL;
-        return -1;
-    }
+    if (0 != ret)
+        goto error;
 
     // Success.
     library_initialised = true;
     return 0;
+
+error:
+    // Failed to initialise library, clean up and return error code.
+    free(gd);
+    gd = NULL;
+    return -1;
 }
 
 int run_uboot_command(char* cmd)

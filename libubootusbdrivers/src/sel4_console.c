@@ -93,3 +93,20 @@ void stdio_print_current_devices(void)
 		printf ("%s\n", stdio_devices[UBOOT_STDERR]->name);
 	}
 }
+
+int console_init_r(void)
+{
+	// Set up all file to use the null device.
+	int ret;
+	for (int i = 0 ; i < MAX_FILES; i++) {
+		ret = console_assign(i, "nulldev");
+		if (ret != 0) {
+			printf("console_init: Unable to assign 'nulldev' to file.\n");
+			return -1;
+			}
+		// Set the environment variable to reflect the selected device.
+		env_set(stdio_names[i], "nulldev");
+		}
+
+	return 0;
+}
