@@ -40,7 +40,6 @@
 
 #define CONFIG_DM                       1
 #define CONFIG_DM_USB                   1
-#define CONFIG_DM_KEYBOARD              1
 #define CONFIG_DM_DEVICE_REMOVE			1
 
 #define CONFIG_CMDLINE                  1
@@ -64,6 +63,8 @@
 
 #define CONFIG_ENV_IS_NOWHERE           1
 #define CONFIG_ENV_SIZE                 0x2000 /* 8K of storage for env variables */
+
+#define CONFIG_SYS_DEVICE_NULLDEV       1
 
 #define CONFIG_LOGLEVEL				0
 #define CONFIG_ERR_PTR_OFFSET   	0
