@@ -71,7 +71,7 @@
 #define CONFIG_SYS_CBSIZE           256
 #define CONFIG_SYS_PBSIZE           256
 #define CONFIG_SYS_PROMPT           ""
-#define CONFIG_ENV_SIZE             0x2000
+#define CONFIG_ENV_SIZE             0x2000 /* 8K of storage for env variables */
 #define CONFIG_LMB_MEMORY_REGIONS   0
 #define CONFIG_LMB_RESERVED_REGIONS 0
 #define ARCH_DMA_MINALIGN   		CONFIG_SYS_CACHELINE_SIZE

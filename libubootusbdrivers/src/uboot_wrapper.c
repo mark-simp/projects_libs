@@ -42,10 +42,6 @@ int initialise_uboot_drivers(char* fdt_blob)
 	gd->pci_clk = 0;
 	gd->mem_clk = 0;
     gd->have_console = 1;
-	gd->env_addr = 0;
-	gd->env_valid = 0;
-	gd->env_has_init = 0;
-	gd->env_load_prio = 0;
 	gd->ram_base = 0;
 	gd->ram_top = 0;
 	gd->relocaddr = 0;
@@ -83,6 +79,16 @@ int initialise_uboot_drivers(char* fdt_blob)
         gd = NULL;
         return -1;
     }
+
+    // Manually initialise the environment system. We do this by marking the
+    // the pre-relocation environment as invalid, i.e. not present, and then
+    // asking for the environment to be relocated to RAM. This will set up
+    // the RAM with the default environment as a starting point.
+    gd->env_addr = 0;
+	gd->env_valid = ENV_INVALID;
+	gd->env_has_init = 0;
+	gd->env_load_prio = 0;
+    env_relocate();
 
     // Initialise the stdio system.
     stdio_init();
