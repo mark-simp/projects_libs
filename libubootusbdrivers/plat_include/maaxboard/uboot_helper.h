@@ -33,11 +33,6 @@
 #define __HAVE_ARCH_MEMCMP
 #define __HAVE_ARCH_MEMCHR
 
-/* TODO: This set should be being set by CMake based upon arch */
-#define __LINUX_ARM_ARCH__			    8
-#define CONFIG_ARM
-#define CONFIG_ARM64
-
 #define CONFIG_DM                       1
 #define CONFIG_DM_USB                   1
 #define CONFIG_DM_DEVICE_REMOVE			1
