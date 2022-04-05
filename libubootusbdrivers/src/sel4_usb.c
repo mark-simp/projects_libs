@@ -218,6 +218,8 @@ int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t devic
 
     run_uboot_command("dm tree");
 
+    run_uboot_command("setenv stdin usbkbd"); // Use a USB keyboard as the input device
+
     run_uboot_command("usb start");
 
     run_uboot_command("dm tree");

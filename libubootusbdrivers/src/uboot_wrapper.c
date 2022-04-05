@@ -89,6 +89,10 @@ int initialise_uboot_drivers(char* fdt_blob)
 	gd->env_has_init = 0;
 	gd->env_load_prio = 0;
     env_relocate();
+    // Set up a few basic environment variables that u-boot expects to be defined.
+    env_set("stdin", "none");
+    env_set("stdout", "none");
+    env_set("stderr", "none");
 
     // Initialise the stdio system.
     stdio_init();
