@@ -22,17 +22,23 @@ struct driver_data_t {
     struct usb_driver_entry usb_driver_entry_array[DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT];
     /* The array of commands compiled in */
     struct cmd_tbl cmd_array[DEFINE_UBOOT_CMD_COUNT];
-    /* The array of environment variable drivers and callbacks compiled in */
-    struct env_driver env_driver_array[DEFINE_UBOOT_ENV_DRIVER_COUNT];
-    struct env_clbk_tbl env_clbk_array[DEFINE_UBOOT_ENV_CLBK_COUNT];
+    /* Entries to be used for drivers for pre-relocation environment data,
+     * e.g. environment data stored in EEPROM. We do not use these and
+     * instead rely upon the default environment data (see env_default.h)
+     * and environment variables explicitly set up by the user of the library.
+     * Callbacks triggered by environment variable changes are also not
+     * supported.
+     */
+    struct env_driver env_driver_array[0];
+    struct env_clbk_tbl env_clbk_array[0];
     /*
-     * The remaining entries are used for 'static' drivers, i.e. drivers to
-     * be statically bound to devices. These are normally empty / unused;
-     * drivers are normally bound to devices at run-time based upon the
+     * Entries used for 'static' drivers, i.e. drivers to be
+     * statically bound to devices. These are explicitly empty / unused;
+     * drivers are to be bound to devices at run-time based upon the
      * contents of the device tree and the compatibility of the driver.
      */
-    struct driver_info driver_info_array[DEFINE_UBOOT_DRIVER_INFO_COUNT];
-    struct udevice udevice_array[DEFINE_UBOOT_UDEVICE_COUNT];
+    struct driver_info driver_info_array[0];
+    struct udevice udevice_array[0];
 };
 
 extern struct driver_data_t driver_data;

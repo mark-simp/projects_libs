@@ -2,11 +2,7 @@
 #define DEFINE_UBOOT_UCLASS_DRIVER_COUNT        10
 #define DEFINE_UBOOT_DRIVER_COUNT               10
 #define DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT     3
-#define DEFINE_UBOOT_DRIVER_INFO_COUNT          0
-#define DEFINE_UBOOT_UDEVICE_COUNT              0
-#define DEFINE_UBOOT_CMD_COUNT                  3
-#define DEFINE_UBOOT_ENV_DRIVER_COUNT           0
-#define DEFINE_UBOOT_ENV_CLBK_COUNT             0
+#define DEFINE_UBOOT_CMD_COUNT                  4
 
 // Define the uclass drivers to be used on this platform.
 extern struct uclass_driver _u_boot_uclass_driver__nop;
@@ -40,4 +36,5 @@ extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_kbd;
 // Define the u-boot commands to be used on this platform.
 extern struct cmd_tbl _u_boot_cmd__dm;
 extern struct cmd_tbl _u_boot_cmd__usb;
+extern struct cmd_tbl _u_boot_cmd__env;
 extern struct cmd_tbl _u_boot_cmd__setenv;
