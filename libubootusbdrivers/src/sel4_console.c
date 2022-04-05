@@ -7,7 +7,7 @@
 /* This is a minimal stub of U-Boot's console package providing the subset
  * of functionality required to allow basic input / output devices to be
  * registered and accessed by the driver library.
- * /
+ */
 
 #include <uboot_helper.h>
 
