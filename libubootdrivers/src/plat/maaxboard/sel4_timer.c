@@ -29,6 +29,7 @@ int init_and_start_timer(ps_io_ops_t *io_ops, const char *timer_path)
     ret = gpt_start(gpt);
     if (ret != 0) {
         ZF_LOGE("Failed to start timer.");
+        gpt_destroy(gpt);
         free(gpt);
         gpt = NULL;
         return -1;
@@ -37,6 +38,14 @@ int init_and_start_timer(ps_io_ops_t *io_ops, const char *timer_path)
     return 0;
 }
 
+void shutdown_timer(void)
+{
+    if (gpt != NULL) {
+        gpt_destroy(gpt);
+        free(gpt);
+        gpt = NULL;
+    }
+}
 
 unsigned long timer_get_us(void) {
     if (gpt == NULL)
