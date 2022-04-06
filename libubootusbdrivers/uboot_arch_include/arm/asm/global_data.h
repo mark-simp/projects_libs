@@ -4,6 +4,8 @@
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  */
 
+/* Minimal stub. No architecture specific global data required */
+
 #ifndef	__ASM_GBL_DATA_H
 #define __ASM_GBL_DATA_H
 
