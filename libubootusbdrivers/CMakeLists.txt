@@ -10,7 +10,7 @@ project(libubootusbdrivers C)
 set(LIB_UBOOT_LOGGING_LEVEL "ZF_LOG_INFO")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=${LIB_UBOOT_LOGGING_LEVEL}")
 
-# config_option(LibUBOOTUSB LIB_UBOOT_USB "Build USB interface library" DEFAULT ON)
+config_option(LibUBOOTUSB LIB_UBOOT_USB "Build USB interface library" DEFAULT ON)
 
 add_config_library(ubootusbdrivers "${configure_string}")
 if(LibUBOOTUSB)
