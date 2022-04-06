@@ -67,11 +67,11 @@ if(LibUBOOT)
     add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
 
     target_include_directories(ubootdrivers PUBLIC
-        include
+        include/wrapper
         src/uboot/lib
-        uboot_include
-        uboot_arch_include/${KernelArch}
-        plat_include/${KernelPlatform}
+        include/uboot/include
+        include/uboot/arch/${KernelArch}
+        include/plat/${KernelPlatform}
     )
     target_link_libraries(ubootdrivers sel4 muslc sel4platsupport utils)
 endif()
