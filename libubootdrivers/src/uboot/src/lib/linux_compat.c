@@ -1,5 +1,3 @@
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <malloc.h>
 #include <memalign.h>

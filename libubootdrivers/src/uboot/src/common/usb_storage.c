@@ -31,8 +31,6 @@
  * only been tested with USB memory sticks.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <blk.h>
 #include <command.h>

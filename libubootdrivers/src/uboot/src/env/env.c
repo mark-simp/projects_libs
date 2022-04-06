@@ -4,8 +4,6 @@
  * Written by Simon Glass <sjg@chromium.org>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <env.h>
 #include <env_internal.h>

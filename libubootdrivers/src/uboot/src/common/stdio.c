@@ -8,8 +8,6 @@
  * Paolo Scaffardi, AIRVENT SAM s.p.a - RIMINI(ITALY), arsenio@tin.it
  */
 
-#include <uboot_helper.h>
-
 #include <config.h>
 #include <common.h>
 #include <dm.h>

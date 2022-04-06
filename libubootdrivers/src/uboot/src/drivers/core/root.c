@@ -6,8 +6,6 @@
  * Pavel Herrmann <morpheus.ibis@gmail.com>
  */
 
-#include <uboot_helper.h>
-
 #define LOG_CATEGORY UCLASS_ROOT
 
 #include <common.h>

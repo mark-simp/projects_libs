@@ -13,8 +13,6 @@
  *	    Vikas Sajjan <vikas.sajjan@samsung.com>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <cpu_func.h>
 #include <log.h>

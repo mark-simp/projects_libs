@@ -3,8 +3,6 @@
  * Copyright (c) 2011 The Chromium OS Authors.
  */
 
-#include <uboot_helper.h>
-
 #ifndef USE_HOSTCC
 #include <common.h>
 #include <boot_fit.h>

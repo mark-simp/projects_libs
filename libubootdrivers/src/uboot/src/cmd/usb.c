@@ -10,8 +10,6 @@
  * project.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <blk.h>
 #include <bootstage.h>

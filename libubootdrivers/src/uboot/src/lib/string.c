@@ -15,8 +15,6 @@
  *    reentrant and should be faster). Use only strsep() in new code, please.
  */
 
-#include <uboot_helper.h>
-
 #include <config.h>
 #include <linux/compiler.h>
 #include <linux/types.h>

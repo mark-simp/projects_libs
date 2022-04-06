@@ -52,7 +52,7 @@ if(LibUBOOT)
     elseif("${LIB_UBOOT_LOGGING_LEVEL}" STREQUAL "ZF_LOG_FATAL")
         add_definitions("-DCONFIG_LOGLEVEL=0")
     else()
-        error("No recognised logging level set in LIB_UBOOT_LOGGING_LEVEL. Aborting.")
+        message(FATAL_ERROR "No recognised logging level set in LIB_UBOOT_LOGGING_LEVEL. Aborting.")
     endif()
 
     # Enumerate the set of source files
@@ -63,6 +63,10 @@ if(LibUBOOT)
     list(APPEND deps ${uboot_deps})
     list(APPEND deps ${plat_deps})
     list(SORT deps)
+
+    # Add the 'uboot_helper.h' include to all U-Boot source files to provide
+    # the required includes and configuration.
+    set_source_files_properties(${uboot_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
 
     add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
 

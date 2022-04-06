@@ -6,8 +6,6 @@
 
 #define LOG_CATEGORY UCLASS_BLK
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <blk.h>
 #include <dm.h>

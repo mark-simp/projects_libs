@@ -6,8 +6,6 @@
  * Copyright 2010-2011 Freescale Semiconductor, Inc.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <env.h>
 #include <log.h>

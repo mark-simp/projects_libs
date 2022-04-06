@@ -21,8 +21,6 @@
  * Probes device for being a hub and configurate it
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <command.h>
 #include <dm.h>

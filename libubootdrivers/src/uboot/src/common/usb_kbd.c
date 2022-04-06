@@ -7,8 +7,6 @@
  * project.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <console.h>
 #include <dm.h>

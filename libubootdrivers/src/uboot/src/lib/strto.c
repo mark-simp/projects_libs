@@ -9,8 +9,6 @@
  * Wirzenius wrote this portably, Torvalds fucked it up :-)
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <errno.h>
 #include <linux/ctype.h>

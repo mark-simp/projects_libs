@@ -23,8 +23,6 @@
  * environment. After that, we use a hash table.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <cli.h>
 #include <command.h>

@@ -4,8 +4,6 @@
  * Written by Simon Glass <sjg@chromium.org>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <dm.h>
 #include <dm/of_access.h>

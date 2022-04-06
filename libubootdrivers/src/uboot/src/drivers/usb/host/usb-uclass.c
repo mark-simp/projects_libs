@@ -8,8 +8,6 @@
 
 #define LOG_CATEGORY UCLASS_USB
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <dm.h>
 #include <errno.h>

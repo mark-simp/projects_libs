@@ -8,8 +8,6 @@
  * Pavel Herrmann <morpheus.ibis@gmail.com>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <dm.h>
 #include <fdt_support.h>

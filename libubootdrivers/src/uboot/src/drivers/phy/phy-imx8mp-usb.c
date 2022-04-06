@@ -4,8 +4,6 @@
  *
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <asm/io.h>
 #include <dm.h>

@@ -4,8 +4,6 @@
  * Joe Hershberger, National Instruments, joe.hershberger@ni.com
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <env.h>
 #include <env_internal.h>

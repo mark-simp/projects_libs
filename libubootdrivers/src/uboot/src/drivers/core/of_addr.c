@@ -6,8 +6,6 @@
  * Copyright (c) 2017 Google, Inc
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <log.h>
 #include <linux/bug.h>

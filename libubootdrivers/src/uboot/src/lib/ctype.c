@@ -10,8 +10,6 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <uboot_helper.h>
-
 #include <linux/ctype.h>
 
 const unsigned char _ctype[] = {

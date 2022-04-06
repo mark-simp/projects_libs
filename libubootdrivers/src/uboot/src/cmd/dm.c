@@ -6,8 +6,6 @@
  * Marek Vasut <marex@denx.de>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <command.h>
 #include <dm.h>

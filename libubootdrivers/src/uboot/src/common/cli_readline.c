@@ -8,8 +8,6 @@
  * JinHua Luo, GuangDong Linux Center, <luo.jinhua@gd-linux.com>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <bootretry.h>
 #include <cli.h>

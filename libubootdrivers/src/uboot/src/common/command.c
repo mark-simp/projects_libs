@@ -8,8 +8,6 @@
  *  Command Processor Table
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <compiler.h>
 #include <command.h>

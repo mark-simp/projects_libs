@@ -6,8 +6,6 @@
 
 #define LOG_CATEGORY UCLASS_PHY
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <dm.h>
 #include <dm/device_compat.h>

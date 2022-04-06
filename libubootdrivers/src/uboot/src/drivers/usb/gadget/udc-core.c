@@ -13,8 +13,6 @@
  *		       usb_
  */
 
-#include <uboot_helper.h>
-
 #include <dm/device_compat.h>
 #include <dm/devres.h>
 #include <linux/compat.h>

@@ -7,8 +7,6 @@
  * Copyright (c) 2006  Tejun Heo <teheo@suse.de>
  */
 
-#include <uboot_helper.h>
-
 #define LOG_CATEGORY LOGC_DEVRES
 
 #include <common.h>

@@ -8,8 +8,6 @@
 
 #define LOG_CATEGORY LOGC_DM
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <errno.h>
 #include <log.h>

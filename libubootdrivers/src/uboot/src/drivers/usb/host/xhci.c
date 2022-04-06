@@ -19,8 +19,6 @@
  * The quirk devices support hasn't been given yet.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <cpu_func.h>
 #include <dm.h>

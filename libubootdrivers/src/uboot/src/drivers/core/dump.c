@@ -3,8 +3,6 @@
  * Copyright (c) 2015 Google, Inc
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <dm.h>
 #include <mapmem.h>

@@ -8,8 +8,6 @@
  * more details.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <hexdump.h>
 #include <mapmem.h>

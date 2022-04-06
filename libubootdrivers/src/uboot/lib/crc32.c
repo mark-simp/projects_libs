@@ -8,8 +8,6 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
-#include <uboot_helper.h>
-
 #ifdef USE_HOSTCC
 #include <arpa/inet.h>
 #include <u-boot/crc.h>

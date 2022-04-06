@@ -8,8 +8,6 @@
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <blk.h>
 #include <command.h>

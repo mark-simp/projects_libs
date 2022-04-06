@@ -19,8 +19,6 @@
  * Linux version.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <log.h>
 #include <malloc.h>

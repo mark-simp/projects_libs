@@ -12,8 +12,6 @@
  * Contributed by Ulrich Drepper <drepper@gnu.ai.mit.edu>, 1993.
  */
 
-#include <uboot_helper.h>
-
 #include <errno.h>
 #include <log.h>
 #include <malloc.h>

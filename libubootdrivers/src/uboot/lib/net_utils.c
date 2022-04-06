@@ -9,8 +9,6 @@
  * Copyright 2009 Dirk Behme, dirk.behme@googlemail.com
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <net.h>
 

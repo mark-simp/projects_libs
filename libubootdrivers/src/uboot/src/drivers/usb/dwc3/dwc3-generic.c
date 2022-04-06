@@ -7,8 +7,6 @@
  * Based on dwc3-omap.c.
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <cpu_func.h>
 #include <log.h>

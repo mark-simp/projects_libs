@@ -7,8 +7,6 @@
  * Andreas Heppel <aheppel@sysgo.de>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <bootstage.h>
 #include <command.h>

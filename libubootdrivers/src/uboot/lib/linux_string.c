@@ -4,8 +4,6 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <uboot_helper.h>
-
 #ifdef USE_HOSTCC
 #include <stdio.h>
 #endif

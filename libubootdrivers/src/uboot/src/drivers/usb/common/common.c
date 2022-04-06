@@ -6,8 +6,6 @@
  *     Texas Instruments Incorporated, <www.ti.com>
  */
 
-#include <uboot_helper.h>
-
 #include <common.h>
 #include <dm.h>
 #include <asm/global_data.h>
