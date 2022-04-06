@@ -4,16 +4,16 @@
 
 cmake_minimum_required(VERSION 3.7.2)
 
-project(libubootusbdrivers C)
+project(libubootdrivers C)
 
 # Set the logging level for the library (e.g. ZF_LOG_INFO, ZF_LOG_VERBOSE, etc)
 set(LIB_UBOOT_LOGGING_LEVEL "ZF_LOG_INFO")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DZF_LOG_LEVEL=${LIB_UBOOT_LOGGING_LEVEL}")
 
-config_option(LibUBOOTUSB LIB_UBOOT_USB "Build USB interface library" DEFAULT ON)
+config_option(LibUBOOT LIB_UBOOTB "Build USB interface library" DEFAULT ON)
 
-add_config_library(ubootusbdrivers "${configure_string}")
-if(LibUBOOTUSB)
+add_config_library(ubootdrivers "${configure_string}")
+if(LibUBOOT)
 
     # Set up standard configuration macros U-Boot code expects based upon
     # the architecture.
@@ -80,13 +80,13 @@ if(LibUBOOTUSB)
 
     list(SORT deps)
 
-    add_library(ubootusbdrivers STATIC EXCLUDE_FROM_ALL ${deps})
-    target_include_directories(ubootusbdrivers PUBLIC
+    add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
+    target_include_directories(ubootdrivers PUBLIC
         include
         src/lib
         uboot_include
         uboot_arch_include/${KernelArch}
         plat_include/${KernelPlatform}
     )
-    target_link_libraries(ubootusbdrivers sel4 muslc sel4platsupport utils)
+    target_link_libraries(ubootdrivers sel4 muslc sel4platsupport utils)
 endif()
