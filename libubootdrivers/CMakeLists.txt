@@ -55,35 +55,20 @@ if(LibUBOOT)
         error("No recognised logging level set in LIB_UBOOT_LOGGING_LEVEL. Aborting.")
     endif()
 
-    file(
-        GLOB
-            deps
-            src/*.c
-            src/lib/*.c
-            src/lib/libfdt/*.c
-            src/stubs/*.c
-            src/uboot/*.c
-            src/uboot/cmd/*.c
-            src/uboot/common/*.c
-            src/uboot/drivers/block/*.c
-            src/uboot/drivers/core/*.c
-            src/uboot/drivers/input/*.c
-            src/uboot/drivers/phy/*.c
-            src/uboot/drivers/usb/common/*.c
-            src/uboot/drivers/usb/dwc3/*.c
-            src/uboot/drivers/usb/host/*.c
-            src/uboot/drivers/usb/gadget/*.c
-            src/uboot/env/*.c
-            src/uboot/lib/*.c
-            src/plat/${KernelPlatform}/*.c
-    )
-
+    # Enumerate the set of source files
+    file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
+    file(GLOB_RECURSE uboot_deps src/uboot/*.c)
+    file(GLOB_RECURSE plat_deps src/plat/${KernelPlatform}/*.c)
+    list(APPEND deps ${wrapper_deps})
+    list(APPEND deps ${uboot_deps})
+    list(APPEND deps ${plat_deps})
     list(SORT deps)
 
     add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
+
     target_include_directories(ubootdrivers PUBLIC
         include
-        src/lib
+        src/uboot/lib
         uboot_include
         uboot_arch_include/${KernelArch}
         plat_include/${KernelPlatform}

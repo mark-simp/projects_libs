@@ -1,0 +1,2 @@
+message("Test")
+error("Here")
