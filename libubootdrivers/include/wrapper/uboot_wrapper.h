@@ -1,9 +1,8 @@
-int initialise_uboot_drivers(char* fdt_blob);
+/* Routines to perform initialisation and shutdown of the U-Boot wrapper.
+ * The initialise routine performs the actions that would normally be
+ * performed by U-Boot when it is started.
+ */
 
-int run_uboot_command(char* cmd);
+int initialise_uboot_wrapper(char* fdt_blob);
 
-// Provide acces to stdin test character and get character.
-int uboot_stdin_tstc();
-int uboot_stdin_getc();
-
-void shutdown_uboot_drivers(void);
+void shutdown_uboot_wrapper(void);

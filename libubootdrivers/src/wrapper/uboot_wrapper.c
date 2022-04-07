@@ -18,7 +18,7 @@ int errno_uboot = 0;
 // State determining whether the library has been initialised.
 static bool library_initialised = false;
 
-int initialise_uboot_drivers(char* fdt_blob)
+int initialise_uboot_wrapper(char* fdt_blob)
 {
     // Return immediately if already initialised (nothing to do).
     if (library_initialised) return 0;
@@ -71,6 +71,7 @@ int initialise_uboot_drivers(char* fdt_blob)
 	gd->fdt_src = FDTSRC_EMBED;
 
     // Build the live tree from the FDT.
+    gd->of_root = NULL;
     int ret = of_live_build(gd->fdt_blob, (struct device_node **)gd_of_root_ptr());
     if (0 != ret)
         goto error;
@@ -112,16 +113,18 @@ error:
 int run_uboot_command(char* cmd)
 {
     // Fail immediately if library not initialised.
-    if (!library_initialised) return -1;
+    if (!library_initialised)
+        return -1;
 
     // Perform the command.
     return run_command(cmd, CMD_FLAG_ENV);
 }
 
-void shutdown_uboot_drivers(void)
+void shutdown_uboot_wrapper(void)
 {
     // Return immediately if library not initialsed (nothing to do).
-    if (!library_initialised) return;
+    if (!library_initialised)
+        return;
 
     // Delete persistant state.
     free(gd);

@@ -1,5 +1,14 @@
+/*
+ * This file performs all of the initialisation and shutdown of the library
+ * required from within the seL4 'world', i.e. those actions that require
+ * use of seL4 libraries such as mapping of the physical memory for the
+ * devices to be used.
+ *
+ * Following successful initialisation within this file the 'uboot_wrapper'
+ * is called to continue within the U-Boot 'world'.
+ */
+
 #include <sel4platsupport/io.h>
-#include <platsupport/delay.h>
 
 #include <libfdt.h>
 #include <uboot_wrapper.h>
@@ -10,7 +19,7 @@
 void* uboot_fdt_pointer = NULL;
 
 
-int get_node_size_and_address_data(uintptr_t *addr, size_t *size, int *addr_cells, int *size_cells, int node_offset) {
+static int get_node_size_and_address_data(uintptr_t *addr, size_t *size, int *addr_cells, int *size_cells, int node_offset) {
     // Get the name of the path for logging purposes.
     const char *path_name = fdt_get_name(uboot_fdt_pointer, node_offset, NULL);
 
@@ -64,7 +73,7 @@ int get_node_size_and_address_data(uintptr_t *addr, size_t *size, int *addr_cell
 }
 
 
-int replace_physical_address_with_virtual(uintptr_t paddr, uintptr_t vaddr, size_t size, int node_offset) {
+static int replace_physical_address_with_virtual(uintptr_t paddr, uintptr_t vaddr, size_t size, int node_offset) {
 
     // Get the name of the path for logging purposes.
     const char *path_name = fdt_get_name(uboot_fdt_pointer, node_offset, NULL);
@@ -126,7 +135,7 @@ int replace_physical_address_with_virtual(uintptr_t paddr, uintptr_t vaddr, size
 }
 
 
-int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* path) {
+static int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* path) {
 
     // Lookup the address and size information form the memory mapped device.
     int node_offset = fdt_path_offset(uboot_fdt_pointer, path);
@@ -180,22 +189,24 @@ int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* path) {
     return 0;
 }
 
-int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count, const char *timer_path)
+int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count, const char *timer_path)
 {
-    int ret;
+    // Initialise the DMA management.
+    sel4_dma_initialise(&io_ops->dma_manager);
 
     // Start the monotonic timer.
-    ret = init_and_start_timer(io_ops, timer_path);
+    int ret = init_and_start_timer(io_ops, timer_path);
     if (0 != ret)
         return -1;
-
-    // Initialise the DMA management.
-    sel4_dma_initialise(io_ops->dma_manager);
 
     // Create a copy of the FDT for U-Boot to use.
     void* orig_fdt_blob = io_ops->io_fdt.get_fn(io_ops->io_fdt.cookie);
     int fdt_size = fdt_totalsize(orig_fdt_blob);
     uboot_fdt_pointer = malloc(fdt_size);
+    if (uboot_fdt_pointer == NULL) {
+        shutdown_timer();
+        return -ENOMEM;
+    }
     memcpy(uboot_fdt_pointer, orig_fdt_blob, fdt_size);
 
     // Allocate resources and modify addresses in the device tree for each device.
@@ -203,43 +214,31 @@ int sel4_usb_init(ps_io_ops_t *io_ops, const char **device_paths, uint32_t devic
         ret = allocate_dev_resource_and_fdt_fixup(io_ops, device_paths[dev_index]);
         if (0 != ret) {
             free(uboot_fdt_pointer);
+            uboot_fdt_pointer = NULL;
+            shutdown_timer();
             return -1;
         }
     }
 
-    // Start the U-Boot driver library. Provide it a pointer to the FDT blob.
-    ret = initialise_uboot_drivers(uboot_fdt_pointer);
-    if (ret) {
+    // Start the U-Boot wrapper. Provide it a pointer to the FDT blob.
+    ret = initialise_uboot_wrapper(uboot_fdt_pointer);
+    if (0 != ret) {
         free(uboot_fdt_pointer);
+        uboot_fdt_pointer = NULL;
+        shutdown_timer();
         return ret;
     }
 
-    // Perform some U-Boot commands.
-
-    run_uboot_command("dm tree");
-
-    run_uboot_command("setenv stdin usbkbd"); // Use a USB keyboard as the input device
-
-    run_uboot_command("usb start");
-
-    run_uboot_command("dm tree");
-
-    run_uboot_command("usb tree");
-
-    run_uboot_command("usb info");
-
-    // Loop for a while reading keypresses
-    printf("Echoing input from the USB keyboard:\n");
-    for (int x=0; x<=1000; x++) {
-        while (uboot_stdin_tstc())
-            printf("Received character: %c\n", uboot_stdin_getc(), stdout);
-        ps_mdelay(10);
-    }
-
-    run_uboot_command("usb stop");
-
-    shutdown_uboot_drivers();
-
     // All done.
     return 0;
+}
+
+void shutdown_uboot_drivers(void) {
+    if (uboot_fdt_pointer != NULL) {
+        free(uboot_fdt_pointer);
+        uboot_fdt_pointer = NULL;
+        shutdown_timer();
+    }
+
+    shutdown_uboot_wrapper();
 }
