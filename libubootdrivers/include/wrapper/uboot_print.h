@@ -24,6 +24,8 @@
 
 #define pr_err(...)         ZF_LOGE(__VA_ARGS__)
 
+#define pr_warn(...)        ZF_LOGW(__VA_ARGS__)
+
 #define panic(...) ({ \
 	ZF_LOGE(__VA_ARGS__); \
 	assert(false); \

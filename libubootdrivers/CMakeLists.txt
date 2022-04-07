@@ -42,6 +42,11 @@ if(LibUBOOT)
         add_definitions("-DCONFIG_SYS_CACHELINE_SIZE=${CACHELINE_SIZE}")
     endif()
 
+    # Set up configuration macros based upon the platform
+    if(KernelPlatImx8mq)
+        add_definitions("-DCONFIG_IMX8MQ")
+    endif()
+
     # Provide a mapping between the seL4 logging level and the U-Boot logging level
     if("${LIB_UBOOT_LOGGING_LEVEL}" STREQUAL "ZF_LOG_VERBOSE")
         add_definitions("-DCONFIG_LOGLEVEL=9")
@@ -78,13 +83,27 @@ if(LibUBOOT)
         include/wrapper
         src/uboot/lib
         include/uboot/include
-        include/uboot/arch/${KernelArch}
-        include/plat/${KernelPlatform}
     )
 
-    target_include_directories(ubootdrivers INTERFACE
-        include/public_api
-    )
+    # Add U-Boot prviate inclues based upon the architecture.
+    if(KernelArchARM)
+        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/arm)
+        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/proc-armv)
+        if(KernelArchArmV8a)
+            target_include_directories(ubootdrivers PRIVATE include/uboot/arch/armv8)
+        endif()
+    endif()
+
+    # Add U-Boot prviate inclues based upon the platform.
+    if(KernelPlatImx8mq)
+        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/imx8m)
+    endif()
+
+    # Add library speciifc includes based upon the platform.
+    target_include_directories(ubootdrivers PRIVATE include/plat/${KernelPlatform})
+
+    # Declare the public interface to the library.
+    target_include_directories(ubootdrivers INTERFACE include/public_api)
 
     target_link_libraries(ubootdrivers sel4 muslc sel4platsupport utils)
 endif()

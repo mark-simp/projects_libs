@@ -17,7 +17,16 @@
 #include <linux/types.h>
 
 /* Architecture-specific global data */
-struct arch_global_data {};
+struct arch_global_data {
+#if defined(CONFIG_FSL_ESDHC) || defined(CONFIG_FSL_ESDHC_IMX)
+	u32 sdhc_clk;
+#endif
+
+#if defined(CONFIG_FSL_ESDHC)
+	u32 sdhc_per_clk;
+#endif
+
+};
 
 #include <asm-generic/global_data.h>
 
