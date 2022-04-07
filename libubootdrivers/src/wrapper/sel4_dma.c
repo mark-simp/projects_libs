@@ -4,40 +4,40 @@
 
 struct dma_allocation_t {
     bool in_use;
-    uintptr_t vaddr;
+    void *vaddr;
     uintptr_t paddr;
     size_t size;
 };
 
-struct dma_allocation_t dma_allocation[MAX_DMA_ALLOCS];
+static struct dma_allocation_t dma_alloc[MAX_DMA_ALLOCS];
 
-ps_dma_man_t *sel4_dma_manager = NULL;
+static ps_dma_man_t *sel4_dma_manager = NULL;
 
 
-int next_free_allocation_index(void)
+static int next_free_allocation_index(void)
 {
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
-        if (!dma_allocation[x].in_use) return x;
+        if (!dma_alloc[x].in_use) return x;
     return -1;
 }
 
-int find_allocation_index_by_vaddr(uintptr_t vaddr)
+static int find_allocation_index_by_vaddr(void *vaddr)
 {
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
-        if (dma_allocation[x].in_use && dma_allocation[x].vaddr == vaddr) return x;
+        if (dma_alloc[x].in_use && dma_alloc[x].vaddr == vaddr) return x;
     return -1;
 }
 
-void sel4_dma_initialise(ps_dma_man_t dma_manager)
+void sel4_dma_initialise(ps_dma_man_t *dma_manager)
 {
-    sel4_dma_manager = &dma_manager;
+    sel4_dma_manager = dma_manager;
 
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
     {
-        dma_allocation[x].in_use = false;
-        dma_allocation[x].vaddr = 0;
-        dma_allocation[x].paddr = 0;
-        dma_allocation[x].size = 0;
+        dma_alloc[x].in_use = false;
+        dma_alloc[x].vaddr = NULL;
+        dma_alloc[x].paddr = 0;
+        dma_alloc[x].size = 0;
     }
 }
 
@@ -76,7 +76,7 @@ void sel4_dma_free(void *vaddr)
     assert(sel4_dma_manager != NULL);
 
     // Find the previous allocation.
-    int alloc_index = find_allocation_index_by_vaddr((uintptr_t) vaddr);
+    int alloc_index = find_allocation_index_by_vaddr(vaddr);
     if (alloc_index < 0)
     {
         ZF_LOGE("Call to free DMA allocation not in bookkeeping");
@@ -87,14 +87,14 @@ void sel4_dma_free(void *vaddr)
 
     sel4_dma_manager->dma_free_fn(
         sel4_dma_manager->cookie,
-        (void *) dma_allocation[alloc_index].vaddr,
-        dma_allocation[alloc_index].size);
+        dma_alloc[alloc_index].vaddr,
+        dma_alloc[alloc_index].size);
 
     // Memory allocated and pinned. Update bookkeeping.
-    dma_allocation[alloc_index].in_use = false;
-    dma_allocation[alloc_index].vaddr = 0;
-    dma_allocation[alloc_index].paddr = 0;
-    dma_allocation[alloc_index].size = 0;
+    dma_alloc[alloc_index].in_use = false;
+    dma_alloc[alloc_index].vaddr = 0;
+    dma_alloc[alloc_index].paddr = 0;
+    dma_alloc[alloc_index].size = 0;
 }
 
 void* sel4_dma_memalign(size_t align, size_t size)
@@ -124,7 +124,7 @@ void* sel4_dma_memalign(size_t align, size_t size)
         sel4_dma_manager->cookie,
         vaddr,
         size);
-    if (vaddr == NULL)
+    if (!paddr)
     {
         ZF_LOGE("DMA pin return null pointer");
         // Clean up before returning.
@@ -135,32 +135,35 @@ void* sel4_dma_memalign(size_t align, size_t size)
         return NULL;
     }
 
-    ZF_LOGD("size = 0x%x, align = 0x%x, vaddr = %p, paddr = %p, alloc_index = %i", size, align, vaddr, paddr, alloc_index);
+    ZF_LOGD(
+        "size = 0x%x, align = 0x%x, vaddr = %p, paddr = %p, alloc_index = %i",
+        size, align, vaddr, paddr, alloc_index);
 
     // Memory allocated and pinned. Update bookkeeping.
-    dma_allocation[alloc_index].in_use = true;
-    dma_allocation[alloc_index].vaddr = (uintptr_t) vaddr;
-    dma_allocation[alloc_index].paddr = paddr;
-    dma_allocation[alloc_index].size = size;
+    dma_alloc[alloc_index].in_use = true;
+    dma_alloc[alloc_index].vaddr = vaddr;
+    dma_alloc[alloc_index].paddr = paddr;
+    dma_alloc[alloc_index].size = size;
 
     return vaddr;
 }
 
 void* sel4_dma_malloc(size_t size)
 {
-    return sel4_dma_memalign(4, size);
+    /* Default to alignment on cacheline boundaries */
+    return sel4_dma_memalign(CONFIG_SYS_CACHELINE_SIZE, size);
 }
 
-uintptr_t sel4_dma_virt_to_phys(uintptr_t vaddr)
+void *sel4_dma_virt_to_phys(void *vaddr)
 {
     assert(sel4_dma_manager != NULL);
 
     // Find the allocation containing this address.
     int alloc_index = -1;
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
-        if (dma_allocation[x].in_use &&
-            vaddr >= dma_allocation[x].vaddr &&
-            vaddr < dma_allocation[x].vaddr + dma_allocation[x].size)
+        if (dma_alloc[x].in_use &&
+            vaddr >= dma_alloc[x].vaddr &&
+            vaddr < dma_alloc[x].vaddr + dma_alloc[x].size)
             {
                 alloc_index = x;
                 break;
@@ -169,8 +172,9 @@ uintptr_t sel4_dma_virt_to_phys(uintptr_t vaddr)
     {
         ZF_LOGE("Unable to determine physical address from virtual %p", vaddr);
         for (int y = 0; y < MAX_DMA_ALLOCS; y++)
-            if (dma_allocation[y].in_use)
-                ZF_LOGE(" --> Index %i: vaddr = %p, size = 0x%x", y, dma_allocation[y].vaddr, dma_allocation[y].size);
+            if (dma_alloc[y].in_use)
+                ZF_LOGE(" --> Index %i: vaddr = %p, size = 0x%x",
+                    y, dma_alloc[y].vaddr, dma_alloc[y].size);
         /* This is a fatal error. Not being able to determine an address
          * indicates that we are attempting to communicate with the XHCI
          * device via memory that has not been mapped into the physical
@@ -180,19 +184,20 @@ uintptr_t sel4_dma_virt_to_phys(uintptr_t vaddr)
     }
 
     // Return the translated address
-    return dma_allocation[alloc_index].paddr + (vaddr - dma_allocation[alloc_index].vaddr);
+    return (void*) dma_alloc[alloc_index].paddr +
+        (vaddr - dma_alloc[alloc_index].vaddr);
 }
 
-uintptr_t sel4_dma_phys_to_virt(uintptr_t paddr)
+void *sel4_dma_phys_to_virt(void *paddr)
 {
     assert(sel4_dma_manager != NULL);
 
     // Find the allocation containing this address.
     int alloc_index = -1;
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
-        if (dma_allocation[x].in_use &&
-            paddr >= (uintptr_t) dma_allocation[x].paddr &&
-            paddr < (uintptr_t) dma_allocation[x].paddr + dma_allocation[x].size)
+        if (dma_alloc[x].in_use &&
+            (uintptr_t)paddr >= dma_alloc[x].paddr &&
+            (uintptr_t)paddr < dma_alloc[x].paddr + dma_alloc[x].size)
             {
                 alloc_index = x;
                 break;
@@ -209,7 +214,8 @@ uintptr_t sel4_dma_phys_to_virt(uintptr_t paddr)
     }
 
     // Return the translated address
-    return dma_allocation[alloc_index].vaddr + (paddr - dma_allocation[alloc_index].paddr);
+    return (uintptr_t) dma_alloc[alloc_index].vaddr +
+        (paddr - dma_alloc[alloc_index].paddr);
 }
 
 bool sel4_dma_is_virt_mapped(void *vaddr)
@@ -219,9 +225,9 @@ bool sel4_dma_is_virt_mapped(void *vaddr)
     // Find the allocation containing this address.
     int alloc_index = -1;
     for (int x = 0; x < MAX_DMA_ALLOCS; x++)
-        if (dma_allocation[x].in_use &&
-            (uintptr_t) vaddr >= dma_allocation[x].vaddr &&
-            (uintptr_t) vaddr < dma_allocation[x].vaddr + dma_allocation[x].size)
+        if (dma_alloc[x].in_use &&
+            vaddr >= dma_alloc[x].vaddr &&
+            vaddr < dma_alloc[x].vaddr + dma_alloc[x].size)
                 return true;
     return false;
 }

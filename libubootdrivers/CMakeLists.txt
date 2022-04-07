@@ -21,9 +21,13 @@ if(LibUBOOT)
         # The architecture as ARM.
         add_definitions("-DCONFIG_ARM")
 
-        # Tell U-Boot code whether this is ARM32 or ARM64.
+        # Tell U-Boot code whether this is ARM32 or ARM64. Note that U-Boot
+        # code defaults to 32Bit, we only need to explicitly provide definitions
+        # to switch to 64Bit addressing.
         if(Kernel64)
             add_definitions("-DCONFIG_ARM64")
+            add_definitions("-DCONFIG_DMA_ADDR_T_64BIT")
+            add_definitions("-DCONFIG_PHYS_64BIT")
         endif()
 
         # Tell U-Boot code which generation of ARM we are using.
@@ -70,12 +74,17 @@ if(LibUBOOT)
 
     add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
 
-    target_include_directories(ubootdrivers PUBLIC
+    target_include_directories(ubootdrivers PRIVATE
         include/wrapper
         src/uboot/lib
         include/uboot/include
         include/uboot/arch/${KernelArch}
         include/plat/${KernelPlatform}
     )
+
+    target_include_directories(ubootdrivers INTERFACE
+        include/public_api
+    )
+
     target_link_libraries(ubootdrivers sel4 muslc sel4platsupport utils)
 endif()
