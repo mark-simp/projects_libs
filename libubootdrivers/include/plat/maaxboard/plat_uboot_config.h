@@ -26,3 +26,6 @@
 /* Enable the MMC subsystem */
 #define CONFIG_DM_MMC                   1
 #define CONFIG_FSL_ESDHC_IMX            1
+#define CONFIG_MMC_UHS_SUPPORT          1
+#define CONFIG_MMC_HS400_SUPPORT        1
+#define CONFIG_MMC_VERBOSE              1

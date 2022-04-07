@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.7.2)
 project(libubootdrivers C)
 
 # Set the logging level for the library (e.g. ZF_LOG_INFO, ZF_LOG_VERBOSE, etc)
-set(LIB_UBOOT_LOGGING_LEVEL "ZF_LOG_INFO")
+set(LIB_UBOOT_LOGGING_LEVEL "ZF_LOG_VERBOSE")
 add_definitions("-DZF_LOG_LEVEL=${LIB_UBOOT_LOGGING_LEVEL}")
 
 config_option(LibUBOOT LIB_UBOOTB "Build USB interface library" DEFAULT ON)
@@ -66,16 +66,30 @@ if(LibUBOOT)
 
     # Enumerate the set of source files
     file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
-    file(GLOB_RECURSE uboot_deps src/uboot/*.c)
+    file(GLOB_RECURSE uboot_src_deps src/uboot/src/*.c)
+    file(GLOB_RECURSE uboot_lib_deps src/uboot/lib/*.c)
     file(GLOB_RECURSE plat_deps src/plat/${KernelPlatform}/*.c)
     list(APPEND deps ${wrapper_deps})
-    list(APPEND deps ${uboot_deps})
+    list(APPEND deps ${uboot_src_deps})
+    list(APPEND deps ${uboot_lib_deps})
     list(APPEND deps ${plat_deps})
-    list(SORT deps)
+
+    # Enumerate the set of platform dependent osurce files
+    if(KernelPlatImx8mq)
+        file(GLOB_RECURSE uboot_arch_deps src/uboot/arch/imx8mq/*.c)
+        list(APPEND deps ${uboot_arch_deps})
+    else()
+        set(uboot_arch_deps "")
+    endif()
 
     # Add the 'uboot_helper.h' include to all U-Boot source files to provide
     # the required includes and configuration.
-    set_source_files_properties(${uboot_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
+    set_source_files_properties(${uboot_src_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
+    set_source_files_properties(${uboot_lib_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
+    set_source_files_properties(${uboot_arch_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
+
+    list(SORT deps)
+
 
     add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
 

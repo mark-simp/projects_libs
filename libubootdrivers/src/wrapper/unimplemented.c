@@ -52,3 +52,4 @@ int utf8_put(s32 code, char **dst) { assert(false); }
 size_t utf16_strnlen(const u16 *src, size_t count) { assert(false); }
 size_t utf16_utf8_strnlen(const u16 *src, size_t count) { assert(false); }
 s32 utf16_get(const u16 **src) { assert(false); }
+bool is_usb_boot(void) { assert(false); }

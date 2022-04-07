@@ -8,12 +8,16 @@
 #include <driver_data.h>
 #include <stdio_dev.h>
 #include <console.h>
+#include <mmc.h>
 
 // Global declaration of global_data.
 struct global_data* gd;
 
 // Global declaration of errno_uboot.
 int errno_uboot = 0;
+
+// Global declaration of version_string.
+const char version_string[] = "seL4 U-Boot driver";
 
 // State determining whether the library has been initialised.
 static bool library_initialised = false;
@@ -98,6 +102,13 @@ int initialise_uboot_wrapper(char* fdt_blob)
     ret = dm_init_and_scan(false);
     if (0 != ret)
         goto error;
+
+#ifdef CONFIG_DM_MMC
+    // Initialize the MMC system.
+    ret = mmc_initialize(NULL);
+    if (0 != ret)
+        goto error;
+#endif
 
     // Success.
     library_initialised = true;

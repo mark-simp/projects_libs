@@ -99,3 +99,6 @@
 #include <sel4_dma.h>
 #include <uboot_print.h>
 #include <driver_data.h>
+
+/* Replace uses of U-Boot's lldiv function with the equivalent from muslc */
+#define lldiv(A, B)     ({ lldiv(A, B).quot; })
