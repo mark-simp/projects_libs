@@ -24,8 +24,15 @@
 #define CONFIG_USB_XHCI_DWC3			1 /* Enable XHCI support in the DWC3 driver */
 
 /* Enable the MMC subsystem */
+#define CONFIG_MMC                      1
 #define CONFIG_DM_MMC                   1
 #define CONFIG_FSL_ESDHC_IMX            1
+#define CONFIG_FSL_USDHC                1
 #define CONFIG_MMC_UHS_SUPPORT          1
+#define CONFIG_MMC_HS200_SUPPORT        1
 #define CONFIG_MMC_HS400_SUPPORT        1
 #define CONFIG_MMC_VERBOSE              1
+#define CONFIG_MMC_IO_VOLTAGE           1
+#define CONFIG_MMC_QUIRKS               1
+#define CONFIG_MMC_WRITE                1
+#define CONFIG_MMC_HW_PARTITIONING      1
