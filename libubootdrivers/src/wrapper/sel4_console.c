@@ -13,6 +13,7 @@
 
 #include <common.h>
 #include <stdio_dev.h>
+#include <env.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
