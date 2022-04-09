@@ -289,7 +289,7 @@ static int unflatten_device_tree(const void *blob,
 						0, true);
 	if (!size)
 		return -EFAULT;
-	size = UBOOT_ALIGN(size, 4);
+	size = ALIGN(size, 4);
 
 	debug("  size is %lx, allocating...\n", size);
 
