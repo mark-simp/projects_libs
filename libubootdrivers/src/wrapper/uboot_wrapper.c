@@ -9,6 +9,8 @@
 #include <stdio_dev.h>
 #include <console.h>
 #include <mmc.h>
+#include <env.h>
+#include <command.h>
 
 // Global declaration of global_data.
 struct global_data* gd;
