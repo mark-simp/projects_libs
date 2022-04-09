@@ -59,9 +59,6 @@
 /* Settings related to standard input / output files */
 #define CONFIG_SYS_DEVICE_NULLDEV       1 /* Define null stdio devices */
 #define MAX_FILES   	                3 /* stdin, stdout and stderr */
-#define UBOOT_STDIN 		            0 /* Enumerate the stdin file */
-#define UBOOT_STDOUT    		        1 /* Enumerate the stdout file */
-#define UBOOT_STDERR	    	        2 /* Enumerate the stderr file */
 
 /* Base settings for drivers */
 #define CONFIG_PHY                      1 /* Allow use of PHY drivers */
@@ -84,14 +81,23 @@
 #define CONFIG_NR_DRAM_BANKS		0 /* Not used */
 #define CONFIG_LMB_MEMORY_REGIONS   0 /* Not used */
 #define CONFIG_LMB_RESERVED_REGIONS 0 /* Not used */
-#define _DEBUG			            false /* Don't force debug logging */
 #define CONFIG_SYS_HZ               1000 /* System, e.g. console, update rate */
+#define _DEBUG			            false /* Don't force debug logging */
+#define UNREACHABLE()               __builtin_unreachable()
 
 /* Helper macros to wrap U-Boot 'print' routines on to seL4 equivalents */
 #include <uboot_print.h>
 
-/* Undefine the ALIGN macro to allow U-Boot code to redefine as required */
+/* Undefine the macros defined by seL4 / muslc to allow U-Boot code to redefine */
 #undef ALIGN
+#undef stdin
+#undef stdout
+#undef stderr
+
+/* Provide default indexes for the stdin / stdout / stderr 'files' */
+#define stdin   0
+#define stdout  1
+#define stderr  2
 
 /* Include headers expected by all U-Boot source code */
 #include <plat_uboot_config.h>

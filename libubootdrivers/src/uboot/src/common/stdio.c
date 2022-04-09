@@ -31,10 +31,10 @@ char *stdio_names[MAX_FILES] = { "stdin", "stdout", "stderr" };
 int stdio_file_to_flags(const int file)
 {
 	switch (file) {
-	case UBOOT_STDIN:
+	case stdin:
 		return DEV_FLAGS_INPUT;
-	case UBOOT_STDOUT:
-	case UBOOT_STDERR:
+	case stdout:
+	case stderr:
 		return DEV_FLAGS_OUTPUT;
 	default:
 		return -EINVAL;

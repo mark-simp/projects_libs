@@ -653,7 +653,7 @@ static int do_usb(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	}
 	if (strncmp(argv[1], "stop", 4) == 0) {
 		if (argc != 2)
-			console_assign(UBOOT_STDIN, "serial");
+			console_assign(stdin, "serial");
 		if (do_usb_stop_keyboard(0) != 0)
 			return 1;
 		printf("stopping USB..\n");

@@ -146,16 +146,16 @@ void shutdown_uboot_wrapper(void)
 
 int uboot_stdin_tstc(void)
 {
-    if (NULL == stdio_devices[UBOOT_STDIN])
+    if (NULL == stdio_devices[stdin])
         return 0;
 
-    return stdio_devices[UBOOT_STDIN]->tstc(stdio_devices[UBOOT_STDIN]);
+    return stdio_devices[stdin]->tstc(stdio_devices[stdin]);
 }
 
 int uboot_stdin_getc(void)
 {
-    if (NULL == stdio_devices[UBOOT_STDIN])
+    if (NULL == stdio_devices[stdin])
         return 0;
 
-    return stdio_devices[UBOOT_STDIN]->getc(stdio_devices[UBOOT_STDIN]);
+    return stdio_devices[stdin]->getc(stdio_devices[stdin]);
 }
