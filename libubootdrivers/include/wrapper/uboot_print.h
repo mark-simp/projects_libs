@@ -1,6 +1,7 @@
 /* Wrappers around U-Boot print string routines */
 
 #include <utils/zf_log.h>
+#include <stdio.h>
 
 #define debug(...)          ZF_LOGD(__VA_ARGS__)
 
@@ -25,11 +26,6 @@
 #define pr_err(...)         ZF_LOGE(__VA_ARGS__)
 
 #define pr_warn(...)        ZF_LOGW(__VA_ARGS__)
-
-#define panic(...) ({ \
-	ZF_LOGE(__VA_ARGS__); \
-	assert(false); \
-	})
 
 #define assert_noisy(x) \
 	({ bool _val = (x); \
