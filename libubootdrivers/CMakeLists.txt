@@ -66,12 +66,10 @@ if(LibUBOOT)
 
     # Enumerate the set of source files
     file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
-    file(GLOB_RECURSE uboot_src_deps src/uboot/src/*.c)
-    file(GLOB_RECURSE uboot_lib_deps src/uboot/lib/*.c)
+    file(GLOB_RECURSE uboot_deps src/uboot/src/*.c)
     file(GLOB_RECURSE plat_deps src/plat/${KernelPlatform}/*.c)
     list(APPEND deps ${wrapper_deps})
-    list(APPEND deps ${uboot_src_deps})
-    list(APPEND deps ${uboot_lib_deps})
+    list(APPEND deps ${uboot_deps})
     list(APPEND deps ${plat_deps})
 
     # Enumerate the set of platform dependent osurce files
@@ -84,18 +82,16 @@ if(LibUBOOT)
 
     # Add the 'uboot_helper.h' include to all U-Boot source files to provide
     # the required includes and configuration.
-    set_source_files_properties(${uboot_src_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
-    set_source_files_properties(${uboot_lib_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
+    set_source_files_properties(${uboot_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
     set_source_files_properties(${uboot_arch_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
 
     list(SORT deps)
-
 
     add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
 
     target_include_directories(ubootdrivers PRIVATE
         include/wrapper
-        src/uboot/lib
+        src/uboot/src/lib
         include/uboot/include
     )
 
