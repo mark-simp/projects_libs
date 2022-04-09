@@ -87,18 +87,22 @@
 #define _DEBUG			            false /* Don't force debug logging */
 #define CONFIG_SYS_HZ               1000 /* System, e.g. console, update rate */
 
-/* Pull in the platform specific U-Boot configuration macros */
-#include <plat_uboot_config.h>
+/* Helper macros to wrap U-Boot 'print' routines on to seL4 equivalents */
+#include <uboot_print.h>
+
+/* Undefine the ALIGN macro to allow U-Boot code to redefine as required */
+#undef ALIGN
 
 /* Include headers expected by all U-Boot source code */
+#include <plat_uboot_config.h>
 #include <linux/kconfig.h>
 #include <common.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vsprintf.h>
 #include <assert.h>
 #include <sel4_dma.h>
-#include <uboot_print.h>
 #include <driver_data.h>
 
 /* Replace uses of U-Boot's lldiv function with the equivalent from muslc */
-#define lldiv(A, B)     ({ lldiv(A, B).quot; })
+#define lldiv(A, B)     lldiv(A, B).quot

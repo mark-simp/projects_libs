@@ -31,7 +31,7 @@ static inline dma_addr_t dma_map_single(void *vaddr, size_t len,
 {
 	unsigned long addr = (unsigned long)vaddr;
 
-	len = UBOOT_ALIGN(len, ARCH_DMA_MINALIGN);
+	len = ALIGN(len, ARCH_DMA_MINALIGN);
 
 	if (dir == DMA_FROM_DEVICE)
 		invalidate_dcache_range(addr, addr + len);
@@ -55,7 +55,7 @@ static inline dma_addr_t dma_map_single(void *vaddr, size_t len,
 static inline void dma_unmap_single(dma_addr_t addr, size_t len,
 				    enum dma_data_direction dir)
 {
-	len = UBOOT_ALIGN(len, ARCH_DMA_MINALIGN);
+	len = ALIGN(len, ARCH_DMA_MINALIGN);
 
 	if (dir != DMA_TO_DEVICE)
 		invalidate_dcache_range(addr, addr + len);

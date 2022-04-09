@@ -72,7 +72,7 @@
 	char __##name[ROUND(PAD_SIZE((size) * sizeof(type), pad), align)  \
 		      + (align - 1)];					\
 									\
-	type *name = (type *)UBOOT_ALIGN((uintptr_t)__##name, align)
+	type *name = (type *)ALIGN((uintptr_t)__##name, align)
 #define ALLOC_ALIGN_BUFFER(type, name, size, align)		\
 	ALLOC_ALIGN_BUFFER_PAD(type, name, size, align, 1)
 #define ALLOC_CACHE_ALIGN_BUFFER_PAD(type, name, size, pad)		\
@@ -86,7 +86,7 @@
  * Usage of this macro shall be avoided or used with extreme care!
  */
 #define DEFINE_ALIGN_BUFFER(type, name, size, align)			\
-	static char __##name[UBOOT_ALIGN(size * sizeof(type), align)]	\
+	static char __##name[ALIGN(size * sizeof(type), align)]	\
 			__aligned(align);				\
 									\
 	static type *name = (type *)__##name
@@ -108,7 +108,7 @@
  */
 static inline void *malloc_cache_aligned(size_t size)
 {
-	return memalign(ARCH_DMA_MINALIGN, UBOOT_ALIGN(size, ARCH_DMA_MINALIGN));
+	return memalign(ARCH_DMA_MINALIGN, ALIGN(size, ARCH_DMA_MINALIGN));
 }
 #endif
 

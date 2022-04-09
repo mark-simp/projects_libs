@@ -676,7 +676,7 @@ int fdt_shrink_to_minimum(void *blob, uint extrasize)
 
 	actualsize += extrasize;
 	/* Make it so the fdt ends on a page boundary */
-	actualsize = UBOOT_ALIGN(actualsize + ((uintptr_t)blob & 0xfff), 0x1000);
+	actualsize = ALIGN(actualsize + ((uintptr_t)blob & 0xfff), 0x1000);
 	actualsize = actualsize - ((uintptr_t)blob & 0xfff);
 
 	/* Change the fdt header to reflect the correct size */

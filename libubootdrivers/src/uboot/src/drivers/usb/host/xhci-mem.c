@@ -40,10 +40,10 @@ void xhci_flush_cache(uintptr_t addr, u32 len)
 
 #ifdef CONFIG_SEL4
 	sel4_dma_flush_range(addr & ~(CACHELINE_SIZE - 1),
-				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+				ALIGN(addr + len, CACHELINE_SIZE));
 #else
 	flush_dcache_range(addr & ~(CACHELINE_SIZE - 1),
-				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+				ALIGN(addr + len, CACHELINE_SIZE));
 #endif
 }
 
@@ -60,10 +60,10 @@ void xhci_inval_cache(uintptr_t addr, u32 len)
 
 #ifdef CONFIG_SEL4
 	sel4_dma_invalidate_range(addr & ~(CACHELINE_SIZE - 1),
-				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+				ALIGN(addr + len, CACHELINE_SIZE));
 #else
 	invalidate_dcache_range(addr & ~(CACHELINE_SIZE - 1),
-				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+				ALIGN(addr + len, CACHELINE_SIZE));
 #endif
 }
 
@@ -228,9 +228,9 @@ static void *xhci_malloc(unsigned int size)
 	size_t cacheline_size = max(XHCI_ALIGNMENT, CACHELINE_SIZE);
 
 #ifdef CONFIG_SEL4
-	ptr = sel4_dma_memalign(cacheline_size, UBOOT_ALIGN(size, cacheline_size));
+	ptr = sel4_dma_memalign(cacheline_size, ALIGN(size, cacheline_size));
 #else
-	ptr = memalign(cacheline_size, UBOOT_ALIGN(size, cacheline_size));
+	ptr = memalign(cacheline_size, ALIGN(size, cacheline_size));
 #endif
 
 	BUG_ON(!ptr);

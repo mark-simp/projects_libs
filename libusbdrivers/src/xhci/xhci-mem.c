@@ -48,7 +48,7 @@ void xhci_flush_cache(uintptr_t addr, u32 len)
 	BUG_ON((void *)addr == NULL || len == 0);
 
 	flush_dcache_range(addr & ~(CACHELINE_SIZE - 1),
-				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+				ALIGN(addr + len, CACHELINE_SIZE));
 }
 
 /**
@@ -63,7 +63,7 @@ void xhci_inval_cache(uintptr_t addr, u32 len)
 	BUG_ON((void *)addr == NULL || len == 0);
 
 	invalidate_dcache_range(addr & ~(CACHELINE_SIZE - 1),
-				UBOOT_ALIGN(addr + len, CACHELINE_SIZE));
+				ALIGN(addr + len, CACHELINE_SIZE));
 }
 
 
@@ -203,7 +203,7 @@ static void *xhci_malloc(unsigned int size)
 	void *ptr;
 	size_t cacheline_size = max(XHCI_ALIGNMENT, CACHELINE_SIZE);
 
-	ptr = memalign(cacheline_size, UBOOT_ALIGN(size, cacheline_size));
+	ptr = memalign(cacheline_size, ALIGN(size, cacheline_size));
 	BUG_ON(!ptr);
 	memset(ptr, '\0', size);
 
