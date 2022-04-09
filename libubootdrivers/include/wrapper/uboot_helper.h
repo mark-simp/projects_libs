@@ -62,8 +62,13 @@
 
 /* Base settings for drivers */
 #define CONFIG_PHY                      1 /* Allow use of PHY drivers */
-#define CONFIG_BLK                      1 /* Allow use of block device drivers */
 #define CONFIG_DEVRES           		1 /* Allow device resource management */
+#define CONFIG_BLK                      1 /* Allow use of block device drivers */
+
+/* Fundamental settings for supporting filesystems */
+#define CONFIG_HAVE_BLOCK_DEVICE        1
+#define CONFIG_PARTITIONS               1
+#define CONFIG_PARTITION_UUIDS          1
 
 /* Disable mutex support. Library is not intended to be thread-safe */
 #define mutex_init(...)
@@ -100,8 +105,10 @@
 #define stdout  1
 #define stderr  2
 
-/* Include headers expected by all U-Boot source code */
+/* Include platform specific configuration */
 #include <plat_uboot_config.h>
+
+/* Include headers expected by all U-Boot source code */
 #include <linux/kconfig.h>
 #include <common.h>
 #include <stdlib.h>

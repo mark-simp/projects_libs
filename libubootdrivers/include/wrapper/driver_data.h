@@ -10,6 +10,7 @@
 #include <command.h>
 #include <env.h>
 #include <env_internal.h>
+#include <part.h>
 
 #include <plat_driver_data.h>
 
@@ -22,6 +23,8 @@ struct driver_data_t {
     struct usb_driver_entry usb_driver_entry_array[DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT];
     /* The array of commands compiled in */
     struct cmd_tbl cmd_array[DEFINE_UBOOT_CMD_COUNT];
+    /* The array of disk partition types compiled in */
+    struct part_driver part_driver_array[DEFINE_UBOOT_PART_DRIVER_COUNT];
     /* Entries to be used for drivers for pre-relocation environment data,
      * e.g. environment data stored in EEPROM. We do not use these and
      * instead rely upon the default environment data (see env_default.h)

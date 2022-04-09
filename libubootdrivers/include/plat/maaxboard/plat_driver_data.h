@@ -13,7 +13,8 @@
 #define DEFINE_UBOOT_UCLASS_DRIVER_COUNT        11
 #define DEFINE_UBOOT_DRIVER_COUNT               12
 #define DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT     3
-#define DEFINE_UBOOT_CMD_COUNT                  5
+#define DEFINE_UBOOT_PART_DRIVER_COUNT          1
+#define DEFINE_UBOOT_CMD_COUNT                  9
 
 /* Define the uclass drivers to be used on this platform */
 extern struct uclass_driver _u_boot_uclass_driver__nop;
@@ -47,9 +48,17 @@ extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_generic_hub;
 extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_mass_storage;
 extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_kbd;
 
+/* Define the disk partition types to be used */
+extern struct part_driver _u_boot_part_driver__dos;
+
 /* Define the u-boot commands to be used on this platform */
 extern struct cmd_tbl _u_boot_cmd__dm;
 extern struct cmd_tbl _u_boot_cmd__usb;
 extern struct cmd_tbl _u_boot_cmd__env;
 extern struct cmd_tbl _u_boot_cmd__setenv;
 extern struct cmd_tbl _u_boot_cmd__mmc;
+extern struct cmd_tbl _u_boot_cmd__fatsize;
+extern struct cmd_tbl _u_boot_cmd__fatload;
+extern struct cmd_tbl _u_boot_cmd__fatls;
+extern struct cmd_tbl _u_boot_cmd__fatinfo;
+extern struct cmd_tbl _u_boot_cmd__part;
