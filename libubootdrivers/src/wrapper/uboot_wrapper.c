@@ -13,9 +13,6 @@
 // Global declaration of global_data.
 struct global_data* gd;
 
-// Global declaration of errno_uboot.
-int errno_uboot = 0;
-
 // Global declaration of version_string.
 const char version_string[] = "seL4 U-Boot driver";
 

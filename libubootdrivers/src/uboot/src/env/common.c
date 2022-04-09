@@ -271,7 +271,7 @@ void env_set_default(const char *s, int flags)
 			sizeof(default_environment), '\0', flags, 0,
 			0, NULL) == 0) {
 		pr_err("## Error: Environment import failed: errno = %d\n",
-		       errno_uboot);
+		       errno);
 		return;
 	}
 
@@ -318,7 +318,7 @@ int env_import(const char *buf, int check, int flags)
 		return 0;
 	}
 
-	pr_err("Cannot import environment: errno = %d\n", errno_uboot);
+	pr_err("Cannot import environment: errno = %d\n", errno);
 
 	env_set_default("import failed", 0);
 
@@ -412,7 +412,7 @@ int env_export(env_t *env_out)
 	res = (char *)env_out->data;
 	len = hexport_r(&env_htab, '\0', 0, &res, ENV_SIZE, 0, NULL);
 	if (len < 0) {
-		pr_err("Cannot export environment: errno = %d\n", errno_uboot);
+		pr_err("Cannot export environment: errno = %d\n", errno);
 		return 1;
 	}
 

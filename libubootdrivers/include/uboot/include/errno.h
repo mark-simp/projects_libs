@@ -4,9 +4,9 @@
 
 #include <linux/errno.h>
 
-extern int errno_uboot;
+extern _Thread_local int errno;
 
-#define __set_errno(val) do { errno_uboot = val; } while (0)
+#define __set_errno(val) do { errno = val; } while (0)
 
 static const char error_message[] = "";
 

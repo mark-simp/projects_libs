@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.7.2)
 project(libubootdrivers C)
 
 # Set the logging level for the library (e.g. ZF_LOG_INFO, ZF_LOG_VERBOSE, etc)
-set(LIB_UBOOT_LOGGING_LEVEL "ZF_LOG_VERBOSE")
+set(LIB_UBOOT_LOGGING_LEVEL "ZF_LOG_INFO")
 add_definitions("-DZF_LOG_LEVEL=${LIB_UBOOT_LOGGING_LEVEL}")
 
 config_option(LibUBOOT LIB_UBOOTB "Build USB interface library" DEFAULT ON)
@@ -44,7 +44,7 @@ if(LibUBOOT)
 
     # Set up configuration macros based upon the platform
     if(KernelPlatImx8mq)
-        add_definitions("-DCONFIG_IMX8MQ")
+        add_definitions("-DCONFIG_IMX8MQ=1")
     endif()
 
     # Provide a mapping between the seL4 logging level and the U-Boot logging level

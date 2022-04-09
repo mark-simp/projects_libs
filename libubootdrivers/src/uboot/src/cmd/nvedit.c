@@ -297,7 +297,7 @@ static int _do_env_set(int flag, int argc, char *const argv[], int env_flag)
 	free(value);
 	if (!ep) {
 		printf("## Error inserting \"%s\" variable, errno=%d\n",
-			name, errno_uboot);
+			name, errno);
 		return 1;
 	}
 

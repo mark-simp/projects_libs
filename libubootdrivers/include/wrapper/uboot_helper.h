@@ -82,6 +82,7 @@
 #define CONFIG_LMB_MEMORY_REGIONS   0 /* Not used */
 #define CONFIG_LMB_RESERVED_REGIONS 0 /* Not used */
 #define CONFIG_SYS_HZ               1000 /* System, e.g. console, update rate */
+#define CONFIG_SYS_LOAD_ADDR        0
 #define _DEBUG			            false /* Don't force debug logging */
 #define UNREACHABLE()               __builtin_unreachable()
 
