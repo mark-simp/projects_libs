@@ -14,7 +14,7 @@
 #define DEFINE_UBOOT_DRIVER_COUNT               12
 #define DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT     3
 #define DEFINE_UBOOT_PART_DRIVER_COUNT          1
-#define DEFINE_UBOOT_CMD_COUNT                  9
+#define DEFINE_UBOOT_CMD_COUNT                  10
 
 /* Define the uclass drivers to be used on this platform */
 extern struct uclass_driver _u_boot_uclass_driver__nop;
