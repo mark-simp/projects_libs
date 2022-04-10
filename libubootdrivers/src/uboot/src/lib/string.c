@@ -22,7 +22,7 @@
 #include <linux/ctype.h>
 #include <malloc.h>
 
-
+#ifndef __HAVE_ARCH_STRNCASECMP
 /**
  * strncasecmp - Case insensitive, length-limited string comparison
  * @s1: One string
@@ -53,7 +53,9 @@ int strncasecmp(const char *s1, const char *s2, size_t len)
 	}
 	return (int)c1 - (int)c2;
 }
+#endif
 
+#ifndef __HAVE_ARCH_STRCASECMP
 /**
  * strcasecmp - Case insensitive string comparison
  * @s1: One string
@@ -63,6 +65,7 @@ int strcasecmp(const char *s1, const char *s2)
 {
 	return strncasecmp(s1, s2, -1U);
 }
+#endif
 
 char * ___strtok;
 

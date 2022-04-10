@@ -23,6 +23,8 @@
 #define __HAVE_ARCH_STRLCAT
 #define __HAVE_ARCH_STRCMP
 #define __HAVE_ARCH_STRNCMP
+#define __HAVE_ARCH_STRNCASECMP
+#define __HAVE_ARCH_STRCASECMP
 #define __HAVE_ARCH_STRCHR
 #define __HAVE_ARCH_STRRCHR
 #define __HAVE_ARCH_STRSTR
@@ -90,6 +92,11 @@
 #define CONFIG_SYS_LOAD_ADDR        0
 #define _DEBUG			            false /* Don't force debug logging */
 #define UNREACHABLE()               __builtin_unreachable()
+
+/* Provide a definition of off_t and prevent muslc from defining it.
+ * This prevents a name-space clash between muslc and the U-Boot types */
+#define __DEFINED_off_t
+typedef long off_t;
 
 /* Helper macros to wrap U-Boot 'print' routines on to seL4 equivalents */
 #include <uboot_print.h>
