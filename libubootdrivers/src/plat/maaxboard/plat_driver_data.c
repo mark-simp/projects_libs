@@ -41,14 +41,15 @@ void initialise_driver_data(void) {
 
     driver_data.part_driver_array[0] = _u_boot_part_driver__dos;
 
-    driver_data.cmd_array[0] = _u_boot_cmd__dm;
-    driver_data.cmd_array[1] = _u_boot_cmd__usb;
-    driver_data.cmd_array[2] = _u_boot_cmd__env;
-    driver_data.cmd_array[3] = _u_boot_cmd__setenv;
-    driver_data.cmd_array[4] = _u_boot_cmd__mmc;
-    driver_data.cmd_array[5] = _u_boot_cmd__fatsize;
-    driver_data.cmd_array[6] = _u_boot_cmd__fatload;
-    driver_data.cmd_array[7] = _u_boot_cmd__fatls;
-    driver_data.cmd_array[8] = _u_boot_cmd__fatinfo;
-    driver_data.cmd_array[9] = _u_boot_cmd__part;
+    driver_data.cmd_array[0]  = _u_boot_cmd__dm;
+    driver_data.cmd_array[1]  = _u_boot_cmd__usb;
+    driver_data.cmd_array[2]  = _u_boot_cmd__env;
+    driver_data.cmd_array[3]  = _u_boot_cmd__setenv;
+    driver_data.cmd_array[4]  = _u_boot_cmd__mmc;
+    driver_data.cmd_array[5]  = _u_boot_cmd__fatsize;
+    driver_data.cmd_array[6]  = _u_boot_cmd__fatload;
+    driver_data.cmd_array[7]  = _u_boot_cmd__fatls;
+    driver_data.cmd_array[8]  = _u_boot_cmd__fatinfo;
+    driver_data.cmd_array[9]  = _u_boot_cmd__part;
+    driver_data.cmd_array[10] = _u_boot_cmd__clocks;
 }
