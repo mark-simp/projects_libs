@@ -126,8 +126,14 @@ int run_uboot_command(char* cmd)
     if (!library_initialised)
         return -1;
 
+    log_info("--- running command '%s' ---", cmd);
+
     // Perform the command.
-    return run_command(cmd, CMD_FLAG_ENV);
+    int ret = run_command(cmd, CMD_FLAG_ENV);
+
+    log_info("--- command '%s' completed with return code %i ---", cmd, ret);
+
+    return ret;
 }
 
 void shutdown_uboot_wrapper(void)
