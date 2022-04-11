@@ -1,3 +1,5 @@
+#include <linux/types.h>
+
 void sel4_dma_flush_range(unsigned long start, unsigned long stop);
 
 void sel4_dma_invalidate_range(unsigned long start, unsigned long stop);

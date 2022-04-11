@@ -40,6 +40,51 @@ static inline void sync(void)
  * read/writes.  We define __arch_*[bl] here, and leave __arch_*w
  * to the architecture specific code.
  */
+#ifdef CONFIG_SEL4
+
+#define __arch_getb(_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned char *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+})
+#define __arch_getw(_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned short *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+})
+#define __arch_getl(_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned int *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+})
+#define __arch_getq(_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned long long *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+})
+
+#define __arch_putb(_VALUE,_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned char *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+})
+#define __arch_putw(_VALUE,_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned short *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+})
+#define __arch_putl(_VALUE,_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned int *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+})
+#define __arch_putq(_VALUE,_ADDR)	({	\
+	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR)))	\
+		panic("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
+	(*(volatile unsigned long long *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+})
+
+#else
 #define __arch_getb(a)			(*(volatile unsigned char *)(a))
 #define __arch_getw(a)			(*(volatile unsigned short *)(a))
 #define __arch_getl(a)			(*(volatile unsigned int *)(a))
@@ -49,6 +94,7 @@ static inline void sync(void)
 #define __arch_putw(v,a)		(*(volatile unsigned short *)(a) = (v))
 #define __arch_putl(v,a)		(*(volatile unsigned int *)(a) = (v))
 #define __arch_putq(v,a)		(*(volatile unsigned long long *)(a) = (v))
+#endif
 
 static inline void __raw_writesb(unsigned long addr, const void *data,
 				 int bytelen)

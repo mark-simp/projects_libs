@@ -117,12 +117,13 @@ typedef long off_t;
 
 /* Include headers expected by all U-Boot source code */
 #include <linux/kconfig.h>
+#include <sel4_dma.h>
+#include <sel4_io_map.h>
 #include <common.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vsprintf.h>
 #include <assert.h>
-#include <sel4_dma.h>
 #include <driver_data.h>
 
 /* Replace uses of U-Boot's lldiv function with the equivalent from muslc */

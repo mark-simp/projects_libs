@@ -152,7 +152,7 @@ void *sel4_io_map_phys_to_virt(void *paddr)
         (paddr - io_mapping[alloc_index].paddr);
 }
 
-bool sel4_io_map_is_mapped(void *vaddr)
+bool sel4_io_map_is_paddr_mapped(void *paddr)
 {
     assert(sel4_io_mapper != NULL);
 
@@ -160,8 +160,8 @@ bool sel4_io_map_is_mapped(void *vaddr)
     int alloc_index = -1;
     for (int x = 0; x < MAX_IO_MAPS; x++)
         if (io_mapping[x].in_use &&
-            vaddr >= io_mapping[x].vaddr &&
-            vaddr < io_mapping[x].vaddr + io_mapping[x].size)
+            (uintptr_t) paddr >= io_mapping[x].paddr &&
+            (uintptr_t) paddr < io_mapping[x].paddr + io_mapping[x].size)
                 return true;
     return false;
 }
