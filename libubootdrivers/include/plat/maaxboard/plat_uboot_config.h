@@ -27,7 +27,7 @@
 #define CONFIG_MMC_WRITE                1
 #define CONFIG_MMC_HW_PARTITIONING      1
 
-/* Enable FAT parition and filesystem support */
+/* Enable FAT partition and filesystem support */
 #define CONFIG_FS_FAT                   1
 #define CONFIG_FAT_WRITE                1
 #define CONFIG_FS_FAT_MAX_CLUSTSIZE     65536
