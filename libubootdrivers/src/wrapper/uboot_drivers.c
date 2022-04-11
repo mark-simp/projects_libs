@@ -15,6 +15,7 @@
 #include <sel4_timer.h>
 #include <utils/page.h>
 #include <sel4_dma_wrapper.h>
+#include <sel4_io_map.h>
 
 void* uboot_fdt_pointer = NULL;
 
@@ -135,7 +136,7 @@ static int replace_physical_address_with_virtual(uintptr_t paddr, uintptr_t vadd
 }
 
 
-static int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* path) {
+static int allocate_dev_resource_and_fdt_fixup(const char* path) {
 
     // Lookup the address and size information form the memory mapped device.
     int node_offset = fdt_path_offset(uboot_fdt_pointer, path);
@@ -165,7 +166,7 @@ static int allocate_dev_resource_and_fdt_fixup(ps_io_ops_t *io_ops, const char* 
     assert(paddr <= unaligned_paddr);
     size = size + (unaligned_paddr - paddr);
 
-    uintptr_t vaddr = (uintptr_t) ps_io_map(&io_ops->io_mapper, paddr, size, 0, PS_MEM_NORMAL);
+    uintptr_t vaddr = (uintptr_t) sel4_io_map_do_map(paddr, size);
     if (0 == vaddr) {
         ZF_LOGE("Unable to map virtual address for path '%s'.", path);
         return -1;
@@ -194,6 +195,9 @@ int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uin
     // Initialise the DMA management.
     sel4_dma_initialise(&io_ops->dma_manager);
 
+    // Initialise the IO mapping management.
+    sel4_io_map_initialise(&io_ops->io_mapper);
+
     // Start the monotonic timer.
     int ret = init_and_start_timer(io_ops, timer_path);
     if (0 != ret)
@@ -211,7 +215,7 @@ int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uin
 
     // Allocate resources and modify addresses in the device tree for each device.
     for (int dev_index=0; dev_index < device_count; dev_index++) {
-        ret = allocate_dev_resource_and_fdt_fixup(io_ops, device_paths[dev_index]);
+        ret = allocate_dev_resource_and_fdt_fixup(device_paths[dev_index]);
         if (0 != ret) {
             free(uboot_fdt_pointer);
             uboot_fdt_pointer = NULL;
@@ -242,7 +246,7 @@ void shutdown_uboot_drivers(void) {
 
     shutdown_uboot_wrapper();
 
-    sel4_dma_shutdown();
+    sel4_io_map_shutdown();
 
-    // TODO: Really should be unmapping things here.
+    sel4_dma_shutdown();
 }

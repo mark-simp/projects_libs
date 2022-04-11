@@ -163,7 +163,7 @@ void *sel4_dma_virt_to_phys(void *vaddr)
                 ZF_LOGE(" --> Index %i: vaddr = %p, size = 0x%x",
                     y, dma_alloc[y].vaddr, dma_alloc[y].size);
         /* This is a fatal error. Not being able to determine an address
-         * indicates that we are attempting to communicate with the XHCI
+         * indicates that we are attempting to communicate with a
          * device via memory that has not been mapped into the physical
          * address space. This implies that additional data needs to be
          * DMA allocated. */
@@ -193,7 +193,7 @@ void *sel4_dma_phys_to_virt(void *paddr)
     {
         ZF_LOGE("Unable to determine virtual address from physical %p", paddr);
         /* This is a fatal error. Not being able to determine an address
-         * indicates that we are attempting to communicate with the XHCI
+         * indicates that we are attempting to communicate with a
          * device via memory that has not been mapped into the physical
          * address space. This implies that additional data needs to be
          * DMA allocated. */
