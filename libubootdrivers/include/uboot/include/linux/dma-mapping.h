@@ -8,7 +8,14 @@
 #include <asm/dma-mapping.h>
 #include <cpu_func.h>
 
+#ifdef CONFIG_SEL4
+static inline bool dma_mapping_error(struct udevice *dev, dma_addr_t addr)
+{
+	return !sel4_dma_is_virt_mapped((void *) addr);
+}
+#else
 #define dma_mapping_error(x, y)	0
+#endif
 
 /**
  * Map a buffer to make it available to the DMA device
@@ -29,6 +36,19 @@
 static inline dma_addr_t dma_map_single(void *vaddr, size_t len,
 					enum dma_data_direction dir)
 {
+#ifdef CONFIG_SEL4
+
+	unsigned long addr = (unsigned long) sel4_dma_malloc(len);
+
+	len = ALIGN(len, ARCH_DMA_MINALIGN);
+
+	if (dir == DMA_FROM_DEVICE)
+		sel4_dma_invalidate_range(addr, addr + len);
+	else
+		sel4_dma_flush_range(addr, addr + len);
+
+#else
+
 	unsigned long addr = (unsigned long)vaddr;
 
 	len = ALIGN(len, ARCH_DMA_MINALIGN);
@@ -37,6 +57,8 @@ static inline dma_addr_t dma_map_single(void *vaddr, size_t len,
 		invalidate_dcache_range(addr, addr + len);
 	else
 		flush_dcache_range(addr, addr + len);
+
+#endif
 
 	return addr;
 }
@@ -55,10 +77,14 @@ static inline dma_addr_t dma_map_single(void *vaddr, size_t len,
 static inline void dma_unmap_single(dma_addr_t addr, size_t len,
 				    enum dma_data_direction dir)
 {
+#ifdef CONFIG_SEL4
+	sel4_dma_free((void *) addr);
+#else
 	len = ALIGN(len, ARCH_DMA_MINALIGN);
 
 	if (dir != DMA_TO_DEVICE)
 		invalidate_dcache_range(addr, addr + len);
+#endif
 }
 
 #endif

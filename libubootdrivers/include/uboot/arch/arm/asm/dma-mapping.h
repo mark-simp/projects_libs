@@ -16,13 +16,22 @@
 
 static inline void *dma_alloc_coherent(size_t len, unsigned long *handle)
 {
+#ifdef CONFIG_SEL4
+	*handle = (unsigned long)sel4_dma_memalign(ARCH_DMA_MINALIGN, ROUND(len, ARCH_DMA_MINALIGN));
+	return (void *)*handle;
+#else
 	*handle = (unsigned long)memalign(ARCH_DMA_MINALIGN, ROUND(len, ARCH_DMA_MINALIGN));
 	return (void *)*handle;
+#endif
 }
 
 static inline void dma_free_coherent(void *addr)
 {
+#ifdef CONFIG_SEL4
+	sel4_dma_free(addr);
+#else
 	free(addr);
+#endif
 }
 
 #endif /* __ASM_ARM_DMA_MAPPING_H */
