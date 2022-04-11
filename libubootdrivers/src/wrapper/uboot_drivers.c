@@ -241,4 +241,8 @@ void shutdown_uboot_drivers(void) {
     }
 
     shutdown_uboot_wrapper();
+
+    sel4_dma_shutdown();
+
+    // TODO: Really should be unmapping things here.
 }

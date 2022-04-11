@@ -28,19 +28,6 @@ static int find_allocation_index_by_vaddr(void *vaddr)
     return -1;
 }
 
-void sel4_dma_initialise(ps_dma_man_t *dma_manager)
-{
-    sel4_dma_manager = dma_manager;
-
-    for (int x = 0; x < MAX_DMA_ALLOCS; x++)
-    {
-        dma_alloc[x].in_use = false;
-        dma_alloc[x].vaddr = NULL;
-        dma_alloc[x].paddr = 0;
-        dma_alloc[x].size = 0;
-    }
-}
-
 void sel4_dma_flush_range(unsigned long start, unsigned long stop)
 {
     assert(sel4_dma_manager != NULL);
@@ -230,4 +217,30 @@ bool sel4_dma_is_virt_mapped(void *vaddr)
             vaddr < dma_alloc[x].vaddr + dma_alloc[x].size)
                 return true;
     return false;
+}
+
+void sel4_dma_initialise(ps_dma_man_t *dma_manager)
+{
+    sel4_dma_manager = dma_manager;
+
+    for (int x = 0; x < MAX_DMA_ALLOCS; x++)
+    {
+        dma_alloc[x].in_use = false;
+        dma_alloc[x].vaddr = NULL;
+        dma_alloc[x].paddr = 0;
+        dma_alloc[x].size = 0;
+    }
+}
+
+void sel4_dma_shutdown(void)
+{
+    // Deallocate any currently allocated DMA.
+    for (int x = 0; x < MAX_DMA_ALLOCS; x++)
+    {
+        if (dma_alloc[x].in_use)
+            sel4_dma_free(dma_alloc[x].vaddr);
+    }
+
+    // Clear the pointer to the DMA routines.
+    sel4_dma_manager = NULL;
 }
