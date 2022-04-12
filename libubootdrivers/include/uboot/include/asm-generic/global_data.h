@@ -468,8 +468,7 @@ struct global_data {
 	char *smbios_version;
 #endif
 };
-#ifdef CONFIG_SEL4
-#else
+#ifndef CONFIG_SEL4
 #ifndef DO_DEPS_ONLY
 static_assert(sizeof(struct global_data) == GD_SIZE);
 #endif
