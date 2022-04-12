@@ -21,6 +21,8 @@ void initialise_driver_data(void) {
     driver_data.uclass_driver_array[8]  = _u_boot_uclass_driver__blk;
     driver_data.uclass_driver_array[9]  = _u_boot_uclass_driver__keyboard;
     driver_data.uclass_driver_array[10] = _u_boot_uclass_driver__mmc;
+    driver_data.uclass_driver_array[11] = _u_boot_uclass_driver__pinconfig;
+    driver_data.uclass_driver_array[12] = _u_boot_uclass_driver__pinctrl;
 
     driver_data.driver_array[0]  = _u_boot_driver__root_driver;
     driver_data.driver_array[1]  = _u_boot_driver__simple_bus;
@@ -34,6 +36,8 @@ void initialise_driver_data(void) {
     driver_data.driver_array[9]  = _u_boot_driver__usb_kbd;
     driver_data.driver_array[10] = _u_boot_driver__mmc_blk;
     driver_data.driver_array[11] = _u_boot_driver__fsl_esdhc;
+    driver_data.driver_array[12] = _u_boot_driver__pinconfig_generic;
+    driver_data.driver_array[13] = _u_boot_driver__imx8mq_pinctrl;
 
     driver_data.usb_driver_entry_array[0] = _u_boot_usb_driver_entry__usb_generic_hub;
     driver_data.usb_driver_entry_array[1] = _u_boot_usb_driver_entry__usb_mass_storage;

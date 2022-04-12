@@ -2,6 +2,13 @@
  * This file defines the platform specific U-Boot configuration macros
  */
 
+/* Enable pin control / mux support (required by other drivers) */
+#define CONFIG_PINCTRL                  1
+#define CONFIG_PINCTRL_FULL             1
+#define CONFIG_PINCTRL_GENERIC          1
+#define CONFIG_PINMUX                   1
+#define CONFIG_PINCONF_RECURSIVE        1
+
 /* Enable the USB subsystem */
 #define CONFIG_DM_USB                   1
 #define CONFIG_USB_HOST                 1 /* Allow the USB devices to be used as a host */
