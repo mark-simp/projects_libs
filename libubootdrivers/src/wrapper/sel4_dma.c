@@ -140,12 +140,6 @@ void sel4_dma_flush_range(void *start, void *stop)
         ZF_LOGD("Flushed start address is not DMA allocated: %p", start);
         return;
     }
-    if (dma_alloc[alloc_index].public_vaddr > stop ||
-        dma_alloc[alloc_index].public_vaddr +
-        dma_alloc[alloc_index].size < stop) {
-        ZF_LOGD("Flushed stpp address is not DMA allocated: %p", stop);
-        return;
-    }
 
     /* If this is mapped in the 'to device' direction then we need to start by
      * copying the mapped virtual data to the DMA-backed area before flushing */
@@ -196,12 +190,6 @@ void sel4_dma_invalidate_range(void *start, void *stop)
     int alloc_index = find_allocation_index_by_public_vaddr(start);
     if (alloc_index < 0) {
         ZF_LOGD("Flushed start address is not DMA allocated: %p", start);
-        return;
-    }
-    if (dma_alloc[alloc_index].public_vaddr > stop ||
-        dma_alloc[alloc_index].public_vaddr +
-        dma_alloc[alloc_index].size < stop) {
-        ZF_LOGD("Flushed stpp address is not DMA allocated: %p", stop);
         return;
     }
 
