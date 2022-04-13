@@ -19,6 +19,6 @@ bool sel4_dma_is_virt_mapped(void *vaddr);
 
 /* Interface for 'dma mapping' */
 
-void* sel4_dma_map_single(void* mapped_vaddr, size_t size, enum dma_data_direction dir);
+void* sel4_dma_map_single(void* public_vaddr, size_t size, enum dma_data_direction dir);
 
 void sel4_dma_unmap_single(void *paddr);
