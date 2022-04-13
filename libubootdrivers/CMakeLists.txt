@@ -67,9 +67,11 @@ if(LibUBOOT)
     # Enumerate the set of source files
     file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
     file(GLOB_RECURSE uboot_deps src/uboot/src/*.c)
+    file(GLOB_RECURSE stub_deps src/stub/src/*.c)
     file(GLOB_RECURSE plat_deps src/plat/${KernelPlatform}/*.c)
     list(APPEND deps ${wrapper_deps})
     list(APPEND deps ${uboot_deps})
+    list(APPEND deps ${stub_deps})
     list(APPEND deps ${plat_deps})
 
     # Enumerate the set of platform dependent osurce files
@@ -93,11 +95,13 @@ if(LibUBOOT)
         include/wrapper
         src/uboot/src/lib
         include/uboot/include
+        include/stub/include
     )
 
     # Add U-Boot prviate inclues based upon the architecture.
     if(KernelArchARM)
         target_include_directories(ubootdrivers PRIVATE include/uboot/arch/arm)
+        target_include_directories(ubootdrivers PRIVATE include/stub/arch/arm)
         target_include_directories(ubootdrivers PRIVATE include/uboot/arch/proc-armv)
         if(KernelArchArmV8a)
             target_include_directories(ubootdrivers PRIVATE include/uboot/arch/armv8)
