@@ -1,8 +1,9 @@
 #include <linux/types.h>
+#include <linux/dma-direction.h>
 
-void sel4_dma_flush_range(unsigned long start, unsigned long stop);
+void sel4_dma_flush_range(void *start, void *stop);
 
-void sel4_dma_invalidate_range(unsigned long start, unsigned long stop);
+void sel4_dma_invalidate_range(void *start, void *stop);
 
 void sel4_dma_free(void *vaddr);
 
@@ -15,3 +16,9 @@ void* sel4_dma_virt_to_phys(void *vaddr);
 void* sel4_dma_phys_to_virt(void *paddr);
 
 bool sel4_dma_is_virt_mapped(void *vaddr);
+
+/* Interface for 'dma mapping' */
+
+void* sel4_dma_map_single(void* mapped_vaddr, size_t size, enum dma_data_direction dir);
+
+void sel4_dma_unmap_single(void *paddr);

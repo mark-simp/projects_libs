@@ -38,13 +38,8 @@ void xhci_flush_cache(uintptr_t addr, u32 len)
 {
 	BUG_ON((void *)addr == NULL || len == 0);
 
-#ifdef CONFIG_SEL4
-	sel4_dma_flush_range(addr & ~(CACHELINE_SIZE - 1),
-				ALIGN(addr + len, CACHELINE_SIZE));
-#else
 	flush_dcache_range(addr & ~(CACHELINE_SIZE - 1),
 				ALIGN(addr + len, CACHELINE_SIZE));
-#endif
 }
 
 /**
@@ -58,13 +53,8 @@ void xhci_inval_cache(uintptr_t addr, u32 len)
 {
 	BUG_ON((void *)addr == NULL || len == 0);
 
-#ifdef CONFIG_SEL4
-	sel4_dma_invalidate_range(addr & ~(CACHELINE_SIZE - 1),
-				ALIGN(addr + len, CACHELINE_SIZE));
-#else
 	invalidate_dcache_range(addr & ~(CACHELINE_SIZE - 1),
 				ALIGN(addr + len, CACHELINE_SIZE));
-#endif
 }
 
 

@@ -9,17 +9,6 @@
 /* This is required to prevent a linker error but is never used (because OF_PLATDATA_INST is not defined) */
 struct udevice _u_boot_udevice__root;
 
-/* Not required routine. Perform a 'nop' */
-void invalidate_dcache_range(unsigned long start, unsigned long stop)
-{
-	// Not required. seL4 DMA cache operations will be used instead for any DMA memory.
-}
-
-void flush_dcache_range(unsigned long start, unsigned long stop)
-{
-	// Not required. seL4 DMA cache operations will be used instead for any DMA memory.
-}
-
 int common_diskboot(struct cmd_tbl *cmdtp, const char *intf, int argc,
 		    char *const argv[])
 {
