@@ -14,6 +14,7 @@
 #include <uboot_wrapper.h>
 #include <utils/page.h>
 
+#define EXTRA_FDT_BUFFER_SIZE 1024
 void* uboot_fdt_pointer = NULL;
 
 
@@ -70,8 +71,7 @@ static int get_node_size_and_address_data(uintptr_t *addr, size_t *size, int *ad
     return 0;
 }
 
-
-static int allocate_dev_resource_and_fdt_fixup(const char* path) {
+static int map_device_resources(const char* path) {
 
     // Lookup the address and size information form the memory mapped device.
     int node_offset = fdt_path_offset(uboot_fdt_pointer, path);
@@ -112,6 +112,40 @@ static int allocate_dev_resource_and_fdt_fixup(const char* path) {
     return 0;
 }
 
+static void set_parent_status(int current_node, char *status_to_set)
+{
+    // Disable this node.
+    int prop_len;
+    const struct fdt_property *status;
+    status = fdt_get_property(uboot_fdt_pointer, current_node, "status", &prop_len);
+    if (status != NULL) {
+        int err = fdt_setprop_string(uboot_fdt_pointer, current_node, "status", status_to_set);
+        ZF_LOGE_IF(err, "Failed to set 'status' with error %i. Buffer not bid enough?", err);
+    }
+
+    // Now set status of parent
+    int parent_node = fdt_parent_offset(uboot_fdt_pointer, current_node);
+    if (parent_node >= 0)
+        set_parent_status(parent_node, status_to_set);
+}
+
+static void set_all_child_status(int parent_node, char *status_to_set)
+{
+    // Set status of this node.
+    int prop_len;
+    const struct fdt_property *status;
+    status = fdt_get_property(uboot_fdt_pointer, parent_node, "status", &prop_len);
+    if (status != NULL) {
+        int err = fdt_setprop_string(uboot_fdt_pointer, parent_node, "status", status_to_set);
+        ZF_LOGE_IF(err, "Failed to set 'status' with error %i. Buffer not bid enough?", err);
+    }
+
+    // Now set status of all children
+    int child_node;
+    fdt_for_each_subnode(child_node, uboot_fdt_pointer, parent_node)
+        set_all_child_status(child_node, status_to_set);
+}
+
 int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count)
 {
     int ret;
@@ -122,18 +156,31 @@ int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uin
     // Initialise the IO mapping management.
     sel4_io_map_initialise(&io_ops->io_mapper);
 
-    // Create a copy of the FDT for U-Boot to use.
+    // Create a copy of the FDT for U-Boot to use. We do this using
+    // 'fdt_open_into' to open the FDT into a larger buffer to allow
+    // us extra space to make modifications as required.
     void* orig_fdt_blob = io_ops->io_fdt.get_fn(io_ops->io_fdt.cookie);
-    int fdt_size = fdt_totalsize(orig_fdt_blob);
+    int fdt_size = fdt_totalsize(orig_fdt_blob) + EXTRA_FDT_BUFFER_SIZE;
     uboot_fdt_pointer = malloc(fdt_size);
     if (uboot_fdt_pointer == NULL) {
         return -ENOMEM;
     }
-    memcpy(uboot_fdt_pointer, orig_fdt_blob, fdt_size);
+    fdt_open_into(orig_fdt_blob, uboot_fdt_pointer, fdt_size);
+
+    // Start off by disabling all devices in the device tree
+    set_all_child_status(fdt_path_offset(uboot_fdt_pointer, "/"), "disabled");
+
+    // Now set the status for all parents and children (recursively) of our used
+    // devices to 'okay'. This leaves only the minimum set of devices enabled
+    // which we actually require.
+    for (int dev_index=0; dev_index < device_count; dev_index++) {
+        set_parent_status(fdt_path_offset(uboot_fdt_pointer, device_paths[dev_index]), "okay");
+        set_all_child_status(fdt_path_offset(uboot_fdt_pointer, device_paths[dev_index]), "okay");
+    }
 
     // Allocate resources and modify addresses in the device tree for each device.
     for (int dev_index=0; dev_index < device_count; dev_index++) {
-        ret = allocate_dev_resource_and_fdt_fixup(device_paths[dev_index]);
+        ret = map_device_resources(device_paths[dev_index]);
         if (0 != ret) {
             free(uboot_fdt_pointer);
             uboot_fdt_pointer = NULL;
