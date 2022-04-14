@@ -8,12 +8,10 @@
  * @io_ops: the thread's platform support IO operations
  * @device_paths: list of strings for the device tree paths to handled
  * @device_count: the length of the device_paths list
- * @timer_path: the device tree path of the timer (e.g. GPT) to be used
- *   by the library
  *
  * Return: 0 if OK, otherwise failure.
  */
-int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count, const char *timer_path);
+int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count);
 
 /**
  * run_uboot_command() - executes a u-boot command as if entered at the
