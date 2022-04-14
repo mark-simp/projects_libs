@@ -145,10 +145,10 @@ void sel4_dma_flush_range(void *start, void *stop)
      * copying the mapped virtual data to the DMA-backed area before flushing */
     if (dma_alloc[alloc_index].is_mapping &&
         dma_alloc[alloc_index].mapping_dir == DMA_TO_DEVICE)
-            memcpy(
-                dma_alloc[alloc_index].mapped_vaddr,
-                dma_alloc[alloc_index].public_vaddr,
-                dma_alloc[alloc_index].size);
+        memcpy(
+            dma_alloc[alloc_index].mapped_vaddr,
+            dma_alloc[alloc_index].public_vaddr,
+            dma_alloc[alloc_index].size);
 
     /* Determine how much data to flush */
     size_t flush_size;
@@ -171,14 +171,14 @@ void sel4_dma_flush_range(void *start, void *stop)
         flush_size,
         DMA_CACHE_OP_CLEAN);
 
-    /* If this is mapped in the 'from device' direction then we need to finish by
-     * copying the mapped virtual data to the DMA-backed area before flushing */
+    /* If this is mapped in the 'from device' direction then we need to finish
+     * by copying the mapped virtual data to the DMA-backed area */
     if (dma_alloc[alloc_index].is_mapping &&
         dma_alloc[alloc_index].mapping_dir == DMA_FROM_DEVICE)
-            memcpy(
-                dma_alloc[alloc_index].public_vaddr,
-                dma_alloc[alloc_index].mapped_vaddr,
-                dma_alloc[alloc_index].size);
+        memcpy(
+            dma_alloc[alloc_index].public_vaddr,
+            dma_alloc[alloc_index].mapped_vaddr,
+            dma_alloc[alloc_index].size);
 }
 
 void sel4_dma_invalidate_range(void *start, void *stop)
@@ -212,6 +212,14 @@ void sel4_dma_invalidate_range(void *start, void *stop)
         inval_start,
         inval_size,
         DMA_CACHE_OP_INVALIDATE);
+
+    /* If this is mapped in then we need to finish by copying the mapped
+     * (i.e. invalidated) virtual data to the DMA-backed area */
+    if (dma_alloc[alloc_index].is_mapping)
+        memcpy(
+            dma_alloc[alloc_index].public_vaddr,
+            dma_alloc[alloc_index].mapped_vaddr,
+            dma_alloc[alloc_index].size);
 }
 
 void sel4_dma_free(void *vaddr)
