@@ -1386,7 +1386,7 @@ static int xhci_submit_control_msg(struct udevice *dev, struct usb_device *udev,
 			hop = hop->parent;
 */
 #ifdef CONFIG_SEL4
-	if (sel4_dma_is_virt_mapped(buffer))
+	if (sel4_dma_is_mapped(buffer))
 		return _xhci_submit_control_msg(udev, pipe, buffer, length, setup,
 						root_portnr);
 	else {
@@ -1412,7 +1412,7 @@ static int xhci_submit_bulk_msg(struct udevice *dev, struct usb_device *udev,
 	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
 
 #ifdef CONFIG_SEL4
-	if (sel4_dma_is_virt_mapped(buffer))
+	if (sel4_dma_is_mapped(buffer))
 		return _xhci_submit_bulk_msg(udev, pipe, buffer, length);
 	else {
 		// Buffer is not DMA mapped. Allocate DMA now then clear afterwards.
@@ -1436,7 +1436,7 @@ static int xhci_submit_int_msg(struct udevice *dev, struct usb_device *udev,
 	debug("%s: dev='%s', udev=%p\n", __func__, dev->name, udev);
 
 #ifdef CONFIG_SEL4
-	if (sel4_dma_is_virt_mapped(buffer))
+	if (sel4_dma_is_mapped(buffer))
 		return _xhci_submit_int_msg(udev, pipe, buffer, length, interval,
 						nonblock);
 	else {

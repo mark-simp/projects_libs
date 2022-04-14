@@ -18,7 +18,7 @@ static inline void dma_free_coherent(void *addr)
 
 static inline bool dma_mapping_error(struct udevice *dev, dma_addr_t addr)
 {
-	return !sel4_dma_is_virt_mapped((void *) addr);
+	return !sel4_dma_is_mapped((void *) addr);
 }
 
 static inline dma_addr_t dma_map_single(void *vaddr, size_t len,

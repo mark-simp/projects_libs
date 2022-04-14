@@ -122,7 +122,7 @@ void *sel4_dma_virt_to_phys(void *vaddr)
     assert(false);
 }
 
-bool sel4_dma_is_virt_mapped(void *vaddr)
+bool sel4_dma_is_mapped(void *vaddr)
 {
     assert(sel4_dma_manager != NULL);
 
