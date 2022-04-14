@@ -36,7 +36,6 @@ long get_ram_size(long *base, long size) { assert(false); }
 void *locate_dtb_in_fit(const void *fit) { assert(false); }
 u32 dm_pci_read_bar32(const struct udevice *dev, int barnum) { assert(false); }
 void dwc3_gadget_uboot_handle_interrupt(struct dwc3 *dwc)  { assert(false); }
-void hang(void)  { assert(false); }
 int utf8_put(s32 code, char **dst) { assert(false); }
 size_t utf16_strnlen(const u16 *src, size_t count) { assert(false); }
 size_t utf16_utf8_strnlen(const u16 *src, size_t count) { assert(false); }

@@ -3,6 +3,11 @@
 #include <uboot_helper.h>
 #include <hang.h>
 
+void hang(void)
+{
+	assert(false);
+}
+
 void panic(const char *fmt, ...)
 {
 	va_list args;
