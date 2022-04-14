@@ -11,6 +11,7 @@
 #include <mmc.h>
 #include <env.h>
 #include <command.h>
+#include <sel4_timer.h>
 
 // Global declaration of global_data.
 struct global_data* gd;
@@ -23,6 +24,9 @@ static bool library_initialised = false;
 
 int initialise_uboot_wrapper(char* fdt_blob)
 {
+    // Start the monotonic timer.
+    initialise_and_start_timer();
+
     // Return immediately if already initialised (nothing to do).
     if (library_initialised) return 0;
 
@@ -141,6 +145,9 @@ void shutdown_uboot_wrapper(void)
     // Return immediately if library not initialsed (nothing to do).
     if (!library_initialised)
         return;
+
+    // Shutdown the monotonic timer.
+    shutdown_timer();
 
     // Delete persistant state.
     free(gd);

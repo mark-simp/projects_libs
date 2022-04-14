@@ -12,7 +12,6 @@
 
 #include <libfdt.h>
 #include <uboot_wrapper.h>
-#include <sel4_timer.h>
 #include <utils/page.h>
 
 void* uboot_fdt_pointer = NULL;
@@ -113,25 +112,21 @@ static int allocate_dev_resource_and_fdt_fixup(const char* path) {
     return 0;
 }
 
-int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count, const char *timer_path)
+int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count)
 {
+    int ret;
+
     // Initialise the DMA management.
     sel4_dma_initialise(&io_ops->dma_manager);
 
     // Initialise the IO mapping management.
     sel4_io_map_initialise(&io_ops->io_mapper);
 
-    // Start the monotonic timer.
-    int ret = init_and_start_timer(io_ops, timer_path);
-    if (0 != ret)
-        return -1;
-
     // Create a copy of the FDT for U-Boot to use.
     void* orig_fdt_blob = io_ops->io_fdt.get_fn(io_ops->io_fdt.cookie);
     int fdt_size = fdt_totalsize(orig_fdt_blob);
     uboot_fdt_pointer = malloc(fdt_size);
     if (uboot_fdt_pointer == NULL) {
-        shutdown_timer();
         return -ENOMEM;
     }
     memcpy(uboot_fdt_pointer, orig_fdt_blob, fdt_size);
@@ -142,7 +137,6 @@ int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uin
         if (0 != ret) {
             free(uboot_fdt_pointer);
             uboot_fdt_pointer = NULL;
-            shutdown_timer();
             return -1;
         }
     }
@@ -152,7 +146,6 @@ int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uin
     if (0 != ret) {
         free(uboot_fdt_pointer);
         uboot_fdt_pointer = NULL;
-        shutdown_timer();
         return ret;
     }
 
@@ -164,7 +157,6 @@ void shutdown_uboot_drivers(void) {
     if (uboot_fdt_pointer != NULL) {
         free(uboot_fdt_pointer);
         uboot_fdt_pointer = NULL;
-        shutdown_timer();
     }
 
     shutdown_uboot_wrapper();
