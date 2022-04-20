@@ -41,10 +41,13 @@
 #define CONFIG_DOS_PARTITION            1
 
 /* Enable ethernet */
+#define CONFIG_NET                      1
 #define CONFIG_DM_ETH                   1
 #define CONFIG_PHYLIB                   1
 // CONFIG_PHY_ATHEROS=y
 // CONFIG_NETDEVICES=y
-// CONFIG_PHY_GIGE=y
-// CONFIG_FEC_MXC=y
+#define CONFIG_PHY_GIGE                 1
+#define CONFIG_FEC_MXC                  1
 #define CONFIG_MII                      1
+#define CONFIG_TFTP_BLOCKSIZE           1468
+#define CONFIG_TFTP_WINDOWSIZE          1
