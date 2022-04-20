@@ -10,11 +10,15 @@
  */
 
 /* Define the number of different driver elements to be used on this platform */
-#define DEFINE_UBOOT_UCLASS_DRIVER_COUNT        13
-#define DEFINE_UBOOT_DRIVER_COUNT               14
-#define DEFINE_UBOOT_USB_DRIVER_ENTRY_COUNT     3
-#define DEFINE_UBOOT_PART_DRIVER_COUNT          1
-#define DEFINE_UBOOT_CMD_COUNT                  11
+#define _u_boot_uclass_driver_count     13
+#define _u_boot_driver_count            14
+#define _u_boot_usb_driver_entry_count  3
+#define _u_boot_part_driver_count       1
+#define _u_boot_cmd_count               11
+#define _u_boot_env_driver_count        0
+#define _u_boot_env_clbk_count          0
+#define _u_boot_driver_info_count       0
+#define _u_boot_udevice_count           0
 
 /* Define the uclass drivers to be used on this platform */
 extern struct uclass_driver _u_boot_uclass_driver__nop;

@@ -308,11 +308,7 @@ part_get_info_by_dev_and_name_or_num(const char *dev_iface,
 struct part_driver {
 	const char *name;
 	int part_type;
-#ifdef CONFIG_SEL4
-	int max_entries;	/* maximum number of entries to search */
-#else
 	const int max_entries;	/* maximum number of entries to search */
-#endif
 
 	/**
 	 * get_info() - Get information about a partition
@@ -500,7 +496,6 @@ int layout_mbr_partitions(struct disk_partition *p, int count,
 
 #endif
 
-#ifndef CONFIG_SEL4
 #ifdef CONFIG_PARTITIONS
 /**
  * part_driver_get_count() - get partition driver count
@@ -529,6 +524,5 @@ static inline int part_driver_get_count(void)
 static inline struct part_driver *part_driver_get_first(void)
 { return NULL; }
 #endif /* CONFIG_PARTITIONS */
-#endif
 
 #endif /* _PART_H */

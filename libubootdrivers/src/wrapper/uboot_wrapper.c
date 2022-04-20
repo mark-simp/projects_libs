@@ -16,6 +16,22 @@
 // Global declaration of global_data.
 struct global_data* gd;
 
+// Global declaration of driver_data.
+struct driver_data_t driver_data;
+
+// Global declaration and initialisation of driver_data_start.
+const struct driver_data_start_t driver_data_start = {
+    .driver_start = driver_data.driver_array,
+    .uclass_driver_start = driver_data.uclass_driver_array,
+    .usb_driver_entry_start = driver_data.usb_driver_entry_array,
+    .cmd_start = driver_data.cmd_array,
+    .part_driver_start = driver_data.part_driver_array,
+    .env_driver_start = driver_data.env_driver_array,
+    .env_clbk_start = driver_data.env_clbk_array,
+    .driver_info_start = driver_data.driver_info_array,
+    .udevice_start = driver_data.udevice_array
+};
+
 // Global declaration of version_string.
 const char version_string[] = "seL4 U-Boot driver";
 
