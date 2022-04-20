@@ -10,8 +10,8 @@
  */
 
 /* Define the number of different driver elements to be used on this platform */
-#define _u_boot_uclass_driver_count     13
-#define _u_boot_driver_count            14
+#define _u_boot_uclass_driver_count     14
+#define _u_boot_driver_count            15
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       1
 #define _u_boot_cmd_count               11
@@ -34,6 +34,7 @@ extern struct uclass_driver _u_boot_uclass_driver__keyboard;
 extern struct uclass_driver _u_boot_uclass_driver__mmc;
 extern struct uclass_driver _u_boot_uclass_driver__pinconfig;
 extern struct uclass_driver _u_boot_uclass_driver__pinctrl;
+extern struct uclass_driver _u_boot_uclass_driver__ethernet;
 
 /* Define the drivers to be used on this platform */
 extern struct driver _u_boot_driver__root_driver;
@@ -50,6 +51,7 @@ extern struct driver _u_boot_driver__mmc_blk;
 extern struct driver _u_boot_driver__fsl_esdhc;
 extern struct driver _u_boot_driver__pinconfig_generic;
 extern struct driver _u_boot_driver__imx8mq_pinctrl;
+extern struct driver _u_boot_driver__fecmxc_gem;
 
 /* Define the driver entries to be used on this platform */
 extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_generic_hub;
