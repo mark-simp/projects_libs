@@ -39,3 +39,12 @@
 #define CONFIG_FAT_WRITE                1
 #define CONFIG_FS_FAT_MAX_CLUSTSIZE     65536
 #define CONFIG_DOS_PARTITION            1
+
+/* Enable ethernet */
+#define CONFIG_DM_ETH                   1
+#define CONFIG_PHYLIB                   1
+// CONFIG_PHY_ATHEROS=y
+// CONFIG_NETDEVICES=y
+// CONFIG_PHY_GIGE=y
+// CONFIG_FEC_MXC=y
+#define CONFIG_MII                      1
