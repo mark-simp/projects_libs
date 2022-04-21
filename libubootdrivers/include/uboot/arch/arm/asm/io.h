@@ -42,62 +42,86 @@ static inline void sync(void)
  */
 #ifdef CONFIG_SEL4
 
-#define __arch_getb(_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned char *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+#define __arch_getb(_ADDR)	({										\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned char *)(_GET_ADDR));						\
 })
-#define __arch_getw(_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned short *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+#define __arch_getw(_ADDR)	({										\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned short *)(_GET_ADDR));						\
 })
-#define __arch_getl(_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned int *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+#define __arch_getl(_ADDR)	({										\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned int *)(_GET_ADDR));						\
 })
-#define __arch_getq(_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to read from unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned long long *)(sel4_io_map_phys_to_virt((void*)(_ADDR))));	\
+#define __arch_getq(_ADDR)	({										\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned long long *)(_GET_ADDR));					\
 })
 
-#define __arch_putb(_VALUE,_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned char *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+#define __arch_putb(_VALUE,_ADDR)	({								\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned char *)(_GET_ADDR) = (_VALUE));			\
 })
-#define __arch_putw(_VALUE,_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned short *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+#define __arch_putw(_VALUE,_ADDR)	({								\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned short *)(_GET_ADDR) = (_VALUE));			\
 })
-#define __arch_putl(_VALUE,_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned int *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+#define __arch_putl(_VALUE,_ADDR)	({								\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned int *)(_GET_ADDR) = (_VALUE));				\
 })
-#define __arch_putq(_VALUE,_ADDR)	({	\
-	if (!sel4_io_map_is_paddr_mapped((void*)(_ADDR))) {	\
-		log_err("Attempt to write to unmapped address %p. Fatal\n", (_ADDR));	\
-		assert(false);	\
-	} \
-	(*(volatile unsigned long long *)(sel4_io_map_phys_to_virt((void*)(_ADDR))) = (_VALUE));	\
+#define __arch_putq(_VALUE,_ADDR)	({								\
+	void *_GET_ADDR;												\
+	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
+		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
+	else {															\
+		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		_GET_ADDR = (void*)(_ADDR);									\
+	}																\
+	(*(volatile unsigned long long *)(_GET_ADDR) = (_VALUE));		\
 })
 
 #else
