@@ -44,6 +44,9 @@ if(LibUBOOT)
 
     # Set up configuration macros based upon the platform
     if(KernelPlatImx8mq)
+        add_definitions("-DCONFIG_ARCH_IMX8M=1")
+        add_definitions("-DCONFIG_IMX8=1")
+        add_definitions("-DCONFIG_IMX8M=1")
         add_definitions("-DCONFIG_IMX8MQ=1")
     endif()
 

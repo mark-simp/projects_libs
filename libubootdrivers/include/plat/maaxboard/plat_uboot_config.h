@@ -44,7 +44,7 @@
 #define CONFIG_NET                      1
 #define CONFIG_DM_ETH                   1
 #define CONFIG_PHYLIB                   1
-// CONFIG_PHY_ATHEROS=y
+#define CONFIG_PHY_ATHEROS              1
 // CONFIG_NETDEVICES=y
 #define CONFIG_PHY_GIGE                 1
 #define CONFIG_FEC_MXC                  1
