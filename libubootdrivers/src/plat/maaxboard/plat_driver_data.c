@@ -6,8 +6,7 @@
 #include <dm/uclass.h>
 #include <dm/platdata.h>
 #include <usb.h>
-
-struct driver_data_t driver_data;
+#include <part.h>
 
 void initialise_driver_data(void) {
     driver_data.uclass_driver_array[0]  = _u_boot_uclass_driver__nop;
@@ -23,6 +22,7 @@ void initialise_driver_data(void) {
     driver_data.uclass_driver_array[10] = _u_boot_uclass_driver__mmc;
     driver_data.uclass_driver_array[11] = _u_boot_uclass_driver__pinconfig;
     driver_data.uclass_driver_array[12] = _u_boot_uclass_driver__pinctrl;
+    driver_data.uclass_driver_array[13] = _u_boot_uclass_driver__ethernet;
 
     driver_data.driver_array[0]  = _u_boot_driver__root_driver;
     driver_data.driver_array[1]  = _u_boot_driver__simple_bus;
@@ -38,12 +38,15 @@ void initialise_driver_data(void) {
     driver_data.driver_array[11] = _u_boot_driver__fsl_esdhc;
     driver_data.driver_array[12] = _u_boot_driver__pinconfig_generic;
     driver_data.driver_array[13] = _u_boot_driver__imx8mq_pinctrl;
+    driver_data.driver_array[14] = _u_boot_driver__fecmxc_gem;
 
     driver_data.usb_driver_entry_array[0] = _u_boot_usb_driver_entry__usb_generic_hub;
     driver_data.usb_driver_entry_array[1] = _u_boot_usb_driver_entry__usb_mass_storage;
     driver_data.usb_driver_entry_array[2] = _u_boot_usb_driver_entry__usb_kbd;
 
-    driver_data.part_driver_array[0] = _u_boot_part_driver__dos;
+    /* Note that 'struct part_driver' is read-only so need to copy here rather
+     * than perform a simple assignment */
+    memcpy(&driver_data.part_driver_array[0], &_u_boot_part_driver__dos, sizeof(struct part_driver));
 
     driver_data.cmd_array[0]  = _u_boot_cmd__dm;
     driver_data.cmd_array[1]  = _u_boot_cmd__usb;
