@@ -9,6 +9,7 @@
 #include <stdio_dev.h>
 #include <console.h>
 #include <mmc.h>
+#include <net.h>
 #include <env.h>
 #include <command.h>
 #include <sel4_timer.h>
@@ -130,6 +131,16 @@ int initialise_uboot_wrapper(char* fdt_blob)
     ret = mmc_initialize(NULL);
     if (0 != ret)
         goto error;
+#endif
+
+#ifdef CONFIG_CMD_NET
+    // Initialize the ethernet system.
+	puts("Net:   ");
+	eth_initialize();
+#ifdef CONFIG_RESET_PHY_R
+	debug("Reset Ethernet PHY\n");
+	reset_phy();
+#endif
 #endif
 
     // Success.
