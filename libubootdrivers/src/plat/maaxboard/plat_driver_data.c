@@ -59,4 +59,7 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[8]  = _u_boot_cmd__fatinfo;
     driver_data.cmd_array[9]  = _u_boot_cmd__part;
     driver_data.cmd_array[10] = _u_boot_cmd__clocks;
+    driver_data.cmd_array[11] = _u_boot_cmd__net;
+    driver_data.cmd_array[12] = _u_boot_cmd__dns;
+    driver_data.cmd_array[13] = _u_boot_cmd__ping;
 }
