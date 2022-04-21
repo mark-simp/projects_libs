@@ -43,11 +43,12 @@
 /* Enable ethernet */
 #define CONFIG_NET                      1
 #define CONFIG_DM_ETH                   1
-#define CONFIG_PHYLIB                   1
+#define CONFIG_PHYLIB s                  1
 #define CONFIG_PHY_ATHEROS              1
-// CONFIG_NETDEVICES=y
 #define CONFIG_PHY_GIGE                 1
 #define CONFIG_FEC_MXC                  1
 #define CONFIG_MII                      1
 #define CONFIG_TFTP_BLOCKSIZE           1468
 #define CONFIG_TFTP_WINDOWSIZE          1
+#define CONFIG_CMD_DNS                  1
+#define CONFIG_CMD_PING                 1
