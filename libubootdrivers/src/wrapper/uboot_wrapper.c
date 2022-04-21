@@ -35,6 +35,9 @@ const struct driver_data_start_t driver_data_start = {
 // Global declaration of version_string.
 const char version_string[] = "seL4 U-Boot driver";
 
+// Global declaration and initialisation of the default load address.
+ulong image_load_addr = CONFIG_SYS_LOAD_ADDR;
+
 // State determining whether the library has been initialised.
 static bool library_initialised = false;
 
