@@ -50,5 +50,6 @@
 #define CONFIG_MII                      1
 #define CONFIG_TFTP_BLOCKSIZE           1468
 #define CONFIG_TFTP_WINDOWSIZE          1
+#define CONFIG_CMD_NET                  1
 #define CONFIG_CMD_DNS                  1
 #define CONFIG_CMD_PING                 1
