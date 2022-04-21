@@ -16,7 +16,7 @@
 #define _u_boot_part_driver_count       1
 #define _u_boot_cmd_count               14
 #define _u_boot_env_driver_count        0
-#define _u_boot_env_clbk_count          0
+#define _u_boot_env_clbk_count          8
 #define _u_boot_driver_info_count       0
 #define _u_boot_udevice_count           0
 
@@ -76,3 +76,13 @@ extern struct cmd_tbl _u_boot_cmd__clocks;
 extern struct cmd_tbl _u_boot_cmd__net;
 extern struct cmd_tbl _u_boot_cmd__dns;
 extern struct cmd_tbl _u_boot_cmd__ping;
+
+/* Define the u-boot environment variables callbacks to be used on this platform */
+extern struct env_clbk_tbl _u_boot_env_clbk__ethaddr;
+extern struct env_clbk_tbl _u_boot_env_clbk__ipaddr;
+extern struct env_clbk_tbl _u_boot_env_clbk__gatewayip;
+extern struct env_clbk_tbl _u_boot_env_clbk__netmask;
+extern struct env_clbk_tbl _u_boot_env_clbk__serverip;
+extern struct env_clbk_tbl _u_boot_env_clbk__nvlan;
+extern struct env_clbk_tbl _u_boot_env_clbk__vlan;
+extern struct env_clbk_tbl _u_boot_env_clbk__dnsip;

@@ -62,4 +62,13 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[11] = _u_boot_cmd__net;
     driver_data.cmd_array[12] = _u_boot_cmd__dns;
     driver_data.cmd_array[13] = _u_boot_cmd__ping;
+
+    driver_data.env_clbk_array[0] = _u_boot_env_clbk__ethaddr;
+    driver_data.env_clbk_array[1] = _u_boot_env_clbk__ipaddr;
+    driver_data.env_clbk_array[2] = _u_boot_env_clbk__gatewayip;
+    driver_data.env_clbk_array[3] = _u_boot_env_clbk__netmask;
+    driver_data.env_clbk_array[4] = _u_boot_env_clbk__serverip;
+    driver_data.env_clbk_array[5] = _u_boot_env_clbk__nvlan;
+    driver_data.env_clbk_array[6] = _u_boot_env_clbk__vlan;
+    driver_data.env_clbk_array[7] = _u_boot_env_clbk__dnsip;
 }
