@@ -1,7 +1,7 @@
 #include <sel4platsupport/io.h>
 #include <linux/dma-direction.h>
 
-#define MAX_DMA_ALLOCS 64
+#define MAX_DMA_ALLOCS 256
 
 struct dma_allocation_t {
     /* Base data for all DMA allocations */
