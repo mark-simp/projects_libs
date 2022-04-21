@@ -133,7 +133,7 @@ int initialise_uboot_wrapper(char* fdt_blob)
         goto error;
 #endif
 
-#ifdef CONFIG_CMD_NET
+#ifdef CONFIG_NET
     // Initialize the ethernet system.
 	puts("Net:   ");
 	eth_initialize();
