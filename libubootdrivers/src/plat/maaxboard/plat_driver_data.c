@@ -23,6 +23,8 @@ void initialise_driver_data(void) {
     driver_data.uclass_driver_array[11] = _u_boot_uclass_driver__pinconfig;
     driver_data.uclass_driver_array[12] = _u_boot_uclass_driver__pinctrl;
     driver_data.uclass_driver_array[13] = _u_boot_uclass_driver__ethernet;
+    driver_data.uclass_driver_array[14] = _u_boot_uclass_driver__led;
+    driver_data.uclass_driver_array[15] = _u_boot_uclass_driver__gpio;
 
     driver_data.driver_array[0]  = _u_boot_driver__root_driver;
     driver_data.driver_array[1]  = _u_boot_driver__simple_bus;
@@ -39,6 +41,8 @@ void initialise_driver_data(void) {
     driver_data.driver_array[12] = _u_boot_driver__pinconfig_generic;
     driver_data.driver_array[13] = _u_boot_driver__imx8mq_pinctrl;
     driver_data.driver_array[14] = _u_boot_driver__fecmxc_gem;
+    driver_data.driver_array[15] = _u_boot_driver__led_gpio;
+    driver_data.driver_array[16] = _u_boot_driver__gpio_mxc;
 
     driver_data.usb_driver_entry_array[0] = _u_boot_usb_driver_entry__usb_generic_hub;
     driver_data.usb_driver_entry_array[1] = _u_boot_usb_driver_entry__usb_mass_storage;
@@ -62,6 +66,7 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[11] = _u_boot_cmd__net;
     driver_data.cmd_array[12] = _u_boot_cmd__dns;
     driver_data.cmd_array[13] = _u_boot_cmd__ping;
+    driver_data.cmd_array[14] = _u_boot_cmd__led;
 
     driver_data.env_clbk_array[0] = _u_boot_env_clbk__ethaddr;
     driver_data.env_clbk_array[1] = _u_boot_env_clbk__ipaddr;

@@ -55,3 +55,7 @@
 #define CONFIG_CMD_NET                  1
 #define CONFIG_CMD_DNS                  1
 #define CONFIG_CMD_PING                 1
+
+/* Enable GPIO */
+#define CONFIG_DM_GPIO                  1
+#define CONFIG_GPIO_EXTRA_HEADER        1
