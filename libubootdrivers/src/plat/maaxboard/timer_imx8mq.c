@@ -49,11 +49,6 @@ void shutdown_timer(void)
 
 /* Provide implementations of the various timer functions used by U-Boot */
 
-/* To improve accuracy we shift ticks left by 7 bits. Note that
- * the counter value is only a 57 bit value so this is safe.
- * When calculating the resulting time this shift is accounted for.
- */
-
 uint64_t get_ticks(void) {
 
     if (tick_frequency == 0) {
@@ -69,14 +64,18 @@ uint64_t get_ticks(void) {
         low = readl(&ctrl_reg->cntcv0);
     }
 
-    return (((u64)high << 32) | low) << 7;
+    return (((u64)high << 32) | low);
 }
 
 unsigned long timer_get_us(void) {
+    /* To improve accuracy we shift ticks left by 7 bits. Note that
+    * the counter value is only a 57 bit value so this is safe.
+    * When calculating the resulting time this shift is accounted for.
+    */
 
     u64 ticks_per_us = ((u64)tick_frequency << 7) / 1000000;
 
-    return get_ticks() / ticks_per_us;
+    return (get_ticks() << 7) / ticks_per_us;
 }
 
 unsigned long timer_get_ms(void) {
