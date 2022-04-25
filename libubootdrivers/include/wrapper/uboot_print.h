@@ -9,11 +9,13 @@
 #define debug_cond(A, ...)  ZF_LOGD(__VA_ARGS__)
 
 /* Define U-Boot log_xxx macros */
-#define log(_cat, _level, ...) ({ \
-	if      (_level <= LOGL_EMERG)   ZF_LOGF(__VA_ARGS__); \
-	else if (_level <= LOGL_ERR)     ZF_LOGE(__VA_ARGS__); \
-	else if (_level <= LOGL_WARNING) ZF_LOGW(__VA_ARGS__); \
-	else if (_level <= LOGL_INFO)    ZF_LOGI(__VA_ARGS__); \
+#define log(_cat, _level, ...) ({ 							\
+	if      (_level <= LOGL_EMERG)   ZF_LOGF(__VA_ARGS__);	\
+	else if (_level <= LOGL_ERR)     ZF_LOGE(__VA_ARGS__);	\
+	else if (_level <= LOGL_WARNING) ZF_LOGW(__VA_ARGS__);	\
+	else if (_level <= LOGL_INFO)    ZF_LOGI(__VA_ARGS__);	\
+	else if (_level <= LOGL_DEBUG)   ZF_LOGD(__VA_ARGS__);	\
+	else							 ZF_LOGV(__VA_ARGS__);	\
 	})
 
 #define log_emer(_fmt...)		log(0, LOGL_EMERG, ##_fmt)
