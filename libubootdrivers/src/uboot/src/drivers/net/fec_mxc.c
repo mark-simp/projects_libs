@@ -347,7 +347,7 @@ static void fec_rbd_init(struct fec_priv *fec, int count, int dsize)
 	 */
 	size = roundup(dsize, ARCH_DMA_MINALIGN);
 	for (i = 0; i < count; i++) {
-		data = fec->rbd_base[i].data_pointer;
+		data = (ulong) sel4_dma_phys_to_virt((void*)(uintptr_t) fec->rbd_base[i].data_pointer);
 		memset((void *)data, 0, dsize);
 		flush_dcache_range(data, data + size);
 
@@ -643,10 +643,10 @@ static int fec_init(struct eth_device *dev, struct bd_info *bd)
 	/* size and address of each buffer */
 	writel(FEC_MAX_PKT_SIZE, &fec->eth->emrbr);
 
-	addr = (ulong)fec->tbd_base;
+	addr = (ulong)sel4_dma_virt_to_phys(fec->tbd_base);
 	writel((uint32_t)addr, &fec->eth->etdsr);
 
-	addr = (ulong)fec->rbd_base;
+	addr = (ulong)sel4_dma_virt_to_phys(fec->rbd_base);
 	writel((uint32_t)addr, &fec->eth->erdsr);
 
 #ifndef CONFIG_PHYLIB
@@ -744,7 +744,11 @@ static int fec_send(struct eth_device *dev, void *packet, int length)
 	swap_packet((uint32_t *)packet, length);
 #endif
 
-	addr = (ulong)packet;
+	void* dma_buffer = sel4_dma_malloc(length);
+	if (dma_buffer == NULL) return -ENOMEM;
+	memcpy(dma_buffer, packet, length);
+	addr = (ulong)sel4_dma_virt_to_phys(dma_buffer);
+
 	end = roundup(addr + length, ARCH_DMA_MINALIGN);
 	addr &= ~(ARCH_DMA_MINALIGN - 1);
 	flush_dcache_range(addr, end);
@@ -848,6 +852,8 @@ out:
 	else
 		fec->tbd_index = 1;
 
+	sel4_dma_free(dma_buffer);
+
 	return ret;
 }
 
@@ -875,7 +881,8 @@ static int fec_recv(struct eth_device *dev)
 	int i;
 
 #ifdef CONFIG_DM_ETH
-	*packetp = memalign(ARCH_DMA_MINALIGN, FEC_MAX_PKT_SIZE);
+	*packetp = sel4_dma_memalign(ARCH_DMA_MINALIGN, FEC_MAX_PKT_SIZE);
+
 	if (*packetp == 0) {
 		printf("%s: error allocating packetp\n", __func__);
 		return -ENOMEM;
@@ -947,7 +954,7 @@ static int fec_recv(struct eth_device *dev)
 		if ((bd_status & FEC_RBD_LAST) && !(bd_status & FEC_RBD_ERR) &&
 		    ((readw(&rbd->data_length) - 4) > 14)) {
 			/* Get buffer address and size */
-			addr = readl(&rbd->data_pointer);
+			addr = (ulong) sel4_dma_phys_to_virt((void*)(uintptr_t) readl(&rbd->data_pointer));
 			frame_length = readw(&rbd->data_length) - 4;
 			/* Invalidate data cache over the buffer */
 			end = roundup(addr + frame_length, ARCH_DMA_MINALIGN);
@@ -1012,13 +1019,13 @@ static int fec_alloc_descs(struct fec_priv *fec)
 
 	/* Allocate TX descriptors. */
 	size = roundup(2 * sizeof(struct fec_bd), ARCH_DMA_MINALIGN);
-	fec->tbd_base = memalign(ARCH_DMA_MINALIGN, size);
+	fec->tbd_base = sel4_dma_memalign(ARCH_DMA_MINALIGN, size);
 	if (!fec->tbd_base)
 		goto err_tx;
 
 	/* Allocate RX descriptors. */
 	size = roundup(FEC_RBD_NUM * sizeof(struct fec_bd), ARCH_DMA_MINALIGN);
-	fec->rbd_base = memalign(ARCH_DMA_MINALIGN, size);
+	fec->rbd_base = sel4_dma_memalign(ARCH_DMA_MINALIGN, size);
 	if (!fec->rbd_base)
 		goto err_rx;
 
@@ -1029,7 +1036,7 @@ static int fec_alloc_descs(struct fec_priv *fec)
 	/* Maximum RX buffer size. */
 	size = roundup(FEC_MAX_PKT_SIZE, FEC_DMA_RX_MINALIGN);
 	for (i = 0; i < FEC_RBD_NUM; i++) {
-		data = memalign(FEC_DMA_RX_MINALIGN, size);
+		data = sel4_dma_memalign(FEC_DMA_RX_MINALIGN, size);
 		if (!data) {
 			printf("%s: error allocating rxbuf %d\n", __func__, i);
 			goto err_ring;
@@ -1038,7 +1045,7 @@ static int fec_alloc_descs(struct fec_priv *fec)
 		memset(data, 0, size);
 
 		addr = (ulong)data;
-		fec->rbd_base[i].data_pointer = (uint32_t)addr;
+		fec->rbd_base[i].data_pointer = (uint32_t)(uintptr_t)sel4_dma_virt_to_phys((void*) addr);
 		fec->rbd_base[i].status = FEC_RBD_EMPTY;
 		fec->rbd_base[i].data_length = 0;
 		/* Flush the buffer to memory. */
@@ -1056,11 +1063,11 @@ static int fec_alloc_descs(struct fec_priv *fec)
 err_ring:
 	for (; i >= 0; i--) {
 		addr = fec->rbd_base[i].data_pointer;
-		free((void *)addr);
+		sel4_dma_free(sel4_dma_phys_to_virt((void *)addr));
 	}
-	free(fec->rbd_base);
+	sel4_dma_free(fec->rbd_base);
 err_rx:
-	free(fec->tbd_base);
+	sel4_dma_free(fec->tbd_base);
 err_tx:
 	return -ENOMEM;
 }
@@ -1072,10 +1079,10 @@ static void fec_free_descs(struct fec_priv *fec)
 
 	for (i = 0; i < FEC_RBD_NUM; i++) {
 		addr = fec->rbd_base[i].data_pointer;
-		free((void *)addr);
+		sel4_dma_free(sel4_dma_phys_to_virt((void *)addr));
 	}
-	free(fec->rbd_base);
-	free(fec->tbd_base);
+	sel4_dma_free(fec->rbd_base);
+	sel4_dma_free(fec->tbd_base);
 }
 
 struct mii_dev *fec_get_miibus(ulong base_addr, int dev_id)
@@ -1293,7 +1300,7 @@ static int fecmxc_set_promisc(struct udevice *dev, bool enable)
 static int fecmxc_free_pkt(struct udevice *dev, uchar *packet, int length)
 {
 	if (packet)
-		free(packet);
+		sel4_dma_free(packet);
 
 	return 0;
 }
