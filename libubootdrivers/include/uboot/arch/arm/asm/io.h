@@ -47,7 +47,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		log_io("Reading from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned char *)(_GET_ADDR));						\
@@ -57,7 +57,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		log_io("Reading from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned short *)(_GET_ADDR));						\
@@ -67,7 +67,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		log_io("Reading from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned int *)(_GET_ADDR));						\
@@ -77,7 +77,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Reading from unmapped address %p\n", (_ADDR));	\
+		log_io("Reading from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned long long *)(_GET_ADDR));					\
@@ -88,7 +88,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		log_io("Writing from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned char *)(_GET_ADDR) = (_VALUE));			\
@@ -98,7 +98,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		log_io("Writing from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned short *)(_GET_ADDR) = (_VALUE));			\
@@ -108,7 +108,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		log_io("Writing from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned int *)(_GET_ADDR) = (_VALUE));				\
@@ -118,7 +118,7 @@ static inline void sync(void)
 	if (sel4_io_map_is_paddr_mapped((void*)(_ADDR)))				\
 		_GET_ADDR = sel4_io_map_phys_to_virt((void*)(_ADDR));		\
 	else {															\
-		log_debug("Writing from unmapped address %p\n", (_ADDR));	\
+		log_io("Writing from unmapped address %p\n", (_ADDR));	\
 		_GET_ADDR = (void*)(_ADDR);									\
 	}																\
 	(*(volatile unsigned long long *)(_GET_ADDR) = (_VALUE));		\
