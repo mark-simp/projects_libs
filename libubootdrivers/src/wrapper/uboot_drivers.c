@@ -84,15 +84,15 @@ static int map_device_resources(const char* path) {
         return -1;
     }
 
-    // Find the address and size of the device.
+    // Find the address and size of the device (if it has a 'reg' property)
     uintptr_t paddr;
     size_t size;
     int addr_cells;
     int size_cells;
     int ret = get_node_size_and_address_data(&paddr, &size, &addr_cells, &size_cells, node_offset);
     if (0 != ret) {
-        ZF_LOGE("Unable to read 'reg' property for path '%s' from device tree.", path);
-        return -1;
+        ZF_LOGD("Unable to read 'reg' property for path '%s' from device tree.", path);
+        return 0;
     }
 
     // We now have a known and verified address and size for the device.
