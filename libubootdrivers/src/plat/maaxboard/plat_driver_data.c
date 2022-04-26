@@ -67,6 +67,7 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[12] = _u_boot_cmd__dns;
     driver_data.cmd_array[13] = _u_boot_cmd__ping;
     driver_data.cmd_array[14] = _u_boot_cmd__led;
+    driver_data.cmd_array[15] = _u_boot_cmd__gpio;
 
     driver_data.env_clbk_array[0] = _u_boot_env_clbk__ethaddr;
     driver_data.env_clbk_array[1] = _u_boot_env_clbk__ipaddr;

@@ -59,3 +59,4 @@
 /* Enable GPIO */
 #define CONFIG_DM_GPIO                  1
 #define CONFIG_GPIO_EXTRA_HEADER        1
+#define CONFIG_CMD_GPIO_READ            1

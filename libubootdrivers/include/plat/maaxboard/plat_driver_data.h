@@ -14,7 +14,7 @@
 #define _u_boot_driver_count            17
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       1
-#define _u_boot_cmd_count               15
+#define _u_boot_cmd_count               16
 #define _u_boot_env_driver_count        0
 #define _u_boot_env_clbk_count          8
 #define _u_boot_driver_info_count       0
@@ -81,6 +81,7 @@ extern struct cmd_tbl _u_boot_cmd__net;
 extern struct cmd_tbl _u_boot_cmd__dns;
 extern struct cmd_tbl _u_boot_cmd__ping;
 extern struct cmd_tbl _u_boot_cmd__led;
+extern struct cmd_tbl _u_boot_cmd__gpio;
 
 /* Define the u-boot environment variables callbacks to be used on this platform */
 extern struct env_clbk_tbl _u_boot_env_clbk__ethaddr;
