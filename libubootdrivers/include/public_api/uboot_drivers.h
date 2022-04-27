@@ -45,6 +45,32 @@ int uboot_stdin_tstc();
 int uboot_stdin_getc();
 
 /**
+ * uboot_eth_init() - Initialise ethernet. Must be called prior to other
+ *    u_boot_eth_xxx routines.
+ *
+ * Return: 0 if OK, otherwise failure.
+ */
+int uboot_eth_init(void);
+
+/**
+ * uboot_eth_halt() - Halts ethernet, the opposite of uboot_eth_init.
+ *    Once halted the uboot_eth_init must again be called before other
+ *    u_boot_eth_xxx routines.
+ *
+ * Return: 0 if OK, otherwise failure.
+ */
+int uboot_eth_init(void);
+
+/**
+ * uboot_eth_receive() - Receives an ethernet packet.
+ *
+ * Return: negative on error, 0 if no packet available, otherwise returns
+ *    the length of the received packet.
+ */
+int uboot_eth_receive(void);
+
+/**
  * shutdown_uboot_drivers() - shutdown the u-boot driver library.
  */
 void shutdown_uboot_drivers(void);
+
