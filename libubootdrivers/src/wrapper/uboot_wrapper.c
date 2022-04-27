@@ -211,13 +211,9 @@ void uboot_eth_halt(void)
     eth_halt();
 }
 
-int uboot_eth_receive(void)
+int uboot_eth_receive(unsigned char **packet)
 {
 	struct udevice *current;
-	uchar *packet;
-	int flags;
-	int ret;
-	int i;
 
 	current = eth_get_dev();
 	if (!current)
@@ -226,24 +222,29 @@ int uboot_eth_receive(void)
 	if (!eth_is_active(current))
 		return -EINVAL;
 
-	/* Process up to 32 packets at one time */
-	flags = ETH_RECV_CHECK_DEVICE;
-	for (i = 0; i < ETH_PACKETS_BATCH_RECV; i++) {
-		ret = eth_get_ops(current)->recv(current, flags, &packet);
-		flags = 0;
-		if (ret > 0)
-			log_info("Received an eth packet of length %i", ret);
-            // net_process_received_packet(packet, ret);
-		if (ret >= 0 && eth_get_ops(current)->free_pkt)
-			eth_get_ops(current)->free_pkt(current, packet, ret);
-		if (ret <= 0)
-			break;
-	}
+    int ret = eth_get_ops(current)->recv(current, ETH_RECV_CHECK_DEVICE, packet);
+    if (ret > 0)
+        log_info("Received an eth packet of length %i at %p", ret, *packet);
+        // net_process_received_packet(packet, ret);
+    if (ret == 0 && eth_get_ops(current)->free_pkt)
+        eth_get_ops(current)->free_pkt(current, *packet, ret);
+
 	if (ret == -EAGAIN)
 		ret = 0;
-	if (ret < 0) {
-		/* We cannot completely return the error at present */
-		debug("%s: recv() returned error %d\n", __func__, ret);
-	}
+	return ret;
+}
+
+int uboot_eth_free_packet(unsigned char **packet)
+{
+	struct udevice *current;
+    int ret = 0;
+
+	current = eth_get_dev();
+	if (!current)
+		return -ENODEV;
+
+    if (eth_get_ops(current)->free_pkt)
+        eth_get_ops(current)->free_pkt(current, *packet, ret);
+
 	return ret;
 }

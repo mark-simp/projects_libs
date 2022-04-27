@@ -64,10 +64,27 @@ int uboot_eth_init(void);
 /**
  * uboot_eth_receive() - Receives an ethernet packet.
  *
+ * @packet: pointer to the allocated buffer. The buffer must be free'd by
+ *    calling uboot_eth_free_packet. Note this paramter is only valid
+ *    when the return code is positive.
+ *
  * Return: negative on error, 0 if no packet available, otherwise returns
  *    the length of the received packet.
  */
-int uboot_eth_receive(void);
+int uboot_eth_receive(unsigned char **packet);
+
+/**
+ * uboot_eth_free_packet() - Frees a packet buffer previously allocated
+ *    through a call to uboot_eth_receive.
+ *
+ * @packet: pointer to the allocated buffer. The buffer must be free'd by
+ *    calling uboot_eth_free_packet. Note this paramter is only valid
+ *    when the return code is positive.
+ *
+ * Return: negative on error, 0 if no packet available, otherwise returns
+ *    the length of the received packet.
+ */
+int uboot_eth_free_packet(unsigned char **packet);
 
 /**
  * shutdown_uboot_drivers() - shutdown the u-boot driver library.
