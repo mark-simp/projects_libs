@@ -60,3 +60,19 @@
 #define CONFIG_DM_GPIO                  1
 #define CONFIG_GPIO_EXTRA_HEADER        1
 #define CONFIG_CMD_GPIO_READ            1
+
+/* Enable I2C */
+#define CONFIG_CMD_I2C                  1
+#define CONFIG_SPL_I2C_SUPPORT          1
+#define CONFIG_DM_I2C                   1
+#define CONFIG_SYS_I2C_MXC              1
+#define CONFIG_SYS_I2C_MXC_I2C1         1
+#define CONFIG_SYS_I2C_MXC_I2C2         1
+#define CONFIG_SYS_I2C_MXC_I2C3         1
+
+#define CONFIG_SYS_MXC_I2C1_SPEED       100000
+#define CONFIG_SYS_MXC_I2C1_SLAVE       0
+#define CONFIG_SYS_MXC_I2C2_SPEED       100000
+#define CONFIG_SYS_MXC_I2C2_SLAVE       0
+#define CONFIG_SYS_MXC_I2C3_SPEED       100000
+#define CONFIG_SYS_MXC_I2C3_SLAVE       0
