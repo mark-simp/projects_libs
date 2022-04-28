@@ -59,10 +59,20 @@ int uboot_eth_init(void);
  *
  * Return: 0 if OK, otherwise failure.
  */
-int uboot_eth_init(void);
+void uboot_eth_halt(void);
 
 /**
- * uboot_eth_receive() - Receives an ethernet packet.
+ * uboot_eth_send() - Send an ethernet packet.
+ *
+ * @packet: pointer to the buffer to send.
+ * @length: length of the buffer to send.
+ *
+ * Return: Return: 0 if OK, otherwise failure.
+ */
+int uboot_eth_send(unsigned char *packet, int length);
+
+/**
+ * uboot_eth_receive() - Receive an ethernet packet.
  *
  * @packet: pointer to the allocated buffer. The buffer must be free'd by
  *    calling uboot_eth_free_packet. Note this paramter is only valid
@@ -85,6 +95,13 @@ int uboot_eth_receive(unsigned char **packet);
  *    the length of the received packet.
  */
 int uboot_eth_free_packet(unsigned char **packet);
+
+/**
+ * uboot_eth_get_ethaddr() - Return the MAC address.
+ *
+ * Return: A pointer to the 6 byte MAC address.
+ */
+unsigned char *uboot_eth_get_ethaddr(void);
 
 /**
  * shutdown_uboot_drivers() - shutdown the u-boot driver library.

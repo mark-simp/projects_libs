@@ -211,6 +211,23 @@ void uboot_eth_halt(void)
     eth_halt();
 }
 
+int uboot_eth_send(unsigned char *packet, int length)
+{
+	struct udevice *current;
+	int ret;
+
+	current = eth_get_dev();
+	if (!current)
+		return -ENODEV;
+
+	if (!eth_is_active(current))
+		return -EINVAL;
+
+	ret = eth_get_ops(current)->send(current, packet, length);
+
+	return ret;
+}
+
 int uboot_eth_receive(unsigned char **packet)
 {
 	struct udevice *current;
@@ -223,14 +240,13 @@ int uboot_eth_receive(unsigned char **packet)
 		return -EINVAL;
 
     int ret = eth_get_ops(current)->recv(current, ETH_RECV_CHECK_DEVICE, packet);
-    if (ret > 0)
-        log_info("Received an eth packet of length %i at %p", ret, *packet);
-        // net_process_received_packet(packet, ret);
+
     if (ret == 0 && eth_get_ops(current)->free_pkt)
         eth_get_ops(current)->free_pkt(current, *packet, ret);
 
 	if (ret == -EAGAIN)
 		ret = 0;
+
 	return ret;
 }
 
@@ -247,4 +263,9 @@ int uboot_eth_free_packet(unsigned char **packet)
         eth_get_ops(current)->free_pkt(current, *packet, ret);
 
 	return ret;
+}
+
+unsigned char *uboot_eth_get_ethaddr(void)
+{
+    return eth_get_ethaddr();
 }
