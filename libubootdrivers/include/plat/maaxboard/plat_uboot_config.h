@@ -88,5 +88,5 @@
 #define CONFIG_SPI_FLASH_BAR            1
 #define CONFIG_SPI_FLASH_STMICRO        1
 
-#define CONFIG_DEFAULT_SPI_MODE         0x03
+#define CONFIG_DEFAULT_SPI_MODE         0
 #define CONFIG_DEFAULT_SPI_BUS          0
