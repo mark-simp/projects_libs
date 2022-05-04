@@ -44,7 +44,7 @@
 	__ret; \
 	})
 
-/* Define U-Boot printk macors */
+/* Define U-Boot printk macros */
 #define no_printk(...)
 #define printk(...)         	printf(__VA_ARGS__)
 #define printk_once(fmt, ...)	printk(fmt, ##__VA_ARGS__)
@@ -63,6 +63,9 @@
 #define putc(CHAR)          printf("%c", CHAR)
 #define puts(...)           printf(__VA_ARGS__)
 #define fprintf(FILE, ...)	printf(__VA_ARGS__)
+
+/* Define non spl logging routines */
+#define warn_non_spl(fmt, ...)	log_warning(fmt, ##__VA_ARGS__)
 
 #define assert_noisy(_x) \
 	({ bool _val = (_x); \
