@@ -10,8 +10,8 @@
  */
 
 /* Define the number of different driver elements to be used on this platform */
-#define _u_boot_uclass_driver_count     18
-#define _u_boot_driver_count            19
+#define _u_boot_uclass_driver_count     19
+#define _u_boot_driver_count            21
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       1
 #define _u_boot_cmd_count               17
@@ -39,6 +39,7 @@ extern struct uclass_driver _u_boot_uclass_driver__led;
 extern struct uclass_driver _u_boot_uclass_driver__gpio;
 extern struct uclass_driver _u_boot_uclass_driver__i2c;
 extern struct uclass_driver _u_boot_uclass_driver__i2c_generic;
+extern struct uclass_driver _u_boot_uclass_driver__spi_generic;
 
 /* Define the drivers to be used on this platform */
 extern struct driver _u_boot_driver__root_driver;
@@ -60,6 +61,8 @@ extern struct driver _u_boot_driver__led_gpio;
 extern struct driver _u_boot_driver__gpio_mxc;
 extern struct driver _u_boot_driver__i2c_mxc;
 extern struct driver _u_boot_driver__i2c_generic_chip_drv;
+extern struct driver _u_boot_driver__fsl_qspi;
+extern struct driver _u_boot_driver__spi_generic_drv;
 
 /* Define the driver entries to be used on this platform */
 extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_generic_hub;
@@ -87,6 +90,7 @@ extern struct cmd_tbl _u_boot_cmd__ping;
 extern struct cmd_tbl _u_boot_cmd__led;
 extern struct cmd_tbl _u_boot_cmd__gpio;
 extern struct cmd_tbl _u_boot_cmd__i2c;
+extern struct cmd_tbl _u_boot_cmd__sspi;
 
 /* Define the u-boot environment variables callbacks to be used on this platform */
 extern struct env_clbk_tbl _u_boot_env_clbk__ethaddr;

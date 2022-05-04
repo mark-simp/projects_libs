@@ -27,6 +27,7 @@ void initialise_driver_data(void) {
     driver_data.uclass_driver_array[15] = _u_boot_uclass_driver__gpio;
     driver_data.uclass_driver_array[16] = _u_boot_uclass_driver__i2c;
     driver_data.uclass_driver_array[17] = _u_boot_uclass_driver__i2c_generic;
+    driver_data.uclass_driver_array[18] = _u_boot_uclass_driver__spi_generic;
 
     driver_data.driver_array[0]  = _u_boot_driver__root_driver;
     driver_data.driver_array[1]  = _u_boot_driver__simple_bus;
@@ -47,6 +48,8 @@ void initialise_driver_data(void) {
     driver_data.driver_array[16] = _u_boot_driver__gpio_mxc;
     driver_data.driver_array[17] = _u_boot_driver__i2c_mxc;
     driver_data.driver_array[18] = _u_boot_driver__i2c_generic_chip_drv;
+    driver_data.driver_array[19] = _u_boot_driver__fsl_qspi;
+    driver_data.driver_array[20] = _u_boot_driver__spi_generic_drv;
 
     driver_data.usb_driver_entry_array[0] = _u_boot_usb_driver_entry__usb_generic_hub;
     driver_data.usb_driver_entry_array[1] = _u_boot_usb_driver_entry__usb_mass_storage;
@@ -73,6 +76,7 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[14] = _u_boot_cmd__led;
     driver_data.cmd_array[15] = _u_boot_cmd__gpio;
     driver_data.cmd_array[16] = _u_boot_cmd__i2c;
+    driver_data.cmd_array[17] = _u_boot_cmd__sspi;
 
     driver_data.env_clbk_array[0] = _u_boot_env_clbk__ethaddr;
     driver_data.env_clbk_array[1] = _u_boot_env_clbk__ipaddr;
