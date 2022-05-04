@@ -78,3 +78,15 @@
 #define CONFIG_SYS_MXC_I2C3_SLAVE       0
 #define CONFIG_SYS_MXC_I2C4_SPEED       100000
 #define CONFIG_SYS_MXC_I2C4_SLAVE       0
+
+/* Enable SPI */
+#define CONFIG_DM_SPI_FLASH             1
+#define CONFIG_DM_SPI                   1
+#define CONFIG_FSL_QSPI                 1
+#define CONFIG_SPI                      1
+#define CONFIG_SPI_FLASH                1
+#define CONFIG_SPI_FLASH_BAR            1
+#define CONFIG_SPI_FLASH_STMICRO        1
+
+#define CONFIG_DEFAULT_SPI_MODE         0x03
+#define CONFIG_DEFAULT_SPI_BUS          0
