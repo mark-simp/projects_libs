@@ -82,11 +82,10 @@
 /* Enable SPI */
 #define CONFIG_DM_SPI_FLASH             1
 #define CONFIG_DM_SPI                   1
-#define CONFIG_FSL_QSPI                 1
 #define CONFIG_SPI                      1
 #define CONFIG_SPI_FLASH                1
 #define CONFIG_SPI_FLASH_BAR            1
 #define CONFIG_SPI_FLASH_STMICRO        1
-
+//#define CONFIG_SYS_SPI_MXC_WAIT         5000
 #define CONFIG_DEFAULT_SPI_MODE         0
 #define CONFIG_DEFAULT_SPI_BUS          0

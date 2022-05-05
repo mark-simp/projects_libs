@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
  * Copyright (C) 2008, Guennadi Liakhovetski <lg@denx.de>
- * Copyright (C) 2016 Freescale Semiconductor, Inc.
- *
  */
 
 #include <common.h>
@@ -21,12 +19,11 @@
 #include <asm/arch/imx-regs.h>
 #include <asm/arch/clock.h>
 #include <asm/mach-imx/spi.h>
-#include <asm/mach-imx/sys_proto.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
 /* MX35 and older is CSPI */
-#if defined(CONFIG_MX25) || defined(CONFIG_MX31) || defined(CONFIG_MX35)
+#if defined(CONFIG_MX31)
 #define MXC_CSPI
 struct cspi_regs {
 	u32 rxdata;
@@ -51,17 +48,10 @@ struct cspi_regs {
 #define MXC_CSPICTRL_RXOVF		BIT(6)
 #define MXC_CSPIPERIOD_32KHZ		BIT(15)
 #define MAX_SPI_BYTES			4
-#if defined(CONFIG_MX25) || defined(CONFIG_MX35)
-#define MXC_CSPICTRL_CHIPSELECT(x)	(((x) & 0x3) << 12)
-#define MXC_CSPICTRL_BITCOUNT(x)	(((x) & 0xfff) << 20)
-#define MXC_CSPICTRL_TC			BIT(7)
-#define MXC_CSPICTRL_MAXBITS		0xfff
-#else	/* MX31 */
 #define MXC_CSPICTRL_CHIPSELECT(x)	(((x) & 0x3) << 24)
 #define MXC_CSPICTRL_BITCOUNT(x)	(((x) & 0x1f) << 8)
 #define MXC_CSPICTRL_TC			BIT(8)
 #define MXC_CSPICTRL_MAXBITS		0x1f
-#endif
 
 #else	/* MX51 and newer is ECSPI */
 #define MXC_ECSPI
@@ -214,9 +204,6 @@ static s32 spi_cfg_mxc(struct mxc_spi_slave *mxcs, unsigned int cs)
 		MXC_CSPICTRL_BITCOUNT(MXC_CSPICTRL_MAXBITS) |
 		MXC_CSPICTRL_DATARATE(div) |
 		MXC_CSPICTRL_EN |
-#ifdef CONFIG_MX35
-		MXC_CSPICTRL_SSCTL |
-#endif
 		MXC_CSPICTRL_MODE;
 
 	if (mode & SPI_CPHA)
@@ -404,8 +391,6 @@ int spi_xchg_single(struct mxc_spi_slave *mxcs, unsigned int bitlen,
 
 	nbytes = DIV_ROUND_UP(bitlen, 8);
 
-	cnt = nbytes % 32;
-
 	if (bitlen % 32) {
 		data = reg_read(&regs->rxdata);
 		cnt = (bitlen % 32) / 8;
@@ -550,13 +535,6 @@ struct spi_slave *spi_setup_slave(unsigned int bus, unsigned int cs,
 		return NULL;
 	}
 
-	if (CONFIG_IS_ENABLED(IMX_MODULE_FUSE)) {
-		if (ecspi_fused(spi_bases[bus])) {
-			printf("ECSPI@0x%lx is fused, disable it\n", spi_bases[bus]);
-			return NULL;
-		}
-	}
-
 	mxcs = spi_alloc_slave(struct mxc_spi_slave, bus, cs);
 	if (!mxcs) {
 		puts("mxc_spi: SPI Slave not allocated !\n");
@@ -601,8 +579,6 @@ void spi_release_bus(struct spi_slave *slave)
 static int mxc_spi_probe(struct udevice *bus)
 {
 	struct mxc_spi_slave *mxcs = dev_get_plat(bus);
-	int node = dev_of_offset(bus);
-	const void *blob = gd->fdt_blob;
 	int ret;
 	int i;
 
@@ -639,6 +615,8 @@ static int mxc_spi_probe(struct udevice *bus)
 
 	mxcs->max_hz = clk_get_rate(&clk);
 #else
+	int node = dev_of_offset(bus);
+	const void *blob = gd->fdt_blob;
 	mxcs->max_hz = fdtdec_get_int(blob, node, "spi-max-frequency",
 				      20000000);
 #endif
