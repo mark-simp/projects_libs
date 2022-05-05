@@ -2,6 +2,9 @@
  * This file defines the platform specific U-Boot configuration macros
  */
 
+/* Enable clock subsystem */
+#define CLK                             1
+
 /* Enable pin control / mux support (required by other drivers) */
 #define CONFIG_PINCTRL                  1
 #define CONFIG_PINCTRL_FULL             1

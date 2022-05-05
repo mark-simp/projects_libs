@@ -10,8 +10,8 @@
  */
 
 /* Define the number of different driver elements to be used on this platform */
-#define _u_boot_uclass_driver_count     20
-#define _u_boot_driver_count            21
+#define _u_boot_uclass_driver_count     21
+#define _u_boot_driver_count            22
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       1
 #define _u_boot_cmd_count               18
@@ -24,6 +24,7 @@
 extern struct uclass_driver _u_boot_uclass_driver__nop;
 extern struct uclass_driver _u_boot_uclass_driver__root;
 extern struct uclass_driver _u_boot_uclass_driver__simple_bus;
+extern struct uclass_driver _u_boot_uclass_driver__clk;
 extern struct uclass_driver _u_boot_uclass_driver__usb;
 extern struct uclass_driver _u_boot_uclass_driver__usb_hub;
 extern struct uclass_driver _u_boot_uclass_driver__usb_dev_generic;
@@ -45,6 +46,7 @@ extern struct uclass_driver _u_boot_uclass_driver__spi_generic;
 /* Define the drivers to be used on this platform */
 extern struct driver _u_boot_driver__root_driver;
 extern struct driver _u_boot_driver__simple_bus;
+extern struct driver _u_boot_driver__clk_imx8mq;
 extern struct driver _u_boot_driver__usb_dev_generic_drv;
 extern struct driver _u_boot_driver__usb_generic_hub;
 extern struct driver _u_boot_driver__dwc3_generic_wrapper;
