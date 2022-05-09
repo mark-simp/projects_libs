@@ -239,10 +239,14 @@ static s32 spi_cfg_mxc(struct mxc_spi_slave *mxcs, unsigned int cs)
 	reg_ctrl |=  MXC_CSPICTRL_EN;
 	reg_write(&regs->ctrl, reg_ctrl);
 
+	printf("Max hz: %ul \n", max_hz);
+	printf("Clock source: %lu \n", clk_src);
 	if (clk_src > max_hz) {
 		pre_div = (clk_src - 1) / max_hz;
+		printf("Pre div: %lu \n", pre_div);
 		/* fls(1) = 1, fls(0x80000000) = 32, fls(16) = 5 */
 		post_div = fls(pre_div);
+		printf("Post div: %lu \n", post_div);
 		if (post_div > 4) {
 			post_div -= 4;
 			if (post_div >= 16) {
@@ -316,6 +320,11 @@ int spi_xchg_single(struct mxc_spi_slave *mxcs, unsigned int bitlen,
 	u32 ts;
 	int status;
 
+	int sts = reg_read(&regs->stat);
+	printf("SPI status@%p at begin of spi_xchg_single: %d \n",&regs->stat, sts);
+	int contrl = reg_read(&regs->ctrl);
+	printf("SPI control@%p at begin of spi_xchg_single: %d \n",&regs->ctrl, contrl);
+
 	debug("%s: bitlen %d dout 0x%lx din 0x%lx\n",
 		__func__, bitlen, (ulong)dout, (ulong)din);
 
@@ -330,6 +339,11 @@ int spi_xchg_single(struct mxc_spi_slave *mxcs, unsigned int bitlen,
 
 	/* Clear interrupt register */
 	reg_write(&regs->stat, MXC_CSPICTRL_TC | MXC_CSPICTRL_RXOVF);
+
+	sts = reg_read(&regs->stat);
+	printf("SPI status before TXFIFO write (data less than 1 word long): %d \n", sts);
+	contrl = reg_read(&regs->ctrl);
+	printf("SPI control before TXFIFO write (data less than 1 word long): %d \n", contrl);
 
 	/*
 	 * The SPI controller works only with words,
@@ -349,6 +363,11 @@ int spi_xchg_single(struct mxc_spi_slave *mxcs, unsigned int bitlen,
 		reg_write(&regs->txdata, data);
 		nbytes -= cnt;
 	}
+
+	sts = reg_read(&regs->stat);
+	printf("SPI status before TXFIFO write: %d \n", sts);
+	contrl = reg_read(&regs->ctrl);
+	printf("SPI control before TXFIFO write: %d \n", contrl);
 
 	data = 0;
 
@@ -371,9 +390,19 @@ int spi_xchg_single(struct mxc_spi_slave *mxcs, unsigned int bitlen,
 		nbytes -= 4;
 	}
 
+	sts = reg_read(&regs->stat);
+	printf("SPI status after TXFIFO write: %d \n", sts);
+	contrl = reg_read(&regs->ctrl);
+	printf("SPI control after TXFIFO write: %d \n", contrl);
+
 	/* FIFO is written, now starts the transfer setting the XCH bit */
 	reg_write(&regs->ctrl, mxcs->ctrl_reg |
 		MXC_CSPICTRL_EN | MXC_CSPICTRL_XCH);
+
+	sts = reg_read(&regs->stat);
+	printf("SPI status after control register write: %d \n", sts);
+	contrl = reg_read(&regs->ctrl);
+	printf("SPI control after control register write: %d \n", contrl);
 
 	ts = get_timer(0);
 	status = reg_read(&regs->stat);
@@ -386,10 +415,15 @@ int spi_xchg_single(struct mxc_spi_slave *mxcs, unsigned int bitlen,
 		status = reg_read(&regs->stat);
 	}
 
+	sts = reg_read(&regs->stat);
+	printf("SPI status: %d", sts);
+
 	/* Transfer completed, clear any pending request */
 	reg_write(&regs->stat, MXC_CSPICTRL_TC | MXC_CSPICTRL_RXOVF);
 
 	nbytes = DIV_ROUND_UP(bitlen, 8);
+
+	mdelay(1000);
 
 	if (bitlen % 32) {
 		data = reg_read(&regs->rxdata);
