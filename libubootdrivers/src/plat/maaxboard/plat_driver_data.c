@@ -33,7 +33,7 @@ void initialise_driver_data(void) {
 
     driver_data.driver_array[0]  = _u_boot_driver__root_driver;
     driver_data.driver_array[1]  = _u_boot_driver__simple_bus;
-    driver_data.driver_array[2] = _u_boot_driver__clk_imx8mq;
+    driver_data.driver_array[2] = _u_boot_driver__imx8mq_clk;
     driver_data.driver_array[3]  = _u_boot_driver__usb_dev_generic_drv;
     driver_data.driver_array[4]  = _u_boot_driver__usb_generic_hub;
     driver_data.driver_array[5]  = _u_boot_driver__dwc3_generic_wrapper;
@@ -53,6 +53,17 @@ void initialise_driver_data(void) {
     driver_data.driver_array[19] = _u_boot_driver__i2c_generic_chip_drv;
     driver_data.driver_array[20] = _u_boot_driver__mxc_spi;
     driver_data.driver_array[21] = _u_boot_driver__spi_generic_drv;
+    driver_data.driver_array[22] = _u_boot_driver__clk_gate2;
+    driver_data.driver_array[23] = _u_boot_driver__clk_pll1443x;
+    driver_data.driver_array[24] = _u_boot_driver__clk_pll1416x;
+    driver_data.driver_array[25] = _u_boot_driver__clk_composite;
+    driver_data.driver_array[26] = _u_boot_driver__ccf_clk_divider;
+    driver_data.driver_array[27] = _u_boot_driver__imx_clk_fixed_factor;
+    driver_data.driver_array[28] = _u_boot_driver__fixed_clock;
+    driver_data.driver_array[29] = _u_boot_driver__clk_fixed_rate_raw;
+    driver_data.driver_array[30] = _u_boot_driver__clk_gate;
+    driver_data.driver_array[31] = _u_boot_driver__ccf_clk_mux;
+
 
     driver_data.usb_driver_entry_array[0] = _u_boot_usb_driver_entry__usb_generic_hub;
     driver_data.usb_driver_entry_array[1] = _u_boot_usb_driver_entry__usb_mass_storage;
@@ -80,6 +91,7 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[15] = _u_boot_cmd__gpio;
     driver_data.cmd_array[16] = _u_boot_cmd__i2c;
     driver_data.cmd_array[17] = _u_boot_cmd__sspi;
+    driver_data.cmd_array[18] = _u_boot_cmd__clk;
 
     driver_data.env_clbk_array[0] = _u_boot_env_clbk__ethaddr;
     driver_data.env_clbk_array[1] = _u_boot_env_clbk__ipaddr;

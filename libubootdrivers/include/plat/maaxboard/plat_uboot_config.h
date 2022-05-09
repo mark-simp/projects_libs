@@ -3,7 +3,8 @@
  */
 
 /* Enable clock subsystem */
-#define CLK                             1
+#define CONFIG_CLK                      1
+#define CONFIG_CLK_CCF                  1
 
 /* Enable pin control / mux support (required by other drivers) */
 #define CONFIG_PINCTRL                  1
