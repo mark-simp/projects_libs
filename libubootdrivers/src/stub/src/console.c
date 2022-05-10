@@ -15,8 +15,6 @@
 #include <stdio_dev.h>
 #include <env.h>
 
-DECLARE_GLOBAL_DATA_PTR;
-
 static int console_setfile(int file, struct stdio_dev * dev)
 {
 	int error = 0;
