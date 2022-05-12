@@ -18,11 +18,7 @@
 #include <asm/cache.h>
 #include <linux/ctype.h>
 #include <linux/math64.h>
-#ifdef CONFIG_SEL4
-#include "fat.c_NO_COMPILE"
-#else
 #include "fat.c"
-#endif
 
 static dir_entry *find_directory_entry(fat_itr *itr, char *filename);
 static int new_dir_table(fat_itr *itr);
