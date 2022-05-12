@@ -1,7 +1,6 @@
 /* This timer uses the System Counter (SYS_CON) provided by the iMX8MQ SoC
  * to implement the timing functions expected by the U-Boot codebase */
 
-#include <uboot_helper.h>
 #include <common.h>
 #include <asm/arch/imx-regs.h>
 #include <asm/io.h>
