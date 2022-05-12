@@ -202,6 +202,8 @@ int uboot_stdin_getc(void)
     return stdio_devices[stdin]->getc(stdio_devices[stdin]);
 }
 
+#ifdef CONFIG_DM_ETH
+
 int uboot_eth_init(void)
 {
     return eth_init();
@@ -269,3 +271,14 @@ unsigned char *uboot_eth_get_ethaddr(void)
 {
     return eth_get_ethaddr();
 }
+
+#else
+
+int uboot_eth_init(void) { return 0; }
+void uboot_eth_halt(void) {}
+int uboot_eth_send(unsigned char *packet, int length) { return 0; }
+int uboot_eth_receive(unsigned char **packet) { return 0; }
+int uboot_eth_free_packet(unsigned char **packet) { return 0; }
+unsigned char *uboot_eth_get_ethaddr(void) { return 0; }
+
+#endif
