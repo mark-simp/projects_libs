@@ -16,7 +16,7 @@
 
 // The amount of extra space (in bytes) provided to our copy of the FDT to
 // allow sufficient space for modifications.
-#define EXTRA_FDT_BUFFER_SIZE 1024 * 4;
+#define EXTRA_FDT_BUFFER_SIZE 1024 * 8;
 
 // Pointer to the FDT.
 static void* uboot_fdt_pointer = NULL;
@@ -135,7 +135,7 @@ static int set_parent_status(int current_node, char *status_to_set)
     // Set status of this node.
     int err = fdt_setprop_string(uboot_fdt_pointer, current_node, "status", status_to_set);
     if (err != 0) {
-        ZF_LOGE("Failed to set 'status' with error %i. Buffer not bid enough?", err);
+        ZF_LOGE("Failed to set 'status' with error %i. Buffer not big enough?", err);
         return -1;
     };
 

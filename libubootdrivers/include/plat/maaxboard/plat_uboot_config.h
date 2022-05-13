@@ -2,6 +2,10 @@
  * This file defines the platform specific U-Boot configuration macros
  */
 
+/* Enable clock subsystem */
+#define CONFIG_CLK                      1
+#define CONFIG_CLK_CCF                  1
+
 /* Enable pin control / mux support (required by other drivers) */
 #define CONFIG_PINCTRL                  1
 #define CONFIG_PINCTRL_FULL             1
@@ -78,3 +82,14 @@
 #define CONFIG_SYS_MXC_I2C3_SLAVE       0
 #define CONFIG_SYS_MXC_I2C4_SPEED       100000
 #define CONFIG_SYS_MXC_I2C4_SLAVE       0
+
+/* Enable SPI */
+#define CONFIG_DM_SPI_FLASH             1
+#define CONFIG_DM_SPI                   1
+#define CONFIG_SPI                      1
+#define CONFIG_SPI_FLASH                1
+#define CONFIG_SPI_FLASH_BAR            1
+#define CONFIG_SPI_FLASH_STMICRO        1
+//#define CONFIG_SYS_SPI_MXC_WAIT         5000
+#define CONFIG_DEFAULT_SPI_MODE         0
+#define CONFIG_DEFAULT_SPI_BUS          0
