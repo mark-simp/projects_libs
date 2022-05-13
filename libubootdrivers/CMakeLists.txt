@@ -93,6 +93,8 @@ if(LibUBOOT)
         set(mmc_driver "fsl_esdhc")
         set(led_driver "gpio_led")
         set(disk_support "true")
+        set(usb_storage_support "true")
+        set(usb_keyboard_support "true")
 
         # Set the Ethernet PHY based upon the board
         if(KernelPlatformMaaxboard OR KernelPlatformImx8mq-evk)
@@ -262,6 +264,8 @@ if(LibUBOOT)
 
         # Generic USB source files
         list(APPEND uboot_deps src/uboot/src/cmd/usb.c)
+        list(APPEND uboot_deps src/uboot/src/common/usb_hub.c)
+        list(APPEND uboot_deps src/uboot/src/common/usb.c)
         list(APPEND uboot_deps src/uboot/src/drivers/usb/common/common.c)
         list(APPEND uboot_deps src/uboot/src/drivers/usb/gadget/udc-core.c)
         list(APPEND uboot_deps src/uboot/src/drivers/usb/host/usb-uclass.c)
