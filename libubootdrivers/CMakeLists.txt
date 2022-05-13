@@ -72,6 +72,8 @@ if(LibUBOOT)
     set(spi_driver "none")
     set(led_driver "none")
     set(disk_support "false")
+    set(usb_storeage_support "false")
+    set(usb_keyboard_support "false")
 
     # Set up the applicable drivers and platform dependent configuration.
     if(KernelPlatImx8mq)
@@ -84,13 +86,14 @@ if(LibUBOOT)
         set(timer_driver "imx8mq")
         set(clock_driver "imx8mq")
         set(iomux_driver "imx8mq-pinctrl")
-        set(eth_driver "fecmxc")
         set(gpio_driver "gpio_mxc")
+        set(eth_driver "fecmxc")
+        set(mmc_driver "fsl_esdhc")
         set(led_driver "gpio_led")
         set(disk_support "true")
 
         # Set the Ethernet PHY based upon the board
-        if(KernelPlatformMaaxboard)
+        if(KernelPlatformMaaxboard OR KernelPlatformImx8mq-evk)
             set(eth_phy_driver "atheros")
         else()
             message(FATAL_ERROR "Unsupported iMX8MQ board. Aborting.")
@@ -100,8 +103,7 @@ if(LibUBOOT)
         target_include_directories(ubootdrivers PRIVATE include/uboot/arch/imx8m)
 
     elseif(KernelPlatImx6)
-        set(eth_driver "fecmxc")
-        set(gpio_driver "gpio_mxc")
+        # TBC
 
     else()
         message(FATAL_ERROR "Unsupported platform. Aborting.")
@@ -243,10 +245,50 @@ if(LibUBOOT)
     endif()
 
     ############################
+    # Settings for MMC drivers #
+    ############################
+
+    if(mmc_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Enable MMC support
+        add_definitions("-DCONFIG_MMC=1")
+        add_definitions("-DCONFIG_DM_MMC=1")
+        add_definitions("-DCONFIG_MMC_VERBOSE=1")
+        add_definitions("-DCONFIG_MMC_QUIRKS=1")
+        add_definitions("-DCONFIG_MMC_WRITE=1")
+        add_definitions("-DCONFIG_MMC_HW_PARTITIONING=1")
+        add_definitions("-DCONFIG_MMC_IO_VOLTAGE=1")
+        # Generic MMC source files
+        list(APPEND uboot_deps src/uboot/src/cmd/mmc.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/mmc/mmc_write.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/mmc/mmc-uclass.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/mmc/mmc.c)
+
+        # Driver specific settings / files
+        if(mmc_driver MATCHES "fsl_esdhc")
+            # Config for platform specifc capabilities
+            if(KernelPlatImx8mq)
+                add_definitions("-DCONFIG_FSL_ESDHC_IMX=1")
+                add_definitions("-DCONFIG_FSL_USDHC=1")
+                add_definitions("-DCONFIG_MMC_UHS_SUPPORT=1")
+                add_definitions("-DCONFIG_MMC_HS200_SUPPORT=1")
+                add_definitions("-DCONFIG_MMC_HS400_SUPPORT=1")
+            else()
+                message(FATAL_ERROR "Unrecognised MMC ESDHC platform. Aborting.")
+            endif()
+
+            list(APPEND uboot_deps src/uboot/src/drivers/mmc/fsl_esdhc_imx.c)
+        else()
+            message(FATAL_ERROR "Unrecognised MMC driver. Aborting.")
+        endif()
+    endif()
+
+    ############################
     # Settings for LED drivers #
     ############################
 
-    if(gpio_driver MATCHES "none")
+    if(led_driver MATCHES "none")
         # Nothing to do
     else()
         # Generic LED source files
@@ -326,6 +368,7 @@ if(LibUBOOT)
     list(APPEND uboot_deps src/uboot/src/drivers/core/root.c)
     list(APPEND uboot_deps src/uboot/src/drivers/core/simple-bus.c)
     list(APPEND uboot_deps src/uboot/src/drivers/core/uclass.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/phy/phy-uclass.c)
 
     file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
     file(GLOB_RECURSE stub_deps src/stub/src/*.c)
