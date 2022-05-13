@@ -72,7 +72,7 @@ if(LibUBOOT)
     set(spi_driver "none")
     set(led_driver "none")
     set(disk_support "false")
-    set(usb_storeage_support "false")
+    set(usb_storage_support "false")
     set(usb_keyboard_support "false")
 
     # Set up the applicable drivers and platform dependent configuration.
@@ -88,6 +88,8 @@ if(LibUBOOT)
         set(iomux_driver "imx8mq-pinctrl")
         set(gpio_driver "gpio_mxc")
         set(eth_driver "fecmxc")
+        set(usb_driver "dwc3_xhci")
+        set(usb_phy_driver "nxp_imx8mq_usb_phy")
         set(mmc_driver "fsl_esdhc")
         set(led_driver "gpio_led")
         set(disk_support "true")
@@ -235,6 +237,8 @@ if(LibUBOOT)
 
     if(eth_phy_driver MATCHES "none")
         # Nothing to do
+    elseif (eth_driver MATCHES "none")
+        message(FATAL_ERROR "Cannot enable Ethernet PHY driver without Ethernet driver. Aborting.")
     elseif(eth_phy_driver MATCHES "atheros")
         add_definitions("-DCONFIG_PHY_ATHEROS=1")
         add_definitions("-DCONFIG_PHY_GIGE=1")
@@ -242,6 +246,54 @@ if(LibUBOOT)
         list(APPEND uboot_deps src/uboot/src/drivers/net/phy/phy.c)
     else()
         message(FATAL_ERROR "Unrecognised Ethernet PHY driver. Aborting.")
+    endif()
+
+    ############################
+    # Settings for USB drivers #
+    ############################
+
+    if(usb_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Enable USB support
+        add_definitions("-DCONFIG_DM_USB=1")
+        add_definitions("-DCONFIG_USB_HOST=1")
+        add_definitions("-DCONFIG_SYS_USB_EVENT_POLL=1")
+
+        # Generic USB source files
+        list(APPEND uboot_deps src/uboot/src/cmd/usb.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/usb/common/common.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/usb/gadget/udc-core.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/usb/host/usb-uclass.c)
+
+        # Driver specific settings / files
+        if(usb_driver MATCHES "dwc3_xhci")
+            add_definitions("-DCONFIG_USB_XHCI_HCD=1")
+            add_definitions("-DCONFIG_USB_XHCI_DWC3=1")
+
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci-mem.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci-ring.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/dwc3/core.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/dwc3/dwc3-generic.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/dwc3/ep0.c)
+        else()
+            message(FATAL_ERROR "Unrecognised USB driver. Aborting.")
+        endif()
+    endif()
+
+    ################################
+    # Settings for USB PHY drivers #
+    ################################
+
+    if(usb_phy_driver MATCHES "none")
+        # Nothing to do
+    elseif (usb_driver MATCHES "none")
+        message(FATAL_ERROR "Cannot enable USB PHY driver without USB driver. Aborting.")
+    elseif(usb_phy_driver MATCHES "nxp_imx8mq_usb_phy")
+        list(APPEND uboot_deps src/uboot/src/drivers/phy/phy-imx8mp-usb.c)
+    else()
+        message(FATAL_ERROR "Unrecognised USB PHY driver. Aborting.")
     endif()
 
     ############################
@@ -332,6 +384,44 @@ if(LibUBOOT)
     else()
         message(FATAL_ERROR "Unrecognised disk support level. Aborting.")
     endif()
+
+    #########################################
+    # Settings for USB mass storage support #
+    #########################################
+
+    if (usb_storage_support MATCHES "false")
+        # Nothing to do
+    elseif(usb_storage_support MATCHES "true")
+        if(usb_driver MATCHES "none")
+            message(FATAL_ERROR "Cannot enable USB mass storage without USB driver. Aborting.")
+        endif()
+        # Enabled support
+        add_definitions("-DCONFIG_USB_STORAGE=1")
+        # Add srouce files
+        list(APPEND uboot_deps src/uboot/src/common/usb_storage.c)
+    else()
+        message(FATAL_ERROR "Unrecognised USB mass storage support level. Aborting.")
+    endif()
+
+    #####################################
+    # Settings for USB keyboard support #
+    #####################################
+
+    if (usb_keyboard_support MATCHES "false")
+        # Nothing to do
+    elseif(usb_keyboard_support MATCHES "true")
+        if(usb_driver MATCHES "none")
+            message(FATAL_ERROR "Cannot enable USB keyboard without USB driver. Aborting.")
+        endif()
+        # Enabled support
+        add_definitions("-DCONFIG_USB_KEYBOARD=1")
+        # Add srouce files
+        list(APPEND uboot_deps src/uboot/src/common/usb_kbd.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/input/keyboard-uclass.c)
+    else()
+        message(FATAL_ERROR "Unrecognised USB keyboard support level. Aborting.")
+    endif()
+
 
     ######################################################
     # Complete configuration of source and include files #
