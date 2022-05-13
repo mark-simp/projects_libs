@@ -15,10 +15,14 @@ config_option(LibUBOOT LIB_UBOOTB "Build USB interface library" DEFAULT ON)
 add_config_library(ubootdrivers "${configure_string}")
 if(LibUBOOT)
 
-    # Set up standard configuration macros U-Boot code expects based upon
-    # the architecture.
+    add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL "")
+
+    ##################################
+    # Architecture specific settings #
+    ##################################
+
     if(KernelArchARM)
-        # The architecture as ARM.
+        # Set architecture as ARM.
         add_definitions("-DCONFIG_ARM")
 
         # Tell U-Boot code whether this is ARM32 or ARM64. Note that U-Boot
@@ -40,14 +44,323 @@ if(LibUBOOT)
         # Tell U-Boot code the processor's cacheline size.
         math(EXPR CACHELINE_SIZE "1 << ${KernelArmCacheLineSizeBits}")
         add_definitions("-DCONFIG_SYS_CACHELINE_SIZE=${CACHELINE_SIZE}")
+
+        # Architecture specific include files
+        target_include_directories(ubootdrivers PRIVATE include/stub/arch/arm)
+        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/arm)
+        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/proc-armv)
+        if(KernelArchArmV8a)
+            target_include_directories(ubootdrivers PRIVATE include/uboot/arch/armv8)
+        endif()
     endif()
 
-    # Set up configuration macros based upon the platform
+    ##############################
+    # Platform specific settings #
+    ##############################
+
+    # By default set all of the drivers to use to null / dummy settings.
+    set(timer_driver "dummy")
+    set(clock_driver "none")
+    set(iomux_driver "none")
+    set(gpio_driver "none")
+    set(eth_driver "none")
+    set(eth_phy_driver "none")
+    set(usb_driver "none")
+    set(usb_phy_driver "none")
+    set(mmc_driver "none")
+    set(i2c_driver "none")
+    set(spi_driver "none")
+    set(led_driver "none")
+    set(disk_support "false")
+
+    # Set up the applicable drivers and platform dependent configuration.
     if(KernelPlatImx8mq)
+        # Platform specific configuration
         add_definitions("-DCONFIG_ARCH_IMX8M=1")
         add_definitions("-DCONFIG_IMX8M=1")
         add_definitions("-DCONFIG_IMX8MQ=1")
+
+        # Define the drivers used for this platform
+        set(timer_driver "imx8mq")
+        set(clock_driver "imx8mq")
+        set(iomux_driver "imx8mq-pinctrl")
+        set(eth_driver "fecmxc")
+        set(gpio_driver "gpio_mxc")
+        set(led_driver "gpio_led")
+        set(disk_support "true")
+
+        # Set the Ethernet PHY based upon the board
+        if(KernelPlatformMaaxboard)
+            set(eth_phy_driver "atheros")
+        else()
+            message(FATAL_ERROR "Unsupported iMX8MQ board. Aborting.")
+        endif()
+
+        # Platform specific include files
+        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/imx8m)
+
+    elseif(KernelPlatImx6)
+        set(eth_driver "fecmxc")
+        set(gpio_driver "gpio_mxc")
+
+    else()
+        message(FATAL_ERROR "Unsupported platform. Aborting.")
     endif()
+
+    ##############################
+    # Settings for timer drivers #
+    ##############################
+
+    if(timer_driver MATCHES "dummy")
+        list(APPEND uboot_deps src/timer/timer_dummy.c)
+    elseif(timer_driver MATCHES "imx8mq")
+        list(APPEND uboot_deps src/timer/timer_imx8mq.c)
+    else()
+        message(FATAL_ERROR "Unrecognised timer driver. Aborting.")
+    endif()
+
+    ##############################
+    # Settings for clock drivers #
+    ##############################
+
+    if(clock_driver MATCHES "none")
+        # Nothing to do
+    elseif(clock_driver MATCHES "imx8mq")
+        list(APPEND uboot_deps src/uboot/arch/arm/mach-imx/imx8m/clock_imx8mq.c)
+        list(APPEND uboot_deps src/uboot/arch/arm/mach-imx/imx8m/clock_slice.c)
+    else()
+        message(FATAL_ERROR "Unrecognised clock driver. Aborting.")
+    endif()
+
+    ##############################
+    # Settings for IOMUX drivers #
+    ##############################
+
+    if(iomux_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Enable IOMUX support
+        add_definitions("-DCONFIG_PINCTRL=1")
+        add_definitions("-DCONFIG_PINCTRL_FULL=1")
+        add_definitions("-DCONFIG_PINCTRL_GENERIC=1")
+        add_definitions("-DCONFIG_PINMUX=1")
+        add_definitions("-DCONFIG_PINCONF_RECURSIVE=1")
+        # Generic IOMUX source files
+        list(APPEND uboot_deps src/uboot/src/drivers/pinctrl/pinctrl-generic.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/pinctrl/pinctrl-uclass.c)
+
+        # Driver specific settings / files
+        if(iomux_driver MATCHES "imx8mq-pinctrl")
+            list(APPEND uboot_deps src/uboot/src/drivers/pinctrl/nxp/pinctrl-imx.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/pinctrl/nxp/pinctrl-imx8m.c)
+        else()
+            message(FATAL_ERROR "Unrecognised IOMUX driver. Aborting.")
+        endif()
+    endif()
+
+    #############################
+    # Settings for GPIO drivers #
+    #############################
+
+    if(gpio_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Enable GPIO support
+        add_definitions("-DCONFIG_DM_GPIO=1")
+        add_definitions("-DCONFIG_GPIO_EXTRA_HEADER=1")
+        add_definitions("-DCONFIG_CMD_GPIO_READ=1")
+        # Generic GPIO source files
+        list(APPEND uboot_deps src/uboot/src/cmd/gpio.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/gpio/gpio_uclass.c)
+
+        # Driver specific settings / files
+        if(gpio_driver MATCHES "gpio_mxc")
+            list(APPEND uboot_deps src/uboot/src/drivers/gpio/mxc_gpio.c)
+        else()
+            message(FATAL_ERROR "Unrecognised GPIO driver. Aborting.")
+        endif()
+    endif()
+
+    #################################
+    # Settings for Ethernet drivers #
+    #################################
+
+    if(eth_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Enable Ethernet support
+        add_definitions("-DCONFIG_ETH=1")
+        add_definitions("-DCONFIG_NET=1")
+        add_definitions("-DCONFIG_DM_ETH=1")
+        add_definitions("-DCONFIG_TFTP_BLOCKSIZE=1468")
+        add_definitions("-DCONFIG_TFTP_WINDOWSIZE=1")
+        add_definitions("-DCONFIG_DM_ETH=1")
+        add_definitions("-DCONFIG_CMD_NET=1")
+        add_definitions("-DCONFIG_CMD_DNS=1")
+        add_definitions("-DCONFIG_CMD_PING=1")
+        # Generic Ethernet source files
+        list(APPEND uboot_deps src/uboot/src/cmd/net.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/gpio/gpio_uclass.c)
+        list(APPEND uboot_deps src/uboot/src/net/arp.c)
+        list(APPEND uboot_deps src/uboot/src/net/dns.c)
+        list(APPEND uboot_deps src/uboot/src/net/eth_common.c)
+        list(APPEND uboot_deps src/uboot/src/net/eth-uclass.c)
+        list(APPEND uboot_deps src/uboot/src/net/net.c)
+        list(APPEND uboot_deps src/uboot/src/net/pcap.c)
+        list(APPEND uboot_deps src/uboot/src/net/ping.c)
+        list(APPEND uboot_deps src/uboot/src/net/sntp.c)
+        list(APPEND uboot_deps src/uboot/src/net/tftp.c)
+        list(APPEND uboot_deps src/uboot/src/net/udp.c)
+
+        # Driver specific settings / files
+        if(eth_driver MATCHES "fecmxc")
+            add_definitions("-DCONFIG_PHYLIB=1")
+            add_definitions("-DCONFIG_FEC_MXC=1")
+            add_definitions("-DCONFIG_MII=1")
+            add_definitions("-DCONFIG_NET_RANDOM_ETHADDR=1")
+
+            list(APPEND uboot_deps src/uboot/arch/arm/mach-imx/mac.c)
+            list(APPEND uboot_deps src/uboot/src/common/miiphyutil.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/net/fec_mxc.c)
+        else()
+            message(FATAL_ERROR "Unrecognised Ethernet driver. Aborting.")
+        endif()
+    endif()
+
+    #####################################
+    # Settings for Ethernet PHY drivers #
+    #####################################
+
+    if(eth_phy_driver MATCHES "none")
+        # Nothing to do
+    elseif(eth_phy_driver MATCHES "atheros")
+        add_definitions("-DCONFIG_PHY_ATHEROS=1")
+        add_definitions("-DCONFIG_PHY_GIGE=1")
+        list(APPEND uboot_deps src/uboot/src/drivers/net/phy/atheros.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/net/phy/phy.c)
+    else()
+        message(FATAL_ERROR "Unrecognised Ethernet PHY driver. Aborting.")
+    endif()
+
+    ############################
+    # Settings for LED drivers #
+    ############################
+
+    if(gpio_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Generic LED source files
+        list(APPEND uboot_deps src/uboot/src/cmd/led.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/led/led-uclass.c)
+
+        # Driver specific settings / files
+        if(led_driver MATCHES "gpio_led")
+            if(gpio_driver MATCHES "none")
+                message(FATAL_ERROR "Cannot enable LED GPIO driver without GPIO driver. Aborting.")
+            endif()
+            list(APPEND uboot_deps src/uboot/src/drivers/led/led_gpio.c)
+        else()
+            message(FATAL_ERROR "Unrecognised LED driver. Aborting.")
+        endif()
+    endif()
+
+    #############################
+    # Settings for disk support #
+    #############################
+
+    if (disk_support MATCHES "false")
+        # Nothing to do
+    elseif(disk_support MATCHES "true")
+        # Enabled partition support
+        add_definitions("-DCONFIG_HAVE_BLOCK_DEVICE=1")
+        add_definitions("-DCONFIG_PARTITIONS=1")
+        add_definitions("-DCONFIG_PARTITION_UUIDS=1")
+        # Enable FAT filesystem support
+        add_definitions("-DCONFIG_FS_FAT=1")
+        add_definitions("-DCONFIG_FAT_WRITE=1")
+        add_definitions("-DCONFIG_FS_FAT_MAX_CLUSTSIZE=65536")
+        add_definitions("-DCONFIG_DOS_PARTITION=1")
+        # Add srouce files
+        list(APPEND uboot_deps src/uboot/src/cmd/fat.c)
+        list(APPEND uboot_deps src/uboot/src/cmd/part.c)
+        list(APPEND uboot_deps src/uboot/src/disk/part_dos.c)
+        list(APPEND uboot_deps src/uboot/src/disk/part.c)
+        list(APPEND uboot_deps src/uboot/src/fs/fat/fat_write.c)
+        list(APPEND uboot_deps src/uboot/src/fs/fs.c)
+    else()
+        message(FATAL_ERROR "Unrecognised disk support level. Aborting.")
+    endif()
+
+    ######################################################
+    # Complete configuration of source and include files #
+    ######################################################
+
+    # Pull in the base source files used by all platforms
+    list(APPEND uboot_deps src/uboot/src/env/attr.c)
+    list(APPEND uboot_deps src/uboot/src/env/callback.c)
+    list(APPEND uboot_deps src/uboot/src/env/common.c)
+    list(APPEND uboot_deps src/uboot/src/env/env.c)
+    list(APPEND uboot_deps src/uboot/src/env/flags.c)
+    file(GLOB_RECURSE glob_result src/uboot/src/lib/*.c)
+    list(APPEND uboot_deps ${glob_result})
+    list(APPEND uboot_deps src/uboot/src/cmd/blk_common.c)
+    list(APPEND uboot_deps src/uboot/src/cmd/dm.c)
+    list(APPEND uboot_deps src/uboot/src/cmd/nvedit.c)
+    list(APPEND uboot_deps src/uboot/src/common/cli_readline.c)
+    list(APPEND uboot_deps src/uboot/src/common/cli_simple.c)
+    list(APPEND uboot_deps src/uboot/src/common/cli.c)
+    list(APPEND uboot_deps src/uboot/src/common/command.c)
+    list(APPEND uboot_deps src/uboot/src/common/fdt_support.c)
+    list(APPEND uboot_deps src/uboot/src/common/stdio.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/block/blk-uclass.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/device-remove.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/device.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/devres.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/dump.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/fdtaddr.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/lists.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/of_access.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/of_addr.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/ofnode.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/read.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/root.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/simple-bus.c)
+    list(APPEND uboot_deps src/uboot/src/drivers/core/uclass.c)
+
+    file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
+    file(GLOB_RECURSE stub_deps src/stub/src/*.c)
+    file(GLOB_RECURSE plat_deps src/plat/${KernelPlatform}/*.c)
+
+    # Add the 'uboot_helper.h' include to all U-Boot source files to provide
+    # the required includes and configuration.
+    set_source_files_properties(${uboot_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
+
+    # Generate the final list of source files.
+    list(APPEND deps ${wrapper_deps})
+    list(APPEND deps ${uboot_deps})
+    list(APPEND deps ${stub_deps})
+    list(APPEND deps ${plat_deps})
+    list(SORT deps)
+    target_sources(ubootdrivers PRIVATE ${deps})
+
+    target_include_directories(ubootdrivers PRIVATE
+        include/stub/include
+        include/wrapper
+        src/uboot/src/lib
+        include/uboot/include
+    )
+
+    # Add library speciifc includes based upon the platform.
+    target_include_directories(ubootdrivers PRIVATE include/plat/${KernelPlatform})
+
+    # Declare the public interface to the library.
+    target_include_directories(ubootdrivers INTERFACE include/public_api)
+
+    target_link_libraries(ubootdrivers sel4 muslc sel4platsupport utils)
+
+    #########################
+    # Manage logging levels #
+    #########################
 
     # Provide a mapping between the seL4 logging level and the U-Boot logging level
     if("${LIB_UBOOT_LOGGING_LEVEL}" STREQUAL "ZF_LOG_VERBOSE")
@@ -66,60 +379,4 @@ if(LibUBOOT)
         message(FATAL_ERROR "No recognised logging level set in LIB_UBOOT_LOGGING_LEVEL. Aborting.")
     endif()
 
-    # Enumerate the set of source files
-    file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
-    file(GLOB_RECURSE uboot_deps src/uboot/src/*.c)
-    file(GLOB_RECURSE stub_deps src/stub/src/*.c)
-    file(GLOB_RECURSE plat_deps src/plat/${KernelPlatform}/*.c)
-    list(APPEND deps ${wrapper_deps})
-    list(APPEND deps ${uboot_deps})
-    list(APPEND deps ${stub_deps})
-    list(APPEND deps ${plat_deps})
-
-    # Enumerate the set of platform dependent osurce files
-    if(KernelPlatImx8mq)
-        file(GLOB_RECURSE uboot_arch_deps src/uboot/arch/imx8mq/*.c)
-        list(APPEND deps ${uboot_arch_deps})
-    else()
-        set(uboot_arch_deps "")
-    endif()
-
-    # Add the 'uboot_helper.h' include to all U-Boot source files to provide
-    # the required includes and configuration.
-    set_source_files_properties(${uboot_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
-    set_source_files_properties(${uboot_arch_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
-
-    list(SORT deps)
-
-    add_library(ubootdrivers STATIC EXCLUDE_FROM_ALL ${deps})
-
-    target_include_directories(ubootdrivers PRIVATE
-        include/wrapper
-        src/uboot/src/lib
-        include/uboot/include
-        include/stub/include
-    )
-
-    # Add U-Boot prviate inclues based upon the architecture.
-    if(KernelArchARM)
-        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/arm)
-        target_include_directories(ubootdrivers PRIVATE include/stub/arch/arm)
-        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/proc-armv)
-        if(KernelArchArmV8a)
-            target_include_directories(ubootdrivers PRIVATE include/uboot/arch/armv8)
-        endif()
-    endif()
-
-    # Add U-Boot prviate inclues based upon the platform.
-    if(KernelPlatImx8mq)
-        target_include_directories(ubootdrivers PRIVATE include/uboot/arch/imx8m)
-    endif()
-
-    # Add library speciifc includes based upon the platform.
-    target_include_directories(ubootdrivers PRIVATE include/plat/${KernelPlatform})
-
-    # Declare the public interface to the library.
-    target_include_directories(ubootdrivers INTERFACE include/public_api)
-
-    target_link_libraries(ubootdrivers sel4 muslc sel4platsupport utils)
 endif()
