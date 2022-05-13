@@ -10,11 +10,11 @@
  */
 
 /* Define the number of different driver elements to be used on this platform */
-#define _u_boot_uclass_driver_count     16
-#define _u_boot_driver_count            17
+#define _u_boot_uclass_driver_count     18
+#define _u_boot_driver_count            19
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       1
-#define _u_boot_cmd_count               16
+#define _u_boot_cmd_count               17
 #define _u_boot_env_driver_count        0
 #define _u_boot_env_clbk_count          8
 #define _u_boot_driver_info_count       0
@@ -37,6 +37,8 @@ extern struct uclass_driver _u_boot_uclass_driver__pinctrl;
 extern struct uclass_driver _u_boot_uclass_driver__ethernet;
 extern struct uclass_driver _u_boot_uclass_driver__led;
 extern struct uclass_driver _u_boot_uclass_driver__gpio;
+extern struct uclass_driver _u_boot_uclass_driver__i2c;
+extern struct uclass_driver _u_boot_uclass_driver__i2c_generic;
 
 /* Define the drivers to be used on this platform */
 extern struct driver _u_boot_driver__root_driver;
@@ -56,6 +58,8 @@ extern struct driver _u_boot_driver__imx8mq_pinctrl;
 extern struct driver _u_boot_driver__fecmxc_gem;
 extern struct driver _u_boot_driver__led_gpio;
 extern struct driver _u_boot_driver__gpio_mxc;
+extern struct driver _u_boot_driver__i2c_mxc;
+extern struct driver _u_boot_driver__i2c_generic_chip_drv;
 
 /* Define the driver entries to be used on this platform */
 extern struct usb_driver_entry _u_boot_usb_driver_entry__usb_generic_hub;
@@ -82,6 +86,7 @@ extern struct cmd_tbl _u_boot_cmd__dns;
 extern struct cmd_tbl _u_boot_cmd__ping;
 extern struct cmd_tbl _u_boot_cmd__led;
 extern struct cmd_tbl _u_boot_cmd__gpio;
+extern struct cmd_tbl _u_boot_cmd__i2c;
 
 /* Define the u-boot environment variables callbacks to be used on this platform */
 extern struct env_clbk_tbl _u_boot_env_clbk__ethaddr;
