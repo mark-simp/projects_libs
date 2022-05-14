@@ -88,9 +88,11 @@ if(LibUBOOT)
         set(iomux_driver "imx8mq-pinctrl")
         set(gpio_driver "gpio_mxc")
         set(eth_driver "fecmxc")
-        set(usb_driver "dwc3_xhci")
+        set(usb_driver "dwc3_generic")
         set(usb_phy_driver "nxp_imx8mq_usb_phy")
         set(mmc_driver "fsl_esdhc")
+        set(i2c_driver "i2c_mxc")
+        set(spi_driver "mxc_spi")
         set(led_driver "gpio_led")
         set(disk_support "true")
         set(usb_storage_support "true")
@@ -131,11 +133,31 @@ if(LibUBOOT)
 
     if(clock_driver MATCHES "none")
         # Nothing to do
-    elseif(clock_driver MATCHES "imx8mq")
-        list(APPEND uboot_deps src/uboot/arch/arm/mach-imx/imx8m/clock_imx8mq.c)
-        list(APPEND uboot_deps src/uboot/arch/arm/mach-imx/imx8m/clock_slice.c)
     else()
-        message(FATAL_ERROR "Unrecognised clock driver. Aborting.")
+        # Enable clock support
+        add_definitions("-DCONFIG_CLK=1")
+        add_definitions("-DCONFIG_CLK_CCF=1")
+        # Generate clock source files
+        list(APPEND uboot_deps src/uboot/src/cmd/clk.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk-composite.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk-divider.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk-fixed-factor.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk-fixed-rate.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk-gate.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk-mux.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/clk/clk-uclass.c)
+
+        if(clock_driver MATCHES "imx8mq")
+            list(APPEND uboot_deps src/uboot/arch/arm/mach-imx/imx8m/clock_imx8mq.c)
+            list(APPEND uboot_deps src/uboot/arch/arm/mach-imx/imx8m/clock_slice.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/clk/imx/clk-composite-8m.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/clk/imx/clk-gate2.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/clk/imx/clk-imx8mq.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/clk/imx/clk-pll14xx.c)
+        else()
+            message(FATAL_ERROR "Unrecognised clock driver. Aborting.")
+        endif()
     endif()
 
     ##############################
@@ -257,6 +279,9 @@ if(LibUBOOT)
     if(usb_driver MATCHES "none")
         # Nothing to do
     else()
+        # Variable to control which USB stack to use
+        set(usb_stack "none")
+
         # Enable USB support
         add_definitions("-DCONFIG_DM_USB=1")
         add_definitions("-DCONFIG_USB_HOST=1")
@@ -271,19 +296,29 @@ if(LibUBOOT)
         list(APPEND uboot_deps src/uboot/src/drivers/usb/host/usb-uclass.c)
 
         # Driver specific settings / files
-        if(usb_driver MATCHES "dwc3_xhci")
-            add_definitions("-DCONFIG_USB_XHCI_HCD=1")
+        if(usb_driver MATCHES "dwc3_generic")
+            # This is an XCHI device
+            set(usb_stack "xhci")
+
             add_definitions("-DCONFIG_USB_XHCI_DWC3=1")
 
-            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci-mem.c)
-            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci-ring.c)
-            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci.c)
             list(APPEND uboot_deps src/uboot/src/drivers/usb/dwc3/core.c)
             list(APPEND uboot_deps src/uboot/src/drivers/usb/dwc3/dwc3-generic.c)
             list(APPEND uboot_deps src/uboot/src/drivers/usb/dwc3/ep0.c)
         else()
             message(FATAL_ERROR "Unrecognised USB driver. Aborting.")
         endif()
+
+        # Set up the chosen USB stack
+        if(usb_stack MATCHES "xhci")
+            add_definitions("-DCONFIG_USB_XHCI_HCD=1")
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci-mem.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci-ring.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/usb/host/xhci.c)
+        else()
+            message(FATAL_ERROR "No USB stack selected. Aborting.")
+        endif()
+
     endif()
 
     ################################
@@ -337,6 +372,82 @@ if(LibUBOOT)
             list(APPEND uboot_deps src/uboot/src/drivers/mmc/fsl_esdhc_imx.c)
         else()
             message(FATAL_ERROR "Unrecognised MMC driver. Aborting.")
+        endif()
+    endif()
+
+    ############################
+    # Settings for I2C drivers #
+    ############################
+
+    if(i2c_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Enable I2C support
+        add_definitions("-DCONFIG_CMD_I2C=1")
+        add_definitions("-DCONFIG_DM_I2C=1")
+        # Generic I2C source files
+        list(APPEND uboot_deps src/uboot/src/cmd/i2c.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/i2c/i2c-uclass.c)
+
+        # Driver specific settings / files
+        if(i2c_driver MATCHES "i2c_mxc")
+            add_definitions("-DCONFIG_SYS_I2C_MXC=1")
+            add_definitions("-DCONFIG_SYS_I2C_MXC_I2C1=1")
+            add_definitions("-DCONFIG_SYS_I2C_MXC_I2C2=1")
+            add_definitions("-DCONFIG_SYS_I2C_MXC_I2C3=1")
+            add_definitions("-DCONFIG_SYS_I2C_MXC_I2C4=1")
+            add_definitions("-DCONFIG_SYS_MXC_I2C1_SPEED=100000")
+            add_definitions("-DCONFIG_SYS_MXC_I2C1_SLAVE=0")
+            add_definitions("-DCONFIG_SYS_MXC_I2C2_SPEED=100000")
+            add_definitions("-DCONFIG_SYS_MXC_I2C2_SLAVE=0")
+            add_definitions("-DCONFIG_SYS_MXC_I2C3_SPEED=100000")
+            add_definitions("-DCONFIG_SYS_MXC_I2C3_SLAVE=0")
+            add_definitions("-DCONFIG_SYS_MXC_I2C4_SPEED=100000")
+            add_definitions("-DCONFIG_SYS_MXC_I2C4_SLAVE=0")
+
+            list(APPEND uboot_deps src/uboot/src/drivers/i2c/mxc_i2c.c)
+        else()
+            message(FATAL_ERROR "Unrecognised I2C driver. Aborting.")
+        endif()
+    endif()
+
+    ############################
+    # Settings for SPI drivers #
+    ############################
+
+    /* Enable SPI */
+    #define CONFIG_DM_SPI_FLASH             1
+    #define CONFIG_DM_SPI                   1
+    #define CONFIG_SPI                      1
+    #define CONFIG_SPI_FLASH                1
+    #define CONFIG_SPI_FLASH_BAR            1
+    #define CONFIG_SPI_FLASH_STMICRO        1
+    //#define CONFIG_SYS_SPI_MXC_WAIT         5000
+    #define CONFIG_DEFAULT_SPI_MODE         0
+    #define CONFIG_DEFAULT_SPI_BUS          0
+
+    if(spi_driver MATCHES "none")
+        # Nothing to do
+    else()
+        # Enable SPI support
+        add_definitions("-DCONFIG_DM_SPI_FLASH=1")
+        add_definitions("-DCONFIG_DM_SPI=1")
+        add_definitions("-DCONFIG_SPI=1")
+        add_definitions("-DCONFIG_SPI_FLASH=1")
+        add_definitions("-DCONFIG_SPI_FLASH_BAR=1")
+        add_definitions("-DCONFIG_SPI_FLASH_STMICRO=1")
+        add_definitions("-DCONFIG_DEFAULT_SPI_MODE=0")
+        add_definitions("-DCONFIG_DEFAULT_SPI_BUS=0")
+        # Generic SPI source files
+        list(APPEND uboot_deps src/uboot/src/cmd/spi.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/spi/spi-mem.c)
+        list(APPEND uboot_deps src/uboot/src/drivers/spi/spi-uclass.c)
+
+        # Driver specific settings / files
+        if(spi_driver MATCHES "mxc_spi")
+            list(APPEND uboot_deps src/uboot/src/drivers/i2c/mxc_spi.c)
+        else()
+            message(FATAL_ERROR "Unrecognised SPI driver. Aborting.")
         endif()
     endif()
 
