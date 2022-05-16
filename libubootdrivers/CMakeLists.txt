@@ -415,17 +415,6 @@ if(LibUBOOT)
     # Settings for SPI drivers #
     ############################
 
-    /* Enable SPI */
-    #define CONFIG_DM_SPI_FLASH             1
-    #define CONFIG_DM_SPI                   1
-    #define CONFIG_SPI                      1
-    #define CONFIG_SPI_FLASH                1
-    #define CONFIG_SPI_FLASH_BAR            1
-    #define CONFIG_SPI_FLASH_STMICRO        1
-    //#define CONFIG_SYS_SPI_MXC_WAIT         5000
-    #define CONFIG_DEFAULT_SPI_MODE         0
-    #define CONFIG_DEFAULT_SPI_BUS          0
-
     if(spi_driver MATCHES "none")
         # Nothing to do
     else()
@@ -445,7 +434,7 @@ if(LibUBOOT)
 
         # Driver specific settings / files
         if(spi_driver MATCHES "mxc_spi")
-            list(APPEND uboot_deps src/uboot/src/drivers/i2c/mxc_spi.c)
+            list(APPEND uboot_deps src/uboot/src/drivers/spi/mxc_spi.c)
         else()
             message(FATAL_ERROR "Unrecognised SPI driver. Aborting.")
         endif()
