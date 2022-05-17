@@ -85,15 +85,20 @@ typedef long off_t;
 #define stderr  2
 
 /* Include headers expected by all U-Boot source code */
+#include <linux/kernel.h>
 #include <linux/kconfig.h>
 #include <sel4_dma.h>
 #include <sel4_io_map.h>
 #include <common.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <vsprintf.h>
 #include <assert.h>
-#include <driver_data.h>
+#include <plat_driver_data.h>
+#include <driver_data_limits.h>
+#include <linux/libfdt_env.h>
+#include <linux/libfdt.h>
 
 /* Replace uses of U-Boot's lldiv function with the equivalent from muslc */
 #define lldiv(A, B)     lldiv(A, B).quot

@@ -2,9 +2,10 @@
 #include <dm/root.h>
 #include <dm/util.h>
 #include <usb.h>
-#include <asm-generic/global_data.h>
+#include <asm/global_data.h>
 #include <fdtdec.h>
 #include <of_live.h>
+#include <driver_data_limits.h>
 #include <driver_data.h>
 #include <stdio_dev.h>
 #include <console.h>

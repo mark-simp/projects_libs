@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 
 #include <uboot_helper.h>
+#include <driver_data.h>
 
 #include <dm/device.h>
 #include <dm/uclass.h>
