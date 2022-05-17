@@ -20,8 +20,8 @@ struct global_data* gd;
 // Global declaration of driver_data.
 struct driver_data_t driver_data;
 
-// Global declaration and initialisation of driver_data_start.
-const struct driver_data_start_t driver_data_start = {
+// Global declaration and initialisation of driver_data_start/end.
+const struct driver_data_pointer_t driver_data_start = {
     .driver_start = driver_data.driver_array,
     .uclass_driver_start = driver_data.uclass_driver_array,
     .usb_driver_entry_start = driver_data.usb_driver_entry_array,
@@ -31,6 +31,18 @@ const struct driver_data_start_t driver_data_start = {
     .env_clbk_start = driver_data.env_clbk_array,
     .driver_info_start = driver_data.driver_info_array,
     .udevice_start = driver_data.udevice_array
+};
+
+const struct driver_data_pointer_t driver_data_end = {
+    .driver_start = &driver_data.driver_array[_u_boot_driver_count],
+    .uclass_driver_start = &driver_data.uclass_driver_array[_u_boot_uclass_driver_count],
+    .usb_driver_entry_start = &driver_data.usb_driver_entry_array[_u_boot_usb_driver_entry_count],
+    .cmd_start = &driver_data.cmd_array[_u_boot_cmd_count],
+    .part_driver_start = &driver_data.part_driver_array[_u_boot_part_driver_count],
+    .env_driver_start = &driver_data.env_driver_array[_u_boot_env_driver_count],
+    .env_clbk_start = &driver_data.env_clbk_array[_u_boot_env_clbk_count],
+    .driver_info_start = &driver_data.driver_info_array[_u_boot_driver_info_count],
+    .udevice_start = &driver_data.udevice_array[_u_boot_udevice_count]
 };
 
 // Global declaration of version_string.

@@ -5,7 +5,7 @@
 
 #include <plat_driver_data.h>
 
-struct driver_data_start_t {
+struct driver_data_pointer_t {
     void *driver_start;
     void *uclass_driver_start;
     void *usb_driver_entry_start;
@@ -17,7 +17,8 @@ struct driver_data_start_t {
     void *udevice_start;
 };
 
-extern const struct driver_data_start_t driver_data_start;
+extern const struct driver_data_pointer_t driver_data_start;
+extern const struct driver_data_pointer_t driver_data_end;
 
 #include <dm/device.h>
 #include <dm/uclass.h>
