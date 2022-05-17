@@ -97,13 +97,12 @@ if(LibUBOOT)
             message(FATAL_ERROR "Unsupported iMX8MQ board. Aborting.")
         endif()
 
-        # Create a symlink from the relevant architecture headers to
-        # the 'arch' folder for U-Boot source code.
-        # set(arch_symlink_source uboot/arch/arm/include/asm/arch-imx8m)
-        # set(arch_symlink_target uboot/arch/arm/include/asm/arch)
-        # ADD_CUSTOM_TARGET(link_target ALL
-        #     COMMAND ${CMAKE_COMMAND} -E create_symlink ${arch_symlink_target} ${arch_symlink_source})
-        # TODO!
+        # Create a symlink named 'arch' to the platform's headers. This
+        # mimics the behaviour of the "CREATE_ARCH_SYMLINK" option within
+        # U-Boot's build system (see Makefile.autoconf).
+        set(arch_source "./arch-imx8m")
+        set(arch_target "../projects/uboot/arch/arm/include/asm/arch")
+        execute_process(COMMAND ln -fsn ${arch_source} ${arch_target})
 
     elseif(KernelPlatImx6)
         # TBC
