@@ -586,9 +586,11 @@ if(LibUBOOT)
     file(GLOB_RECURSE wrapper_deps src/wrapper/*.c)
     file(GLOB_RECURSE plat_deps src/plat/${KernelPlatform}/*.c)
 
-    # Add the 'uboot_helper.h' include to all U-Boot source files to provide
-    # the required includes and configuration.
-    set_source_files_properties(${uboot_deps} PROPERTIES COMPILE_FLAGS "-include uboot_helper.h")
+    # For all U-Boot source code we:
+    # - Add the 'uboot_helper.h' include to provide required includes and configuration.
+    # - Silence warnings as performed by the U-Boot build system.
+    set_source_files_properties(${uboot_deps} PROPERTIES COMPILE_FLAGS
+        "-include uboot_helper.h -Wno-address-of-packed-member")
 
     # Generate the final list of source files.
     list(APPEND deps ${wrapper_deps})
