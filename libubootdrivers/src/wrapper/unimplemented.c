@@ -2,7 +2,7 @@
 #include <dm/device.h>
 
 #include <linux/usb/gadget.h>
-#include "../uboot/src/drivers/usb/dwc3/core.h"
+#include "../../uboot/drivers/usb/dwc3/core.h"
 
 #include <input.h>
 
