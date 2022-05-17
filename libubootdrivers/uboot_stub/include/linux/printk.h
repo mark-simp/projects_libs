@@ -1,0 +1,1 @@
+/* Empty stub (replaced by uboot_print.h from wrapper) */
