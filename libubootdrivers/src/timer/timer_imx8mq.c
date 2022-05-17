@@ -1,4 +1,4 @@
-/* This timer uses the System Counter (SYS_CON) provided by the iMX8MQ SoC
+/* This timer uses the System Counter (SYS_CTR) provided by the iMX8MQ SoC
  * to implement the timing functions expected by the U-Boot codebase */
 
 #include <common.h>
