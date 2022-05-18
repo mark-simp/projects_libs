@@ -11,7 +11,7 @@
 
 /* Define the number of different driver elements to be used on this platform */
 #define _u_boot_uclass_driver_count     21
-#define _u_boot_driver_count            32
+#define _u_boot_driver_count            33
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       1
 #define _u_boot_cmd_count               19
@@ -60,6 +60,7 @@ extern struct driver _u_boot_driver__fsl_esdhc;
 extern struct driver _u_boot_driver__pinconfig_generic;
 extern struct driver _u_boot_driver__imx8mq_pinctrl;
 extern struct driver _u_boot_driver__fecmxc_gem;
+extern struct driver _u_boot_driver__led_gpio_wrap;
 extern struct driver _u_boot_driver__led_gpio;
 extern struct driver _u_boot_driver__gpio_mxc;
 extern struct driver _u_boot_driver__i2c_mxc;
