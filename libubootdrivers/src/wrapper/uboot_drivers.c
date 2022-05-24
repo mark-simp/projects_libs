@@ -187,6 +187,12 @@ static int disable_not_required_devices(const char **device_paths, uint32_t devi
 
 int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count)
 {
+    // Return immediately if no devices have been requested.
+    if (0 == device_count || NULL == device_paths) {
+        ZF_LOGE("Library initialisation cancelled, no devices supplied");
+        return -1;
+    }
+
     int ret;
 
     // Initialise the DMA management.
@@ -198,7 +204,12 @@ int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uin
     // Create a copy of the FDT for U-Boot to use. We do this using
     // 'fdt_open_into' to open the FDT into a larger buffer to allow
     // us extra space to make modifications as required.
-    void* orig_fdt_blob = io_ops->io_fdt.get_fn(io_ops->io_fdt.cookie);
+    void* orig_fdt_blob = ps_io_fdt_get(&io_ops->io_fdt);
+    if (orig_fdt_blob == NULL) {
+        ZF_LOGE("Unable to access FDT");
+        return -1;
+    }
+
     int fdt_size = fdt_totalsize(orig_fdt_blob) + EXTRA_FDT_BUFFER_SIZE;
     uboot_fdt_pointer = malloc(fdt_size);
     if (uboot_fdt_pointer == NULL) {

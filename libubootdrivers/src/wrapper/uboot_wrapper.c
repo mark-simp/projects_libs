@@ -185,7 +185,7 @@ int run_uboot_command(char* cmd)
 
 void shutdown_uboot_wrapper(void)
 {
-    // Return immediately if library not initialsed (nothing to do).
+    // Return immediately if library not initialised (nothing to do).
     if (!library_initialised)
         return;
 
@@ -201,6 +201,10 @@ void shutdown_uboot_wrapper(void)
 
 int uboot_stdin_tstc(void)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return -1;
+
     if (NULL == stdio_devices[stdin])
         return 0;
 
@@ -209,6 +213,10 @@ int uboot_stdin_tstc(void)
 
 int uboot_stdin_getc(void)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return -1;
+
     if (NULL == stdio_devices[stdin])
         return 0;
 
@@ -219,15 +227,27 @@ int uboot_stdin_getc(void)
 
 int uboot_eth_init(void)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return -1;
+
     return eth_init();
 }
 void uboot_eth_halt(void)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return;
+
     eth_halt();
 }
 
 int uboot_eth_send(unsigned char *packet, int length)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return -1;
+
 	struct udevice *current;
 	int ret;
 
@@ -245,6 +265,10 @@ int uboot_eth_send(unsigned char *packet, int length)
 
 int uboot_eth_receive(unsigned char **packet)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return -1;
+
 	struct udevice *current;
 
 	current = eth_get_dev();
@@ -267,6 +291,10 @@ int uboot_eth_receive(unsigned char **packet)
 
 int uboot_eth_free_packet(unsigned char **packet)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return -1;
+
 	struct udevice *current;
     int ret = 0;
 
@@ -282,6 +310,10 @@ int uboot_eth_free_packet(unsigned char **packet)
 
 unsigned char *uboot_eth_get_ethaddr(void)
 {
+    // Return immediately if library not initialised .
+    if (!library_initialised)
+        return 0;
+
     return eth_get_ethaddr();
 }
 
