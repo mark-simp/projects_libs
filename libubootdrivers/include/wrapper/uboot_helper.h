@@ -55,6 +55,7 @@
 #define __iomem			/* __attribute__((iomem)) */
 
 /* Assorted macros needed to keep U-Boot source code happy */
+#define CONFIG_SYS_RX_ETH_BUFFER    4
 #define CONFIG_LINKER_LIST_ALIGN    0
 #define CONFIG_ERR_PTR_OFFSET   	0
 #define CONFIG_NR_DRAM_BANKS		0 /* Not used */

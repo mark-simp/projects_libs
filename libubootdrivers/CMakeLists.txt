@@ -104,9 +104,6 @@ if(LibUBOOT)
         set(arch_target "../projects/uboot/arch/arm/include/asm/arch")
         execute_process(COMMAND ln -fsn ${arch_source} ${arch_target})
 
-    elseif(KernelPlatImx6)
-        # TBC
-
     else()
         message(FATAL_ERROR "Unsupported platform. Aborting.")
     endif()
@@ -223,7 +220,6 @@ if(LibUBOOT)
         add_definitions("-DCONFIG_CMD_NET=1")
         add_definitions("-DCONFIG_CMD_DNS=1")
         add_definitions("-DCONFIG_CMD_PING=1")
-        add_definitions("-DCONFIG_SYS_RX_ETH_BUFFER=4")
         add_definitions("-DCONFIG_ARP_TIMEOUT=200")
         add_definitions("-DCONFIG_NET_RETRY_COUNT=10")
         # Generic Ethernet source files
