@@ -185,10 +185,15 @@ static int disable_not_required_devices(const char **device_paths, uint32_t devi
     return 0;
 }
 
-int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count)
+int initialise_uboot_drivers(
+    ps_io_ops_t *io_ops,
+    const char **reg_paths,
+    uint32_t reg_count,
+    const char **dev_paths,
+    uint32_t dev_count)
 {
     // Return immediately if no devices have been requested.
-    if (0 == device_count || NULL == device_paths) {
+    if (0 == reg_count || NULL == reg_paths || 0 == dev_count || NULL == dev_paths) {
         ZF_LOGE("Library initialisation cancelled, no devices supplied");
         return -1;
     }
@@ -220,12 +225,12 @@ int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uin
         goto error;
 
     // Start by disabling all devices in the FDT that are not required.
-    ret = disable_not_required_devices(device_paths, device_count);
+    ret = disable_not_required_devices(dev_paths, dev_count);
     if (0 != ret)
         goto error;
 
     // Map the required device resources for all required devices.
-    ret = map_required_device_resources(device_paths, device_count);
+    ret = map_required_device_resources(reg_paths, reg_count);
     if (0 != ret)
         goto error;
 

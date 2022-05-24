@@ -6,12 +6,19 @@
  * This must be called before any other interface exported by the library.
  *
  * @io_ops: the thread's platform support IO operations
- * @device_paths: list of strings for the device tree paths to handled
- * @device_count: the length of the device_paths list
+ * @reg_paths: list device tree paths with 'reg' entries to memory map
+ * @reg_count: the length of the reg_paths list
+ * @dev_paths: list device tree paths of devices to handle
+ * @dev_count: the length of the dev_paths list
  *
  * Return: 0 if OK, otherwise failure.
  */
-int initialise_uboot_drivers(ps_io_ops_t *io_ops, const char **device_paths, uint32_t device_count);
+int initialise_uboot_drivers(
+    ps_io_ops_t *io_ops,
+    const char **reg_paths,
+    uint32_t reg_count,
+    const char **dev_paths,
+    uint32_t dev_count);
 
 /**
  * run_uboot_command() - executes a u-boot command as if entered at the
