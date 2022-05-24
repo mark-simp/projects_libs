@@ -25,4 +25,6 @@
 		_ll_result;																	\
 	})
 
+#define ll_entry_ref(_type, _name, _list)	((_type *)&_u_boot_##_list##__##_name)
+
 #endif	/* __LINKER_LISTS_H__ */
