@@ -94,6 +94,7 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[16] = _u_boot_cmd__i2c;
     driver_data.cmd_array[17] = _u_boot_cmd__sspi;
     driver_data.cmd_array[18] = _u_boot_cmd__clk;
+    driver_data.cmd_array[19] = _u_boot_cmd__pinmux;
 
     driver_data.env_clbk_array[0] = _u_boot_env_clbk__ethaddr;
     driver_data.env_clbk_array[1] = _u_boot_env_clbk__ipaddr;

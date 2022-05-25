@@ -168,6 +168,7 @@ if(LibUBOOT)
         add_definitions("-DCONFIG_PINMUX=1")
         add_definitions("-DCONFIG_PINCONF_RECURSIVE=1")
         # Generic IOMUX source files
+        list(APPEND uboot_deps uboot/cmd/pinmux.c)
         list(APPEND uboot_deps uboot/drivers/pinctrl/pinctrl-generic.c)
         list(APPEND uboot_deps uboot/drivers/pinctrl/pinctrl-uclass.c)
 

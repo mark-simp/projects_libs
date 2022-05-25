@@ -14,7 +14,7 @@
 #define _u_boot_driver_count            33
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       1
-#define _u_boot_cmd_count               19
+#define _u_boot_cmd_count               20
 #define _u_boot_env_driver_count        0
 #define _u_boot_env_clbk_count          8
 #define _u_boot_driver_info_count       0
@@ -106,6 +106,7 @@ extern struct cmd_tbl _u_boot_cmd__gpio;
 extern struct cmd_tbl _u_boot_cmd__i2c;
 extern struct cmd_tbl _u_boot_cmd__sspi;
 extern struct cmd_tbl _u_boot_cmd__clk;
+extern struct cmd_tbl _u_boot_cmd__pinmux;
 
 /* Define the u-boot environment variables callbacks to be used on this platform */
 extern struct env_clbk_tbl _u_boot_env_clbk__ethaddr;
