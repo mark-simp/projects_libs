@@ -92,7 +92,7 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[12] = _u_boot_cmd__ext4ls;
     driver_data.cmd_array[13] = _u_boot_cmd__ext4size;
     driver_data.cmd_array[14] = _u_boot_cmd__ext4write;
-    driver_data.cmd_array[15]  = _u_boot_cmd__part;
+    driver_data.cmd_array[15] = _u_boot_cmd__part;
     driver_data.cmd_array[16] = _u_boot_cmd__clocks;
     driver_data.cmd_array[17] = _u_boot_cmd__net;
     driver_data.cmd_array[18] = _u_boot_cmd__dns;
