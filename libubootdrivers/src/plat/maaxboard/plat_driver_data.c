@@ -74,6 +74,9 @@ void initialise_driver_data(void) {
     /* Note that 'struct part_driver' is read-only so need to copy here rather
      * than perform a simple assignment */
     memcpy(&driver_data.part_driver_array[0], &_u_boot_part_driver__dos, sizeof(struct part_driver));
+    memcpy(&driver_data.part_driver_array[1], &_u_boot_part_driver__a_efi, sizeof(struct part_driver));
+    memcpy(&driver_data.part_driver_array[2], &_u_boot_part_driver__iso, sizeof(struct part_driver));
+    memcpy(&driver_data.part_driver_array[3], &_u_boot_part_driver__mac, sizeof(struct part_driver));
 
     driver_data.cmd_array[0]  = _u_boot_cmd__dm;
     driver_data.cmd_array[1]  = _u_boot_cmd__usb;
@@ -84,17 +87,23 @@ void initialise_driver_data(void) {
     driver_data.cmd_array[6]  = _u_boot_cmd__fatload;
     driver_data.cmd_array[7]  = _u_boot_cmd__fatls;
     driver_data.cmd_array[8]  = _u_boot_cmd__fatinfo;
-    driver_data.cmd_array[9]  = _u_boot_cmd__part;
-    driver_data.cmd_array[10] = _u_boot_cmd__clocks;
-    driver_data.cmd_array[11] = _u_boot_cmd__net;
-    driver_data.cmd_array[12] = _u_boot_cmd__dns;
-    driver_data.cmd_array[13] = _u_boot_cmd__ping;
-    driver_data.cmd_array[14] = _u_boot_cmd__led;
-    driver_data.cmd_array[15] = _u_boot_cmd__gpio;
-    driver_data.cmd_array[16] = _u_boot_cmd__i2c;
-    driver_data.cmd_array[17] = _u_boot_cmd__sspi;
-    driver_data.cmd_array[18] = _u_boot_cmd__clk;
-    driver_data.cmd_array[19] = _u_boot_cmd__pinmux;
+    driver_data.cmd_array[9]  = _u_boot_cmd__ext2load;
+    driver_data.cmd_array[10] = _u_boot_cmd__ext2ls;
+    driver_data.cmd_array[11] = _u_boot_cmd__ext4load;
+    driver_data.cmd_array[12] = _u_boot_cmd__ext4ls;
+    driver_data.cmd_array[13] = _u_boot_cmd__ext4size;
+    driver_data.cmd_array[14] = _u_boot_cmd__ext4write;
+    driver_data.cmd_array[15]  = _u_boot_cmd__part;
+    driver_data.cmd_array[16] = _u_boot_cmd__clocks;
+    driver_data.cmd_array[17] = _u_boot_cmd__net;
+    driver_data.cmd_array[18] = _u_boot_cmd__dns;
+    driver_data.cmd_array[19] = _u_boot_cmd__ping;
+    driver_data.cmd_array[20] = _u_boot_cmd__led;
+    driver_data.cmd_array[21] = _u_boot_cmd__gpio;
+    driver_data.cmd_array[22] = _u_boot_cmd__i2c;
+    driver_data.cmd_array[23] = _u_boot_cmd__sspi;
+    driver_data.cmd_array[24] = _u_boot_cmd__clk;
+    driver_data.cmd_array[25] = _u_boot_cmd__pinmux;
 
     driver_data.env_clbk_array[0] = _u_boot_env_clbk__ethaddr;
     driver_data.env_clbk_array[1] = _u_boot_env_clbk__ipaddr;
