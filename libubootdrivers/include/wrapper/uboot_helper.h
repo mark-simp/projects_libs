@@ -102,4 +102,5 @@ typedef long off_t;
 #include <linux/libfdt.h>
 
 /* Replace uses of U-Boot's lldiv function with the equivalent from muslc */
+#define __ldiv_t_defined
 #define lldiv(A, B)     lldiv(A, B).quot
