@@ -66,15 +66,14 @@ void initialise_driver_data(void) {
     driver_data.driver_array[31] = _u_boot_driver__clk_gate;
     driver_data.driver_array[32] = _u_boot_driver__ccf_clk_mux;
 
-
     driver_data.usb_driver_entry_array[0] = _u_boot_usb_driver_entry__usb_generic_hub;
     driver_data.usb_driver_entry_array[1] = _u_boot_usb_driver_entry__usb_mass_storage;
     driver_data.usb_driver_entry_array[2] = _u_boot_usb_driver_entry__usb_kbd;
 
     /* Note that 'struct part_driver' is read-only so need to copy here rather
      * than perform a simple assignment */
-    memcpy(&driver_data.part_driver_array[0], &_u_boot_part_driver__dos, sizeof(struct part_driver));
-    memcpy(&driver_data.part_driver_array[1], &_u_boot_part_driver__a_efi, sizeof(struct part_driver));
+    memcpy(&driver_data.part_driver_array[0], &_u_boot_part_driver__a_efi, sizeof(struct part_driver));
+    memcpy(&driver_data.part_driver_array[1], &_u_boot_part_driver__dos, sizeof(struct part_driver));
     memcpy(&driver_data.part_driver_array[2], &_u_boot_part_driver__iso, sizeof(struct part_driver));
     memcpy(&driver_data.part_driver_array[3], &_u_boot_part_driver__mac, sizeof(struct part_driver));
 
