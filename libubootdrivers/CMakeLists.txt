@@ -105,12 +105,18 @@ if(LibUBOOT)
         execute_process(COMMAND ln -fsn ${arch_source} ${arch_target})
 
     elseif("${KernelPlatform}" STREQUAL "odroidc2")
-        # Platform specific settings for the ODroidC2 board.
+        # Define the drivers used for this platform
+        set(iomux_driver "meson-gxbb-pinctrl")
+        set(gpio_driver "meson_gx_gpio_driver")
+        set(led_driver "gpio_led")
+
+        # Create a symlink named 'arch' to the platform's headers. This
+        # mimics the behaviour of the "CREATE_ARCH_SYMLINK" option within
+        # U-Boot's build system (see Makefile.autoconf).
         set(arch_source "./arch-meson")
         set(arch_target "../projects/uboot/arch/arm/include/asm/arch")
         execute_process(COMMAND ln -fsn ${arch_source} ${arch_target})
 
-        set(iomux_driver "meson-gxbb-pinctrl")
 
     else()
         message(FATAL_ERROR "Unsupported platform. Aborting.")
@@ -211,6 +217,11 @@ if(LibUBOOT)
         # Driver specific settings / files
         if(gpio_driver MATCHES "gpio_mxc")
             list(APPEND uboot_deps uboot/drivers/gpio/mxc_gpio.c)
+        elseif(gpio_driver MATCHES "meson_gx_gpio_driver")
+            # This driver is actually supplied by the IOMUX driver; ensure it is active.
+            if(NOT iomux_driver MATCHES "meson-gxbb-pinctrl")
+                message(FATAL_ERROR "Cannot enable PGIO driver without IOMUX driver. Aborting.")
+            endif()
         else()
             message(FATAL_ERROR "Unrecognised GPIO driver. Aborting.")
         endif()
