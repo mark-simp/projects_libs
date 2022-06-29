@@ -31,6 +31,14 @@ int initialise_uboot_drivers(
 int run_uboot_command(char* cmd);
 
 /**
+ * uboot_monotonic_timer_get_us() - returns the time in microseconds from
+ *   the monotonic timer.
+ *
+ * Return: Elapsed time in microseconds.
+ */
+unsigned long uboot_monotonic_timer_get_us(void);
+
+/**
  * uboot_stdin_tstc() - tests whether a character is available to read from
  *   u-boot's stdin.
  *

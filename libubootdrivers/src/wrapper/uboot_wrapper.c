@@ -199,6 +199,11 @@ void shutdown_uboot_wrapper(void)
     return;
 }
 
+unsigned long uboot_monotonic_timer_get_us(void)
+{
+    return timer_get_us();
+}
+
 int uboot_stdin_tstc(void)
 {
     // Return immediately if library not initialised .
