@@ -14,7 +14,7 @@
 #define _u_boot_driver_count            33
 #define _u_boot_usb_driver_entry_count  3
 #define _u_boot_part_driver_count       4
-#define _u_boot_cmd_count               26
+#define _u_boot_cmd_count               29
 #define _u_boot_env_driver_count        0
 #define _u_boot_env_clbk_count          8
 #define _u_boot_driver_info_count       0
@@ -99,6 +99,9 @@ extern struct cmd_tbl _u_boot_cmd__fatsize;
 extern struct cmd_tbl _u_boot_cmd__fatload;
 extern struct cmd_tbl _u_boot_cmd__fatls;
 extern struct cmd_tbl _u_boot_cmd__fatinfo;
+extern struct cmd_tbl _u_boot_cmd__fatwrite;
+extern struct cmd_tbl _u_boot_cmd__fatrm;
+extern struct cmd_tbl _u_boot_cmd__fatmkdir;
 extern struct cmd_tbl _u_boot_cmd__ext2load;
 extern struct cmd_tbl _u_boot_cmd__ext2ls;
 extern struct cmd_tbl _u_boot_cmd__ext4load;
