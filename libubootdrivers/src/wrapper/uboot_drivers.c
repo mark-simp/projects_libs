@@ -1,4 +1,8 @@
-/*
+ /* 
+ * Copyright 2022, Capgemini Engineering
+ * 
+ * SPDX-License-Identifier: BSD-2-Clause
+ *
  * This file performs all of the initialisation and shutdown of the library
  * required from within the seL4 'world', i.e. those actions that require
  * use of seL4 libraries such as mapping of the physical memory for the

@@ -1,6 +1,8 @@
-#include <sel4platsupport/io.h>
-
-/**
+/*
+ * Copyright 2022, Capgemini Engineering
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ * 
  * initialise_uboot_drivers() - initialise the u-boot driver library.
  *
  * This must be called before any other interface exported by the library.
@@ -13,6 +15,9 @@
  *
  * Return: 0 if OK, otherwise failure.
  */
+
+#include <sel4platsupport/io.h>
+
 int initialise_uboot_drivers(
     ps_io_ops_t *io_ops,
     const char **reg_paths,

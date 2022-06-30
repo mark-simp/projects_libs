@@ -1,3 +1,10 @@
+/* 
+* Copyright 2022, Capgemini Engineering
+* 
+* SPDX-License-Identifier: BSD-2-Clause
+*
+*/
+
 /* Provide an seL4 compliant implemention of panic as used by U-Boot */
 
 #include <hang.h>

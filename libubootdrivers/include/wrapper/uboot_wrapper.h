@@ -1,3 +1,10 @@
+ /* 
+* Copyright 2022, Capgemini Engineering
+* 
+* SPDX-License-Identifier: BSD-2-Clause
+*
+*/
+
 /* Routines to perform initialisation and shutdown of the U-Boot wrapper.
  * The initialise routine performs the actions that would normally be
  * performed by U-Boot when it is started.

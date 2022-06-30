@@ -1,3 +1,10 @@
+ /* 
+* Copyright 2022, Capgemini Engineering
+* 
+* SPDX-License-Identifier: BSD-2-Clause
+*
+*/
+
 #include <uboot_helper.h>
 #include <dm/root.h>
 #include <dm/util.h>

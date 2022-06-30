@@ -1,4 +1,8 @@
 /*
+ * Copyright 2022, Capgemini Engineering
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ * 
  * This file defines which drivers, driver classes, driver entries and commands
  * are to be included in the compiled library for this platform.
  *

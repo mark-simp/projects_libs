@@ -1,3 +1,10 @@
+/* 
+* Copyright 2022, Capgemini Engineering
+* 
+* SPDX-License-Identifier: BSD-2-Clause
+*
+*/
+
 /* Minimal stub */
 
 #ifndef _LINUX_BUILD_BUG_H

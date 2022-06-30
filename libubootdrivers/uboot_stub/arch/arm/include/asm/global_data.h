@@ -2,6 +2,9 @@
 /*
  * (C) Copyright 2002-2010
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+ * 
+ * (C) Copyright 2022, Capgemini Engineering
+ * 
  */
 
 /* Minimal stub. Minimal architecture specific global data required */
