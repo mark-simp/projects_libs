@@ -1,9 +1,9 @@
 /* 
-* Copyright 2022, Capgemini Engineering
-* 
-* SPDX-License-Identifier: GPL-2.0+ 
-*
-*/
+ * Copyright 2022, Capgemini Engineering
+ * 
+ * SPDX-License-Identifier: GPL-2.0+ 
+ *
+ */
 
 #ifndef	__DRIVER_DATA_LIMITS_H
 #define __DRIVER_DATA_LIMITS_H

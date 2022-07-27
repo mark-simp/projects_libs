@@ -1,9 +1,9 @@
 /* 
-* Copyright 2022, Capgemini Engineering
-* 
-* SPDX-License-Identifier: BSD-2-Clause
-*
-*/
+ * Copyright 2022, Capgemini Engineering
+ * 
+ * SPDX-License-Identifier: BSD-2-Clause
+ *
+ */
 
 /* This timer uses the System Counter (SYS_CTR) provided by the iMX8MQ SoC
  * to implement the timing functions expected by the U-Boot codebase */
