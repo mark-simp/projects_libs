@@ -1,3 +1,10 @@
+/* 
+ * Copyright 2022, Capgemini Engineering
+ * 
+ * SPDX-License-Identifier: BSD-2-Clause
+ *
+ */
+
 #include <linux/types.h>
 #include <linux/dma-direction.h>
 

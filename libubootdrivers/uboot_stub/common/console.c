@@ -1,7 +1,10 @@
-// SPDX-License-Identifier: GPL-2.0+
-/*
+/* SPDX-License-Identifier: GPL-2.0+
+ *
  * (C) Copyright 2000
  * Paolo Scaffardi, AIRVENT SAM s.p.a - RIMINI(ITALY), arsenio@tin.it
+ * 
+ * (C) Copyright 2022
+ * Capgemini Engineering
  */
 
 /* This is a minimal stub of U-Boot's console package providing the subset

@@ -1,3 +1,10 @@
+/* 
+ * Copyright 2022, Capgemini Engineering
+ * 
+ * SPDX-License-Identifier: BSD-2-Clause
+ *
+ */
+
 #ifndef __LINKER_LISTS_H__
 #define __LINKER_LISTS_H__
 
