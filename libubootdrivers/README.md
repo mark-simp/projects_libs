@@ -4,7 +4,7 @@ The libubootdrivers library provides a framework for utilising U-Boot device dri
 
 ## Library directory strucuture
 
-The root of the library contains 3 folders and one as follows:
+The root of the library contains 4 folders and one file as follows:
 
 - include - this folder contains platform specific configuration data (examples provided for the Avnet MaaXBoard and Odroid C2) for the drivers, the head file for public API provided by the library, aswell as a number of header files for wrapper around the U-Boot source code.
 
