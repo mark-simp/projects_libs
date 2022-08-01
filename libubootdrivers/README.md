@@ -18,5 +18,5 @@ The root of the library contains 4 folders and one file as follows:
 
 ## Platform specific configuration
 
-Two main files are used to provide speicific configuration data for each platform, a C source file and associated header file. These are stored under src/plat/platform_name and include/plat/platform name respectively.
+Two main files are used to provide speicific configuration data for each platform, a C source file and associated header file. These are stored under src/plat/platform_name and include/plat/platform name respectively. These files contain information about what drivers and commands should be made availible for a platform, based on the driver/command string names from the U-Boot source. They also provide a list of enviroment varibales that should be made availible. Examples exist in the library for the Avnet MaaXBoard and the Odroid C2.
 
