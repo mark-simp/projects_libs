@@ -2,7 +2,7 @@
 
 The libubootdrivers library provides a framework for utilising U-Boot device drivers under seL4. The library provides the neccessary stubs, configuration data and supporting code to allow the use of these drivers with minimal or no modification, as well as an API for interacting with the drivers and essential library functions. The library includes example usage for an extensive set of drivers for the Avnet MaaXBoard, inlcuding USB, Ethernet, MMC, I2C, SPI, GPIO and Clock drivers.
 
-## Library directory strucuture
+## Library directory strucuture
 
 The root of the library contains 3 folders and one as follows:
 
