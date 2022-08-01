@@ -12,3 +12,11 @@ The root of the library contains 4 folders and one file as follows:
 
 - uboot_stub - this folder provides stubs for various U-Boot source code files which now have functions provided by the seL4 kernel, including the console, logging, random number generation and enviroment varibales.
 
+- uboot - this folder contains the entire U-Boot source, cloned from the sel4devkit/uboot repository on the libubootdrivers branch. The U-Boot source is brought in to provide the driver code as well as code for U-Boot commands, which can be executed via a interface in the libraries API. **NOTE: This folder is only added to the libubootdrivers when cloned using an appropiate manifest (e.g sel4devkit/camkes_manifest) with the repo tool.
+
+- CMakeLists.txt - this file contains much of the base configuration data for the library, including definitions for archetecture and platform speciific configuration variales, and settings for the default logging level.
+
+## Platform specific configuration
+
+Two main files are used to provide speicific configuration data for each platform, a C source file and associated header file. These are stored under src/plat/platform_name and include/plat/platform name respectively.
+
