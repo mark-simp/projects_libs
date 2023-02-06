@@ -119,6 +119,20 @@ if(LibUBOOT)
         set(arch_target "../projects/uboot/arch/arm/include/asm/arch")
         execute_process(COMMAND ln -fsn ${arch_source} ${arch_target})
 
+    elseif("${KernelPlatform}" STREQUAL "odroidxu4")
+        # Define the drivers used for this platform
+        set(iomux_driver "gpio_exynos")
+        # ./gpio/s5p_gpio.c:      { .compatible = "samsung,exynos5420-pinctrl" },
+
+
+        # Create a symlink named 'arch' to the platform's headers. This
+        # mimics the behaviour of the "CREATE_ARCH_SYMLINK" option within
+        # U-Boot's build system (see Makefile.autoconf).
+        set(arch_source "./arch-armv7") 
+        # not sure if this is correct source, other boards have chip specific sources where this is quite general
+        set(arch_target "../projects/uboot/arch/arm/include/asm/arch")
+        execute_process(COMMAND ln -fsn ${arch_source} ${arch_target})
+
 
     else()
         message(FATAL_ERROR "Unsupported platform. Aborting.")
@@ -196,6 +210,8 @@ if(LibUBOOT)
             list(APPEND uboot_deps uboot/drivers/pinctrl/meson/pinctrl-meson-gxbb.c)
             list(APPEND uboot_deps uboot/drivers/pinctrl/meson/pinctrl-meson.c)
             list(APPEND uboot_deps uboot/drivers/pinctrl/meson/pinctrl-meson-gx-pmx.c)
+        elseif(iomux_driver MATCHES "samsung,exynos5420-pinctrl")
+            list(APPEND uboot_deps uboot/drivers/gpio/s5p_gpio.c)
         else()
             message(FATAL_ERROR "Unrecognised IOMUX driver. Aborting.")
         endif()
