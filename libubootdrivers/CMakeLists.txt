@@ -119,7 +119,7 @@ if(LibUBOOT)
         set(arch_target "../projects/uboot/arch/arm/include/asm/arch")
         execute_process(COMMAND ln -fsn ${arch_source} ${arch_target})
 
-    elseif("${KernelPlatform}" STREQUAL "odroidxu4")
+    elseif("${KernelPlatform}" STREQUAL "exynos5422")
         # Define the drivers used for this platform
         set(iomux_driver "gpio_exynos")
         # ./gpio/s5p_gpio.c:      { .compatible = "samsung,exynos5420-pinctrl" },
